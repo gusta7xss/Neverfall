@@ -813,6 +813,33 @@ LocalPlayer.CharacterAdded:Connect(function(c)
 	end
 end)
 
+-- // === Executar Script (loader externo, modo PVP / FARM) ===
+local LOADER_URL = "https://raw.githubusercontent.com/hermanos-dev/hermanos-hub/refs/heads/main/Loader.lua"
+
+local ExecBox = Tabs.Main:AddGroupbox({
+	Side = "Right",
+	Name = "Executar Script",
+	IconName = "play",
+})
+
+ExecBox:AddDropdown("ScriptMode", {
+	Values = { "PVP", "FARM" },
+	Default = "PVP",
+	Text = "Mode",
+})
+
+ExecBox:AddButton("Executar", function()
+	getgenv().script_mode = Options.ScriptMode.Value
+	local ok, err = pcall(function()
+		loadstring(game:HttpGet(LOADER_URL))()
+	end)
+	if ok then
+		print("[executar] loader rodou, mode:", Options.ScriptMode.Value)
+	else
+		print("[executar] falhou:", err)
+	end
+end)
+
 -- // === UI Settings ===
 local MenuGroup = Tabs["UI Settings"]:AddGroupbox({
 	Side = "Left",
