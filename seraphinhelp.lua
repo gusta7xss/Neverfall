@@ -476,6 +476,124 @@ RunService.Heartbeat:Connect(function()
 	pcall(faStep)
 end)
 
+-- // === M1 Extender (100 studs: M1 atinge o inimigo mais perto no alcance, sem mirar) ===
+local M1E = { lastFire = 0 }
+
+
+local M1ExtenderBox = Tabs.Main:AddGroupbox({
+	Side = "Left",
+	Name = "M1 Extender",
+	IconName = "mouse-pointer",
+})
+
+M1ExtenderBox:AddToggle("M1Extender", {
+	Text = "M1 Extender",
+	Default = false,
+})
+
+M1ExtenderBox:AddSlider("M1E_Range", {
+	Text = "Range",
+	Default = 100, Min = 10, Max = 200, Rounding = 0,
+	Suffix = "studs",
+})
+
+local function m1eGetTarget(myPos)
+	local best, bestD = nil, Options.M1E_Range.Value
+	local myChar = LocalPlayer.Character
+
+	local function consider(model, root, hum)
+		if root and hum and hum.Health > 0 then
+			local d = (root.Position - myPos).Magnitude
+			if d < bestD then best, bestD = model, d end
+		end
+	end
+
+	local enemies = workspace:FindFirstChild("Enemies")
+	if enemies then
+		for _, npc in ipairs(enemies:GetChildren()) do
+			if not faIgnored(npc.Name) then
+				consider(npc, npc:FindFirstChild("HumanoidRootPart"), npc:FindFirstChildOfClass("Humanoid"))
+			end
+		end
+	end
+
+	local chars = workspace:FindFirstChild("Characters")
+	if chars then
+		for _, v in ipairs(chars:GetChildren()) do
+			if v ~= myChar and not Players:GetPlayerFromCharacter(v) and not faIgnored(v.Name) then
+				consider(v, v:FindFirstChild("HumanoidRootPart"), v:FindFirstChildOfClass("Humanoid"))
+			end
+		end
+	end
+
+	for _, p in ipairs(Players:GetPlayers()) do
+		if p ~= LocalPlayer and p.Character and p.Character ~= myChar and not isInSafeZonePlayer(p) then
+			consider(p.Character, p.Character:FindFirstChild("HumanoidRootPart"), p.Character:FindFirstChildOfClass("Humanoid"))
+		end
+	end
+
+	return best
+end
+
+local function m1eTrigger()
+	if Library.Unloaded or not Toggles.M1Extender.Value then return end
+
+	local char = LocalPlayer.Character
+	local tool = char and char:FindFirstChildOfClass("Tool")
+	if not tool then return end
+	if tool.ToolTip == "Gun" or charBusy(char) then return end
+
+	local now = tick()
+	if now - M1E.lastFire < 0.12 then return end
+	M1E.lastFire = now
+
+	local myHRP = char:FindFirstChild("HumanoidRootPart")
+	if not myHRP then return end
+
+	local target = m1eGetTarget(myHRP.Position)
+	if not target then return end
+	local head = target:FindFirstChild("Head") or target:FindFirstChild("HumanoidRootPart")
+	if not head then return end
+
+	if tool:FindFirstChild("LeftClickRemote") then
+		pcall(function()
+			local dir = (head.Position - myHRP.Position).Unit
+			tool.LeftClickRemote:FireServer(dir, 1)
+		end)
+	elseif resolveFARemotes() then
+		pcall(function()
+			FA.rA:FireServer(0)
+			local sessionId = tostring(LocalPlayer.UserId):sub(2, 4) .. tostring(coroutine.running()):sub(11, 15)
+			FA.rH:FireServer(head, { { target, head } }, {}, sessionId)
+		end)
+	end
+end
+
+UIS.InputBegan:Connect(function(input, gp)
+	if gp or input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+	m1eTrigger()
+end)
+
+local function m1eBindTool(item)
+	if item and item:IsA("Tool") then
+		item.Activated:Connect(m1eTrigger)
+	end
+end
+
+local function m1eBindChar(char)
+	for _, item in ipairs(char:GetChildren()) do
+		m1eBindTool(item)
+	end
+	char.ChildAdded:Connect(m1eBindTool)
+end
+
+if LocalPlayer.Character then
+	task.spawn(m1eBindChar, LocalPlayer.Character)
+end
+LocalPlayer.CharacterAdded:Connect(function(c)
+	task.spawn(m1eBindChar, c)
+end)
+
 -- // === Z Boost (keybind configurável, impulso pra frente na direção da câmera) ===
 local ZB = { cd = 0 }
 
@@ -916,6 +1034,7 @@ MenuGroup:AddButton("Unload", function()
 	Toggles.InfinitySoru:SetValue(false)
 	Toggles.FastAttack:SetValue(false)
 	Toggles.ZBoost:SetValue(false)
+    Toggles.M1Extender:SetValue(false)
 	Toggles.SkillSoru:SetValue(false)
 	Toggles.WalkWater:SetValue(false)
 	Toggles.AntiStun:SetValue(false)
