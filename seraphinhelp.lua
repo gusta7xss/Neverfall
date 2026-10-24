@@ -28,6 +28,14 @@ local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 
+-- // === Helper: personagem ocupado com skill/dash (não mexer em stun/velocidade nesse estado) ===
+local function charBusy(char)
+	if not char then return false end
+	return char:GetAttribute("isUsingSkill") == true
+		or char:GetAttribute("UsingSkill") == true
+		or char:GetAttribute("Busy") == true
+end
+
 -- // === Super Jump (hold, controlado pelo keypicker) ===
 local SJ_DEFAULT_JUMP = 50
 local SJ = { held = false, lastJump = 0 }
@@ -112,7 +120,8 @@ UIS.JumpRequest:Connect(function()
 end)
 
 -- // === Speed Boost (segura a keybind, soma velocidade extra ao andar normal) ===
-local SB = { bv = nil, announced = false }
+local SB = { bv = nil, base = 16, announced = false }
+local SB_NAME = "Spooky_SpeedBoost" -- prefixo Spooky_ faz o anti stun ignorar esse BodyVelocity
 
 local SpeedBoostBox = Tabs.Main:AddGroupbox({
 	Side = "Right",
@@ -120,10 +129,9 @@ local SpeedBoostBox = Tabs.Main:AddGroupbox({
 	IconName = "zap",
 })
 
-SpeedBoostBox:AddLabel("Speed Boost Key"):AddKeyPicker("SB_Key", {
-	Default = "None",
-	Mode = "Hold",
+SpeedBoostBox:AddToggle("SB_Enabled", {
 	Text = "Speed Boost",
+	Default = false,
 })
 
 SpeedBoostBox:AddSlider("SB_Speed", {
@@ -139,7 +147,7 @@ local function sbClear()
 end
 
 RunService.Heartbeat:Connect(function()
-	if not Options.SB_Key:GetState() then
+	if not Toggles.SB_Enabled.Value then
 		sbClear()
 		return
 	end
@@ -152,10 +160,16 @@ RunService.Heartbeat:Connect(function()
 		return
 	end
 
+	-- guarda a base de walkspeed só fora de skill, pra skill não zerar o cálculo do extra
+	if not charBusy(c) and hum.WalkSpeed > 0 then
+		SB.base = hum.WalkSpeed
+	end
+
 	local md = Vector3.new(hum.MoveDirection.X, 0, hum.MoveDirection.Z)
 	if not SB.bv or SB.bv.Parent ~= hrp then
 		sbClear()
 		SB.bv = Instance.new("BodyVelocity")
+		SB.bv.Name = SB_NAME
 		SB.bv.MaxForce = Vector3.new(1e5, 0, 1e5)
 		SB.bv.P = 1e4
 		SB.bv.Velocity = Vector3.zero
@@ -167,7 +181,7 @@ RunService.Heartbeat:Connect(function()
 		return
 	end
 
-	local extra = math.max(0, Options.SB_Speed.Value - hum.WalkSpeed)
+	local extra = math.max(0, Options.SB_Speed.Value - SB.base)
 	SB.bv.Velocity = md.Unit * extra
 
 	if not SB.announced then
@@ -414,7 +428,7 @@ local function faStep()
 	local myHRP = char and char:FindFirstChild("HumanoidRootPart")
 	local tool = char and char:FindFirstChildOfClass("Tool")
 	if not myHRP or not tool or tool.ToolTip == "Gun" then return end
-	if char:GetAttribute("isUsingSkill") or char:GetAttribute("UsingSkill") or char:GetAttribute("Busy") then return end
+	if charBusy(char) then return end
 
 	local myPos = myHRP.Position
 	local hits = {}
@@ -678,7 +692,7 @@ RunService.Heartbeat:Connect(function()
 	end
 end)
 
--- // === Anti Stun (zera o Stun quando vem dano/hostilidade e cancela os movers) ===
+-- // === Anti Stun (zera o Stun só quando vem dano, sem mexer em skill/dash) ===
 local AS = {
 	active = false,
 	conns = {},
@@ -687,35 +701,42 @@ local AS = {
 	stunObj = nil,
 	stunConn = nil,
 	lastDmg = 0,
-	hostileUntil = 0,
+	recent = {}, -- movers criados no HRP nas últimas janelas
 }
 
-local AS_HOSTILE_CHAR = { LastDamageTick = true, LastDamageTakenAt = true, InCombat = true }
-local AS_HOSTILE_HRP = {
-	LastDetectedDuration = true, LastDetectedTimestamp = true, LastDetectedPriority = true,
-	LastDetectedVelocity = true, LastDetectedKnockback = true, LastStunAnimation = true, IdleStunCounter = true,
-}
+local AS_WINDOW = 0.35
+local AS_MAX_RECENT = 20
 
-local function asCancelMovers()
-	if not AS.root then return end
-	pcall(function()
-		for _, m in ipairs(AS.root:GetChildren()) do
-			if (m:IsA("BodyVelocity") or m:IsA("BodyPosition") or m:IsA("BodyGyro"))
-				and m.Name ~= "RootVelocity" and m.Name ~= "Keep" and not m.Name:match("^Spooky_") then
-				pcall(function() m:Destroy() end)
-			end
+local function asIsMover(obj)
+	return obj:IsA("BodyVelocity") or obj:IsA("BodyPosition") or obj:IsA("BodyGyro") or obj:IsA("BodyForce")
+end
+
+local function asTrackMover(child)
+	if not asIsMover(child) then return end
+	if string.sub(child.Name, 1, 7) == "Spooky_" then return end
+	table.insert(AS.recent, { obj = child, t = os.clock() })
+	if #AS.recent > AS_MAX_RECENT then table.remove(AS.recent, 1) end
+end
+
+-- destrói só os movers que nasceram perto do hit, e limpa a lista
+local function asCancelRecent()
+	local now = os.clock()
+	for i = #AS.recent, 1, -1 do
+		local e = AS.recent[i]
+		if now - e.t <= AS_WINDOW and e.obj and e.obj.Parent then
+			pcall(function() e.obj:Destroy() end)
 		end
-	end)
+		table.remove(AS.recent, i)
+	end
 end
 
 local function asOnStun()
 	if not AS.active or not AS.stunObj then return end
 	if (tonumber(AS.stunObj.Value) or 0) <= 0 then return end
-	local now = os.clock()
-	if now - AS.lastDmg <= 0.35 or now <= AS.hostileUntil then
-		AS.stunObj.Value = 0
-		asCancelMovers()
-	end
+	if charBusy(AS.char) then return end
+	if os.clock() - AS.lastDmg > AS_WINDOW then return end
+	AS.stunObj.Value = 0
+	asCancelRecent()
 end
 
 local function asClear()
@@ -727,38 +748,28 @@ local function asClear()
 		pcall(function() AS.stunConn:Disconnect() end)
 		AS.stunConn = nil
 	end
+	table.clear(AS.recent)
 	AS.stunObj, AS.root, AS.char = nil, nil, nil
+end
+
+local function asBindRoot(root)
+	AS.root = root
+	table.insert(AS.conns, root.ChildAdded:Connect(asTrackMover))
 end
 
 local function asBind(char)
 	asClear()
 	if not char or not char.Parent then return end
 	AS.char = char
-	AS.root = char:FindFirstChild("HumanoidRootPart")
-	AS.lastDmg, AS.hostileUntil = 0, 0
+	AS.lastDmg = 0
 
+	-- só dano real dispara, sem reagir a InCombat / LastDetected*
 	table.insert(AS.conns, char.AttributeChanged:Connect(function(attr)
-		if AS_HOSTILE_CHAR[attr] then
-			local now = os.clock()
-			if attr == "LastDamageTick" or attr == "LastDamageTakenAt" then
-				AS.lastDmg = now
-			end
-			AS.hostileUntil = now + 0.35
-			asCancelMovers()
-			if AS.stunObj and (tonumber(AS.stunObj.Value) or 0) > 0 then
-				AS.stunObj.Value = 0
-			end
+		if attr == "LastDamageTick" or attr == "LastDamageTakenAt" then
+			AS.lastDmg = os.clock()
+			asOnStun()
 		end
 	end))
-
-	if AS.root then
-		table.insert(AS.conns, AS.root.AttributeChanged:Connect(function(attr)
-			if AS_HOSTILE_HRP[attr] then
-				AS.hostileUntil = os.clock() + 0.35
-				asCancelMovers()
-			end
-		end))
-	end
 
 	local function watch(child)
 		if child.Name == "Stun" and child:IsA("NumberValue") then
@@ -766,8 +777,8 @@ local function asBind(char)
 			if AS.stunConn then pcall(function() AS.stunConn:Disconnect() end) end
 			AS.stunConn = child.Changed:Connect(asOnStun)
 			asOnStun()
-		elseif child.Name == "HumanoidRootPart" then
-			AS.root = child
+		elseif child.Name == "HumanoidRootPart" and child:IsA("BasePart") then
+			asBindRoot(child)
 		end
 	end
 
@@ -782,9 +793,12 @@ local function asBind(char)
 		end
 	end))
 
-	local existing = char:FindFirstChild("Stun")
-	if existing and existing:IsA("NumberValue") then
-		watch(existing)
+	local existingRoot = char:FindFirstChild("HumanoidRootPart")
+	if existingRoot then asBindRoot(existingRoot) end
+
+	local existingStun = char:FindFirstChild("Stun")
+	if existingStun and existingStun:IsA("NumberValue") then
+		watch(existingStun)
 	end
 end
 
