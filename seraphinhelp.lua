@@ -11,9 +11,9 @@ Library.ForceCheckbox = false
 Library.ShowToggleFrameInKeybinds = true
 
 local Window = Library:CreateWindow({
-	Title = "Seraphin",
+	Title = "NeverFall",
 	Footer = "version: BETA",
-	Icon = 1243374081,
+	Icon = 93140874051752,
 	NotifySide = "Right",
 	ShowCustomCursor = false,
 })
