@@ -493,7 +493,7 @@ M1ExtenderBox:AddToggle("M1Extender", {
 
 M1ExtenderBox:AddSlider("M1E_Range", {
 	Text = "Range",
-	Default = 100, Min = 10, Max = 200, Rounding = 0,
+	Default = 100, Min = 10, Max = 550, Rounding = 0,
 	Suffix = "studs",
 })
 
@@ -971,6 +971,197 @@ ExecBox:AddButton("Executar", function()
 		print("[executar] falhou:", err)
 	end
 end)
+
+do
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    local HITBOX_COLOR = Color3.fromRGB(255, 30, 30)
+    local MULT = 250
+
+    local HB = { on = false, vis = false, size = 25, orig = {}, boxes = {} }
+
+    if not _G.HB_CombatHooked then
+        _G.HB_CombatHooked = true
+        task.spawn(function()
+            pcall(function()
+                local cuInst = game:GetService("ReplicatedStorage"):WaitForChild("Modules", 5):WaitForChild("CombatUtil", 5)
+                local CombatUtil = require(cuInst)
+                if typeof(CombatUtil) ~= "table" or not CombatUtil.GetWeaponData then return end
+                local oldGet = CombatUtil.GetWeaponData
+                CombatUtil.GetWeaponData = function(...)
+                    local data = oldGet(...)
+                    if not HB.on or not data then return data end
+                    return setmetatable({}, {
+                        __index = function(_, key)
+                            local v = data[key]
+                            if key == "HitboxMagnitude" and type(v) == "number" then
+                                return v * MULT
+                            end
+                            return v
+                        end,
+                        __newindex = function(_, key, val)
+                            data[key] = val
+                        end,
+                    })
+                end
+            end)
+        end)
+    end
+
+    local function restorePart(part)
+        local o = HB.orig[part]
+        if o and part.Parent then
+            pcall(function()
+                part.Size = o.Size
+                part.Transparency = o.Transparency
+                part.CanCollide = o.CanCollide
+                part.Massless = o.Massless
+            end)
+        end
+        HB.orig[part] = nil
+    end
+
+    local function killBox(model)
+        local sb = HB.boxes[model]
+        if sb then
+            pcall(function() sb:Destroy() end)
+            HB.boxes[model] = nil
+        end
+    end
+
+    local function clearBoxes()
+        for model in pairs(HB.boxes) do
+            killBox(model)
+        end
+    end
+
+    local function drawBox(model, adornee)
+        local sb = HB.boxes[model]
+        if not sb or not sb.Parent then
+            sb = Instance.new("SelectionBox")
+            sb.Name = "HBVisual"
+            sb.Color3 = HITBOX_COLOR
+            sb.SurfaceColor3 = HITBOX_COLOR
+            sb.SurfaceTransparency = 0.72
+            sb.LineThickness = 0.05
+            local ok = pcall(function()
+                sb.Parent = game:GetService("CoreGui")
+            end)
+            if not ok or not sb.Parent then
+                sb.Parent = workspace
+            end
+            HB.boxes[model] = sb
+        end
+        sb.Adornee = adornee
+        sb.Visible = true
+    end
+
+    local function expandModel(model)
+        if model == LocalPlayer.Character then return end
+
+        local hum = model:FindFirstChildOfClass("Humanoid")
+        local head = model:FindFirstChild("Head")
+
+        if not hum or hum.Health <= 0 then
+            if head then restorePart(head) end
+            killBox(model)
+            return
+        end
+
+        if head and head:IsA("BasePart") then
+            if not HB.orig[head] then
+                HB.orig[head] = {
+                    Size = head.Size,
+                    Transparency = head.Transparency,
+                    CanCollide = head.CanCollide,
+                    Massless = head.Massless,
+                }
+            end
+            local s = HB.size
+            pcall(function()
+                head.Size = Vector3.new(s, s, s)
+                head.Transparency = 1
+                head.CanCollide = false
+                head.Massless = true
+            end)
+        end
+
+        if HB.vis then
+            local adornee = head or model:FindFirstChild("HumanoidRootPart")
+            if adornee and adornee:IsA("BasePart") then
+                drawBox(model, adornee)
+            end
+        else
+            killBox(model)
+        end
+    end
+
+    local function scan()
+        if not HB.on then return end
+        for _, plr in ipairs(Players:GetPlayers()) do
+            if plr ~= LocalPlayer and plr.Character then
+                expandModel(plr.Character)
+            end
+        end
+    end
+
+    local function clearAll()
+        for part in pairs(HB.orig) do
+            restorePart(part)
+        end
+        HB.orig = {}
+        clearBoxes()
+    end
+
+    task.spawn(function()
+        while not Library.Unloaded do
+            if HB.on then scan() end
+            task.wait(0.35)
+        end
+        clearAll()
+    end)
+
+    local HBBox = Tabs.Main:AddGroupbox("Hitbox")
+
+    HBBox:AddToggle("HB_On", {
+        Text = "Hitbox Expander",
+        Default = false,
+        Callback = function(v)
+            HB.on = v
+            if v then
+                scan()
+            else
+                clearAll()
+            end
+        end,
+    })
+
+    HBBox:AddSlider("HB_Size", {
+        Text = "Tamanho da Hitbox",
+        Default = 25,
+        Min = 5,
+        Max = 100,
+        Rounding = 0,
+        Callback = function(v)
+            HB.size = v
+            if HB.on then scan() end
+        end,
+    })
+
+    HBBox:AddToggle("HB_Vis", {
+        Text = "Visualize Hitbox",
+        Default = false,
+        Callback = function(v)
+            HB.vis = v
+            if v then
+                scan()
+            else
+                clearBoxes()
+            end
+        end,
+    })
+end
 
 -- // === UI Settings ===
 local MenuGroup = Tabs["UI Settings"]:AddGroupbox({
