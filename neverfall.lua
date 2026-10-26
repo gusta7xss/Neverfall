@@ -13,7 +13,7 @@ Library.ShowToggleFrameInKeybinds = true
 local Window = Library:CreateWindow({
 	Title = "NeverFall",
 	Footer = "version: BETA",
-	Icon = 115855477358914,
+	Icon = 17501536225,
 	NotifySide = "Right",
 	ShowCustomCursor = false,
 })
@@ -136,7 +136,7 @@ SpeedBoostBox:AddToggle("SB_Enabled", {
 
 SpeedBoostBox:AddSlider("SB_Speed", {
 	Text = "Speed",
-	Default = 100, Min = 16, Max = 250, Rounding = 0,
+	Default = 250, Min = 250, Max = 750, Rounding = 0,
 })
 
 local function sbClear()
@@ -252,6 +252,9 @@ local function nearestEnemy()
 	end
 	return best
 end
+
+
+
 
 -- // === Hook central do mouse (Aimbot Soru) ===
 local AIM_WINDOW = 0.45
@@ -481,7 +484,7 @@ local M1E = { lastFire = 0 }
 
 
 local M1ExtenderBox = Tabs.Main:AddGroupbox({
-	Side = "Right,
+	Side = "Right",
 	Name = "M1 Extender",
 	IconName = "mouse-pointer",
 })
@@ -493,7 +496,7 @@ M1ExtenderBox:AddToggle("M1Extender", {
 
 M1ExtenderBox:AddSlider("M1E_Range", {
 	Text = "Range",
-	Default = 100, Min = 10, Max = 550, Rounding = 0,
+	Default = 100, Min = 10, Max = 1000, Rounding = 0,
 	Suffix = "studs",
 })
 
@@ -748,6 +751,316 @@ RunService.Heartbeat:Connect(function()
 	elseif c:GetAttribute("FlashstepCooldown") == 0.95 then
 		c:SetAttribute("FlashstepCooldown", nil)
 	end
+end)
+
+do
+    local Players = game:GetService("Players")
+    local UIS = game:GetService("UserInputService")
+    local LP = Players.LocalPlayer
+
+    local SGB = { on = false, speed = 300 }
+    local DUR = 0.2
+
+    local function skullGuitarEquipped()
+        local c = LP.Character
+        local tool = c and c:FindFirstChildOfClass("Tool")
+        return tool ~= nil and string.find(string.lower(tool.Name), "skull guitar", 1, true) ~= nil
+    end
+
+    local function tapBoost()
+        local c = LP.Character
+        local hrp = c and c:FindFirstChild("HumanoidRootPart")
+        local cam = workspace.CurrentCamera
+        if not hrp or not cam then return end
+
+        local look = cam.CFrame.LookVector
+        local flat = Vector3.new(look.X, 0, look.Z)
+        if flat.Magnitude < 0.001 then return end
+
+        local att = Instance.new("Attachment")
+        att.Name = "Spooky_SGBoost"
+        att.Parent = hrp
+
+        local lv = Instance.new("LinearVelocity")
+        lv.Name = "Spooky_SGBoost"
+        lv.Attachment0 = att
+        lv.MaxForce = math.huge
+        lv.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
+        lv.VectorVelocity = flat.Unit * SGB.speed
+        lv.Parent = hrp
+
+        task.delay(DUR, function()
+            if lv then lv:Destroy() end
+            if att then att:Destroy() end
+        end)
+    end
+
+    UIS.InputBegan:Connect(function(input, gp)
+        if gp or not SGB.on then return end
+        if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+        if not skullGuitarEquipped() then return end
+        tapBoost()
+    end)
+
+    local Box = Tabs.Main:AddGroupbox({
+        Side = "Right",
+        Name = "Skull Guitar Tap Boost",
+        IconName = "wind",
+    })
+
+    Box:AddToggle("SGB_On", {
+        Text = "Tap Boost (Skull Guitar)",
+        Default = false,
+        Callback = function(v)
+            SGB.on = v
+        end,
+    })
+
+    Box:AddSlider("SGB_Speed", {
+        Text = "Velocidade",
+        Default = 350,
+        Min = 350,
+        Max = 750,
+        Rounding = 0,
+        Callback = function(v)
+            SGB.speed = v
+        end,
+    })
+end
+
+do
+    local Players = game:GetService("Players")
+    local UIS = game:GetService("UserInputService")
+    local LP = Players.LocalPlayer
+
+    local CT = { dist = 60 }
+
+    local function getRoot()
+        local c = LP.Character
+        return c and c:FindFirstChild("HumanoidRootPart")
+    end
+
+    local function teleportAlongCursor()
+        local root = getRoot()
+        local cam = workspace.CurrentCamera
+        if not root or not cam then return end
+
+        local mouse = UIS:GetMouseLocation()
+        local ray = cam:ViewportPointToRay(mouse.X, mouse.Y)
+
+        local flat = Vector3.new(ray.Direction.X, 0, ray.Direction.Z)
+        if flat.Magnitude < 0.001 then return end
+
+        local target = Vector3.new(
+            root.Position.X + flat.Unit.X * CT.dist,
+            root.Position.Y,
+            root.Position.Z + flat.Unit.Z * CT.dist
+        )
+
+        local rot = root.CFrame - root.CFrame.Position
+        root.CFrame = CFrame.new(target) * rot
+        root.AssemblyLinearVelocity = Vector3.zero
+    end
+
+    local Box = Tabs.Main:AddGroupbox({
+        Side = "Left",
+        Name = "Click Teleport",
+        IconName = "map-pin",
+    })
+
+    Box:AddLabel("Click Teleport Key"):AddKeyPicker("CT_Key", {
+        Default = "None",
+        Mode = "Toggle",
+        Text = "Click Teleport",
+        SyncToggleState = false,
+    })
+
+    Options.CT_Key:OnClick(function()
+        if Library.Unloaded then return end
+        teleportAlongCursor()
+    end)
+
+    Box:AddSlider("CT_Dist", {
+        Text = "Distância",
+        Default = 200,
+        Min = 200,
+        Max = 300,
+        Rounding = 0,
+        Suffix = "studs",
+        Callback = function(v)
+            CT.dist = v
+        end,
+    })
+end
+
+do
+    local RS = game:GetService("ReplicatedStorage")
+    local LP = game.Players.LocalPlayer
+
+    local AK = { on = false, cd = 1, last = 0 }
+
+    local function isKenActive()
+        local ok, v = pcall(function()
+            return RS.Events.IsObservationActive:Invoke()
+        end)
+        return ok and v == true
+    end
+
+    local function tryKen()
+        local c = LP.Character
+        local hum = c and c:FindFirstChildOfClass("Humanoid")
+        if not c or not hum or hum.Health <= 0 then return end
+        if not c:HasTag("Ken") then return end
+        if c:FindFirstChild("KenDisabled") then return end
+
+        local now = os.clock()
+        if now - AK.last < AK.cd then return end
+        if isKenActive() then return end
+
+        AK.last = now
+        local ok, err = pcall(function()
+            RS.Remotes.CommE:FireServer("Ken", true)
+        end)
+        if not ok then
+            warn("[auto ken] " .. tostring(err))
+        end
+    end
+
+    local function onDamage()
+        if AK.on then
+            tryKen()
+        end
+    end
+
+    local function bindChar(c)
+        c:GetAttributeChangedSignal("LastDamageTick"):Connect(onDamage)
+        c:GetAttributeChangedSignal("LastDamageTakenAt"):Connect(onDamage)
+    end
+
+    if LP.Character then
+        bindChar(LP.Character)
+    end
+    LP.CharacterAdded:Connect(bindChar)
+
+    local Box = Tabs.Main:AddGroupbox({
+        Side = "Right",
+        Name = "Auto Ken Damage",
+        IconName = "eye",
+    })
+
+    Box:AddToggle("AK_On", {
+        Text = "Auto Ken ao tomar dano",
+        Default = false,
+        Callback = function(v)
+            AK.on = v
+        end,
+    })
+
+    Box:AddSlider("AK_Cd", {
+        Text = "Cooldown",
+        Default = 1,
+        Min = 0.5,
+        Max = 5,
+        Rounding = 1,
+        Suffix = "s",
+        Callback = function(v)
+            AK.cd = v
+        end,
+    })
+end
+
+local DodgeBox = Tabs.Main:AddGroupbox({ Side = 2, Name = "Dash Distance", IconName = "wind" })
+
+DodgeBox:AddToggle("DD_On", { Text = "Dash Distance", Default = false })
+DodgeBox:AddSlider("DD_Dist", { Text = "Distancia Dash", Default = 500, Min = 50, Max = 2500, Rounding = 0 })
+
+local UIS = game:GetService("UserInputService")
+local DD_owned = false
+local DD_lastDash = 0
+local DD_childConn
+
+local function ddDist()
+    return math.clamp(tonumber(Options.DD_Dist.Value) or 500, 50, 2500)
+end
+
+local function ddAttrs()
+    local c = game.Players.LocalPlayer.Character
+    if not c then return end
+    if Toggles.DD_On.Value then
+        local d = ddDist()
+        if c:GetAttribute("DashLength") ~= d then c:SetAttribute("DashLength", d) end
+        if c:GetAttribute("DashLengthAir") ~= d then c:SetAttribute("DashLengthAir", d) end
+        DD_owned = true
+    elseif DD_owned then
+        c:SetAttribute("DashLength", nil)
+        c:SetAttribute("DashLengthAir", nil)
+        DD_owned = false
+    end
+end
+
+local function ddBoost()
+    if not Toggles.DD_On.Value then return end
+    if tick() - DD_lastDash < 0.22 then return end
+    local c = game.Players.LocalPlayer.Character
+    if not c then return end
+    if c:GetAttribute("isUsingSkill") or c:GetAttribute("UsingSkill") or c:GetAttribute("Busy") then return end
+    DD_lastDash = tick()
+
+    local hrp = c:FindFirstChild("HumanoidRootPart")
+    local hum = c:FindFirstChildOfClass("Humanoid")
+    if not hrp or not hum or hum.Health <= 0 then return end
+
+    local dir = (hum.MoveDirection.Magnitude > 0.1) and hum.MoveDirection.Unit or hrp.CFrame.LookVector
+    local spd = math.clamp(ddDist() * 0.9, 120, 2000)
+    local y = hrp.AssemblyLinearVelocity.Y
+    hrp.AssemblyLinearVelocity = Vector3.new(dir.X * spd, math.clamp(y, -5, 30), dir.Z * spd)
+
+    task.delay(0.18, function()
+        local cc = game.Players.LocalPlayer.Character
+        local h = cc and cc:FindFirstChild("HumanoidRootPart")
+        if h then
+            local v = h.AssemblyLinearVelocity
+            h.AssemblyLinearVelocity = Vector3.new(v.X * 0.15, v.Y, v.Z * 0.15)
+        end
+    end)
+end
+
+local function ddHook()
+    if DD_childConn then DD_childConn:Disconnect(); DD_childConn = nil end
+    local c = game.Players.LocalPlayer.Character
+    if not c then return end
+    DD_childConn = c.ChildAdded:Connect(function(ch)
+        if Toggles.DD_On.Value and (ch.Name == "Dash" or ch.Name == "Dashing") then
+            ddBoost()
+        end
+    end)
+end
+
+UIS.InputBegan:Connect(function(input, gpe)
+    if gpe or not Toggles.DD_On.Value then return end
+    if input.KeyCode == Enum.KeyCode.Q and not UIS:GetFocusedTextBox() then
+        ddBoost()
+    end
+end)
+
+Toggles.DD_On:OnChanged(function()
+    ddAttrs()
+    ddHook()
+end)
+Options.DD_Dist:OnChanged(ddAttrs)
+
+game.Players.LocalPlayer.CharacterAdded:Connect(function()
+    task.wait(0.3)
+    DD_owned = false
+    ddAttrs()
+    ddHook()
+end)
+
+task.spawn(function()
+    while not Library.Unloaded do
+        task.wait(0.2)
+        pcall(ddAttrs)
+    end
 end)
 
 -- // === Walk on Water ===
@@ -1122,7 +1435,11 @@ do
 		clearAll()
 	end)
 
-	local HBBox = Tabs.Main:AddGroupbox("Hitbox")
+	local HBBox = Tabs.Main:AddGroupbox({
+    Side = "Right",
+    Name = "Hitbox",
+    IconName = "box",
+	})
 
 	HBBox:AddToggle("HB_On", {
 		Text = "Hitbox Expander",
