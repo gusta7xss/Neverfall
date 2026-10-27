@@ -1,97 +1,173 @@
--- Script path: ReplicatedStorage.ClientComponents.WeaponToolClient
--- Decompile time: 3.17 ms
+-- Script path: Workspace.Characters.hshdyhjhffv.DoubleJump
+-- Decompile time: 5.33 ms
 
+local u0 = 30
+game:GetService("RunService")
+game:GetService("ReplicatedStorage")
+local Effect = require(game.ReplicatedStorage:WaitForChild("Effect"))
+local Util = require(game.ReplicatedStorage.Util)
+local CurrentCamera = workspace.CurrentCamera
 local UserInputService = game:GetService("UserInputService")
-local Trove = require(game.ReplicatedStorage.Modules.Util.Trove)
-local Component = require(game.ReplicatedStorage.Modules.Component)
-local CombatController = require(game.ReplicatedStorage.Controllers.CombatController)
-local GetPlayer = require(game.ReplicatedStorage.Modules.Player.GetPlayer)
-local CombatUtil = require(game.ReplicatedStorage.Modules.CombatUtil)
-local MobileCombatInput = require(game.ReplicatedStorage.Modules.MobileCombatInput)
-local OnlyLocalPlayer = require(game.ReplicatedStorage.Modules.Extensions.OnlyLocalPlayer)
-local IsNewCombatSystemEnabled = require(game.ReplicatedStorage.Modules.Extensions.IsNewCombatSystemEnabled)
 local LocalPlayer = game.Players.LocalPlayer
-local v1 = Component.new({Tag = "WeaponTool", Extensions = {OnlyLocalPlayer, IsNewCombatSystemEnabled}})
-
-function v1.Construct(a1) -- Line: 18 -- upvalues: CombatUtil (val), GetPlayer (val), Trove (val)
-    local Instance = a1.Instance
-    local WeaponName = CombatUtil:GetWeaponName(Instance)
-    a1.weaponName = WeaponName
-    a1.weaponData = CombatUtil:GetWeaponData(WeaponName)
-    a1.weaponType = a1.weaponData.WeaponType
-    a1.player = GetPlayer(Instance)
-    a1.trove = Trove.new()
-    Instance:SetAttribute("LocalShotsLeft", a1.weaponData.MagSize)
-    Instance:SetAttribute("LocalTotalShots", 0)
-    if a1.weaponData.ShootStyle == "Gatling" then
-        a1.isGatling = true
-        Instance:SetAttribute("Overheat", 0)
-        Instance:SetAttribute("LocalOverheat", 0)
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local Character = LocalPlayer.Character
+local Humanoid = Character:WaitForChild("Humanoid")
+local HumanoidRootPart = Character.HumanoidRootPart
+local u44 = false
+local u45 = false
+Humanoid.StateChanged:Connect(function(a1, a2) -- Line: 26 -- upvalues: Humanoid (val), u45 (ref), u44 (ref)
+    if a2 == Enum.HumanoidStateType.Landed then
+        u45 = false
+        u44 = false
+        return
     end
-end
+    if a2 == Enum.HumanoidStateType.Running and Humanoid.FloorMaterial ~= Enum.Material.Air then
+        u45 = false
+        u44 = false
+        return
+    end
+    if a2 == Enum.HumanoidStateType.Freefall or a2 == Enum.HumanoidStateType.Jumping then
+        u45 = true
+    end
+end)
+;(Humanoid:GetPropertyChangedSignal("FloorMaterial")):Connect(function() -- Line: 37 -- upvalues: Humanoid (val), u45 (ref), u44 (ref)
+    if Humanoid.FloorMaterial == Enum.Material.Air then
+        u45 = true
+        return
+    end
+    u45 = false
+    u44 = false
+end)
 
-function v1.Start(a1) -- Line: 37
-    -- upvalues: CombatController (val), LocalPlayer (val), CombatUtil (val), UserInputService (val)
-    -- upvalues: MobileCombatInput (val)
-    local Instance = a1.Instance
-
-    local function activated(a1_2) -- Line: 40
-        -- upvalues: a1 (val), CombatController (upval), Instance (val), LocalPlayer (upval), CombatUtil (upval)
-        if a1.weaponData.WeaponType == "Melee" then
-            CombatController:Attack(Instance)
+local function jumped() -- Line: 46
+    -- upvalues: u45 (ref), u44 (ref), LocalPlayer (val), Util (val), HumanoidRootPart (val), Humanoid (val)
+    -- upvalues: Character (val), u0 (ref), Effect (val)
+    game.ReplicatedStorage.PlayerJumpAttempted:Fire()
+    if not u45 or u44 then
+        return
+    end
+    local Value = false
+    if LocalPlayer.Data.Race.Value == "Cyborg"
+        and LocalPlayer.Character
+        and LocalPlayer.Character:FindFirstChild("RaceTransformed")
+        and LocalPlayer.Character.RaceTransformed.Value
+        and LocalPlayer.Data.Race:FindFirstChild("A")
+        and 1 <= LocalPlayer.Data.Race.A.Value then
+        Value = LocalPlayer.Data.Race.A.Value
+    end
+    local v1 = false
+    if Util.Ray(HumanoidRootPart.Position, Vector3.new(0, -HumanoidRootPart.Size.Y * 1.5 * 2 - 10), {workspace.Characters, workspace.Enemies}) then
+        v1 = true
+    end
+    local v2 = 0.825
+    if Value and Value > 1 then
+        v2 = 1
+    end
+    local v3 = false
+    if Value then
+        if require(game.ReplicatedStorage.Global).OM.active then
+            if v1 and 1.666 < tick() - (require(game.ReplicatedStorage.Global).lastCyborgJump or 0) then
+                v3 = true
+            end
+        elseif Value > 1 and v1 and 1.666 < tick() - (require(game.ReplicatedStorage.Global).lastCyborgJump or 0) then
+            v3 = true
+        end
+    end
+    v1 = Humanoid.JumpPower ^ 2 / 392.4
+    local v4 = 3 + (if not Character:FindFirstChild("HydraRig") then 0 else 8)
+    local v5 = Util.Ray(HumanoidRootPart.Position, Vector3.new(0, -v1 + v4 - Humanoid.HipHeight - HumanoidRootPart.Size.Y / 2, 0), {Character})
+    if not v5 then end
+    u0 = if LocalPlayer.Data.Race.Value ~= "Skypiea" then 30 else if not LocalPlayer.Data.Race:FindFirstChild("Evolved") then 30 else 10
+    if not (LocalPlayer.Character.Humanoid.Health <= 0) and not Humanoid.Sit then
+        if Character.Busy.Value and not Character:GetAttribute("NoTransform") then
             return
         end
-        local Character = LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("EquippedWeapon")
-        if Character
-            and (CombatUtil:GetPureWeaponName((Character:GetAttribute("WeaponName")))) == CombatUtil:GetPureWeaponName(a1.weaponName) then
-            CombatController:Attack(Instance, a1_2)
-        end
-    end
-
-    local u3 = {}
-    a1.trove:Add((UserInputService.InputBegan:Connect(function(a1, a2) -- Line: 59
-        -- upvalues: Instance (val), LocalPlayer (upval), MobileCombatInput (upval), u3 (val), activated (val)
-        local v1 = Instance.Parent == LocalPlayer.Character
-        if not a2 and v1 and not MobileCombatInput.isGuiTouch(a1) then
-            local UserInputType = a1.UserInputType
-            local v2 = a1.KeyCode == Enum.KeyCode.ButtonR2
-            if UserInputType ~= Enum.UserInputType.Touch
-                and UserInputType ~= Enum.UserInputType.MouseButton1
-                and not v2 then
+        if not require(game.ReplicatedStorage.Global).Swimming
+            and not require(game.ReplicatedStorage.Global).Dodging
+            and not (0 < Character.Stun.Value) then
+            local Global, Global_2, v6
+            if Character:FindFirstChild("DoorMode") then
+                if Character.Energy.Value < u0 then
+                    return
+                end
+                u44 = true
+                game.ReplicatedStorage.Remotes.CommE:FireServer("DoubleJump", v3)
+                game.ReplicatedStorage.PlayerDoubleJumped:Fire()
+                Util.Anims:Get(Character, "DoubleJump"):Play()
+                if v3 then
+                    v6 = Humanoid
+                    v6.JumpPower = v6.JumpPower + v2 * 125
+                    ;(Effect.new("RaceAwakenings.CyborgJump")):replicate({
+                        ID = 1,
+                        CFrame = HumanoidRootPart.CFrame,
+                        RootPart = HumanoidRootPart,
+                        Strong = Value > 1,
+                    })
+                    Global = require(game.ReplicatedStorage.Global)
+                    Global.lastCyborgJump = tick()
+                    Global_2 = require(game.ReplicatedStorage.Global)
+                    Global_2.mobilityCooldown = tick()
+                end
+                HumanoidRootPart.Velocity = Vector3.new(HumanoidRootPart.Velocity.X, Humanoid.JumpPower * 1.4, HumanoidRootPart.Velocity.Z)
+                if v3 then
+                    v6 = Humanoid
+                    v6.JumpPower = v6.JumpPower - v2 * 125
+                end
                 return
             end
-            if a1.UserInputType ~= Enum.UserInputType.Touch then
-                activated(a1)
-                return
-            end
-            local v3 = next(u3) ~= nil
-            u3[a1] = true
-            if not v3 and not MobileCombatInput.isM1Blocked() then
-                activated(a1)
+            if not Character:FindFirstChild("Phoenix")
+                and not HumanoidRootPart:FindFirstChild("MagnetEnableFlight")
+                and not Character:FindFirstChild("GravityFlight")
+                and not Character:FindFirstChild("FalconFlight")
+                and not Character:FindFirstChild("Dragon")
+                and not Character:FindFirstChild("Flamingo") then
+                if Character.Energy.Value < u0 then
+                    return
+                end
+                u44 = true
+                game.ReplicatedStorage.Remotes.CommE:FireServer("DoubleJump", v3)
+                game.ReplicatedStorage.PlayerDoubleJumped:Fire()
+                Util.Anims:Get(Character, "DoubleJump"):Play()
+                if v3 then
+                    v6 = Humanoid
+                    v6.JumpPower = v6.JumpPower + v2 * 125
+                    ;(Effect.new("RaceAwakenings.CyborgJump")):replicate({
+                        ID = 1,
+                        CFrame = HumanoidRootPart.CFrame,
+                        RootPart = HumanoidRootPart,
+                        Strong = Value > 1,
+                    })
+                    Global = require(game.ReplicatedStorage.Global)
+                    Global.lastCyborgJump = tick()
+                    Global_2 = require(game.ReplicatedStorage.Global)
+                    Global_2.mobilityCooldown = tick()
+                end
+                HumanoidRootPart.Velocity = Vector3.new(HumanoidRootPart.Velocity.X, Humanoid.JumpPower * 1.4, HumanoidRootPart.Velocity.Z)
+                if v3 then
+                    v6 = Humanoid
+                    v6.JumpPower = v6.JumpPower - v2 * 125
+                end
                 return
             end
             return
         end
-    end)))
-    a1.trove:Add((UserInputService.InputEnded:Connect(function(a1) -- Line: 78 -- upvalues: u3 (val)
-        u3[a1] = nil
-    end)))
-    if not a1.player.Character:IsDescendantOf(workspace) then
-        repeat
-            task.wait()
-        until a1.player.Character:IsDescendantOf(workspace)
+        return
     end
-    CombatUtil:ToggleLoadMovesetAnims(a1.player.Character.Humanoid, a1.weaponData, true)
-    a1.trove:Add(function() -- Line: 90 -- upvalues: a1 (val), CombatUtil (upval)
-        local Character = a1.player.Character and a1.player.Character:FindFirstChild("Humanoid")
-        if Character then
-            CombatUtil:ToggleLoadMovesetAnims(Character, a1.weaponData, false)
-        end
-    end)
 end
 
-function v1.Stop(a1) -- Line: 98
-    a1.trove:Destroy()
+UserInputService.InputBegan:Connect(function(a1, a2) -- Line: 133 -- upvalues: UserInputService (val), jumped (val)
+    if a2 and not UserInputService.GamepadEnabled then
+        return
+    end
+    if a1.KeyCode == Enum.KeyCode.Space or a1.KeyCode == Enum.KeyCode.ButtonA then
+        jumped()
+    end
+end)
+wait(1)
+wait(0.5)
+if UserInputService.TouchEnabled then
+    local TouchGui = PlayerGui:WaitForChild("TouchGui", 10)
+    if TouchGui then
+        (TouchGui:WaitForChild("TouchControlFrame")):WaitForChild("JumpButton").MouseButton1Down:connect(jumped)
+    end
 end
-
-return v1

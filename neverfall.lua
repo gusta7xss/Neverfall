@@ -119,6 +119,38 @@ UIS.JumpRequest:Connect(function()
 	hrp.AssemblyLinearVelocity = Vector3.new(v.X, Options.SJ_Power.Value, v.Z)
 end)
 
+local IDJ_Box = Tabs.Main:AddGroupbox({ Side = 2, Name = "Infinite Double Jump", IconName = "arrow-up" })
+IDJ_Box:AddToggle("IDJ_On", { Text = "Infinite Double Jump", Default = false })
+
+local UIS = game:GetService("UserInputService")
+local RS = game:GetService("ReplicatedStorage")
+local LP = game.Players.LocalPlayer
+
+local function idjJump()
+    if not Toggles.IDJ_On.Value then return end
+    local char = LP.Character
+    if not char then return end
+    local hum = char:FindFirstChildOfClass("Humanoid")
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hum or not hrp or hum.Health <= 0 or hum.Sit then return end
+    if hum.FloorMaterial ~= Enum.Material.Air then return end
+    if char.Busy.Value and not char:GetAttribute("NoTransform") then return end
+    if char.Stun.Value > 0 then return end
+    local g = require(RS.Global)
+    if g.Swimming or g.Dodging then return end
+
+    RS.Remotes.CommE:FireServer("DoubleJump", false)
+    RS.PlayerDoubleJumped:Fire()
+    hrp.Velocity = Vector3.new(hrp.Velocity.X, hum.JumpPower * 1.4, hrp.Velocity.Z)
+end
+
+UIS.InputBegan:Connect(function(input, gpe)
+    if gpe then return end
+    if input.KeyCode == Enum.KeyCode.Space or input.KeyCode == Enum.KeyCode.ButtonA then
+        idjJump()
+    end
+end)
+
 -- // === Speed Boost (segura a keybind, soma velocidade extra ao andar normal) ===
 local SB = { bv = nil, base = 16, announced = false }
 local SB_NAME = "Spooky_SpeedBoost" -- prefixo Spooky_ faz o anti stun ignorar esse BodyVelocity
@@ -298,16 +330,6 @@ local SoruAssistBox = Tabs.Main:AddGroupbox({
 	IconName = "move-right",
 })
 
-SoruAssistBox:AddToggle("SA_Soru", {
-	Text = "Soru Assist (R)",
-	Default = false,
-})
-
-SoruAssistBox:AddToggle("AimbotSoru", {
-	Text = "Aimbot Soru",
-	Default = false,
-})
-
 SoruAssistBox:AddToggle("InfinitySoru", {
 	Text = "Infinity Soru",
 	Default = false,
@@ -480,8 +502,8 @@ RunService.Heartbeat:Connect(function()
 end)
 
 -- // === M1 Extender (100 studs: M1 atinge o inimigo mais perto no alcance, sem mirar) ===
+-- // === M1 Extender (alcance configurável, mira em qualquer lado) ===
 local M1E = { lastFire = 0 }
-
 
 local M1ExtenderBox = Tabs.Main:AddGroupbox({
 	Side = "Right",
@@ -492,6 +514,11 @@ local M1ExtenderBox = Tabs.Main:AddGroupbox({
 M1ExtenderBox:AddToggle("M1Extender", {
 	Text = "M1 Extender",
 	Default = false,
+})
+
+M1ExtenderBox:AddToggle("M1E_Face", {
+	Text = "Virar pro alvo (360)",
+	Default = true,
 })
 
 M1ExtenderBox:AddSlider("M1E_Range", {
@@ -558,6 +585,13 @@ local function m1eTrigger()
 	local head = target:FindFirstChild("Head") or target:FindFirstChild("HumanoidRootPart")
 	if not head then return end
 
+	if Toggles.M1E_Face.Value then
+		local flat = Vector3.new(head.Position.X - myHRP.Position.X, 0, head.Position.Z - myHRP.Position.Z)
+		if flat.Magnitude > 0.1 then
+			myHRP.CFrame = CFrame.lookAt(myHRP.Position, myHRP.Position + flat)
+		end
+	end
+
 	if tool:FindFirstChild("LeftClickRemote") then
 		pcall(function()
 			local dir = (head.Position - myHRP.Position).Unit
@@ -595,6 +629,264 @@ if LocalPlayer.Character then
 end
 LocalPlayer.CharacterAdded:Connect(function(c)
 	task.spawn(m1eBindChar, c)
+end)
+
+local AL_Box = Tabs.Main:AddGroupbox({ Side = 1, Name = "Aimbot Lock", IconName = "crosshair" })
+
+AL_Box:AddToggle("AL_On", { Text = "Enabled", Default = false })
+
+AL_Box:AddDropdown("AL_Mode", {
+	Values = { "Camera Lock", "Mouse Lock" },
+	Default = "Camera Lock",
+	Text = "Mode",
+})
+
+AL_Box:AddDropdown("AL_FOVMode", {
+	Values = { "Mouse", "Center" },
+	Default = "Center",
+	Text = "FOV Mode",
+})
+
+AL_Box:AddToggle("AL_NPC", { Text = "Include NPC", Default = false })
+
+AL_Box:AddLabel("Camera Lock Key"):AddKeyPicker("AL_Key", {
+	Default = "None",
+	Mode = "Hold",
+	Text = "Camera Lock",
+	SyncToggleState = false,
+})
+
+AL_Box:AddToggle("AL_ShowFov", { Text = "Show FOV", Default = false })
+AL_Box:AddSlider("AL_FOV", { Text = "FOV", Default = 200, Min = 30, Max = 800, Rounding = 0 })
+AL_Box:AddSlider("AL_Smooth", { Text = "Smoothness", Default = 5, Min = 1, Max = 30, Rounding = 0 })
+AL_Box:AddSlider("AL_Pred", { Text = "Prediction", Default = 0.12, Min = 0, Max = 0.3, Rounding = 3 })
+
+local AL_UIS = game:GetService("UserInputService")
+local AL_Players = game:GetService("Players")
+local AL_RunService = game:GetService("RunService")
+local AL_LP = AL_Players.LocalPlayer
+local AL_Mouse = AL_LP:GetMouse()
+local AL_GuiService = game:GetService("GuiService")
+local AL_NAME = "AL_Lock"
+
+local AL = { target = nil }
+
+local alCircle = Drawing.new("Circle")
+alCircle.Thickness = 1
+alCircle.NumSides = 64
+alCircle.Filled = false
+alCircle.Color = Color3.new(1, 1, 1)
+alCircle.Visible = false
+
+local function alAlive(head)
+	if not head or not head.Parent then return false end
+	local m = head:FindFirstAncestorOfClass("Model")
+	local hum = m and m:FindFirstChildOfClass("Humanoid")
+	return hum ~= nil and hum.Health > 0
+end
+
+local function alGetTarget(fromVP, fov)
+	local cam = workspace.CurrentCamera
+	if not cam then return nil end
+	local best, bestD = nil, fov
+
+	local function check(m)
+		if m == AL_LP.Character then return end
+		local hum = m:FindFirstChildOfClass("Humanoid")
+		local head = m:FindFirstChild("Head") or m:FindFirstChild("HumanoidRootPart")
+		if not hum or not head or hum.Health <= 0 then return end
+		local sp, on = cam:WorldToViewportPoint(head.Position)
+		if not on or sp.Z <= 0 then return end
+		local d = (Vector2.new(sp.X, sp.Y) - fromVP).Magnitude
+		if d < bestD then
+			best, bestD = head, d
+		end
+	end
+
+	for _, p in ipairs(AL_Players:GetPlayers()) do
+		if p.Character then check(p.Character) end
+	end
+
+	if Toggles.AL_NPC.Value then
+		local enemies = workspace:FindFirstChild("Enemies")
+		if enemies then
+			for _, m in ipairs(enemies:GetChildren()) do check(m) end
+		end
+	end
+
+	return best
+end
+
+AL_RunService:BindToRenderStep(AL_NAME, Enum.RenderPriority.Camera.Value + 1, function()
+	if Library.Unloaded then
+		alCircle:Remove()
+		AL_RunService:UnbindFromRenderStep(AL_NAME)
+		return
+	end
+
+	local cam = workspace.CurrentCamera
+	if not cam then return end
+	local vs = cam.ViewportSize
+	local isCam = Options.AL_Mode.Value == "Camera Lock"
+
+	local fovCenter
+	if Options.AL_FOVMode.Value == "Mouse" then
+		fovCenter = Vector2.new(AL_Mouse.X, AL_Mouse.Y)
+	else
+		fovCenter = Vector2.new(vs.X / 2, vs.Y / 2)
+	end
+
+	alCircle.Visible = Toggles.AL_On.Value and Toggles.AL_ShowFov.Value
+	if alCircle.Visible then
+		local inset = AL_GuiService:GetGuiInset()
+		alCircle.Position = fovCenter + Vector2.new(inset.X, inset.Y)
+		alCircle.Radius = Options.AL_FOV.Value
+	end
+
+	if not Toggles.AL_On.Value then
+		AL.target = nil
+		return
+	end
+
+	local held
+	if isCam then
+		held = Options.AL_Key:GetState()
+	else
+		held = AL_UIS:IsMouseButtonPressed(Enum.UserInputType.MouseButton1)
+	end
+	if not held then
+		AL.target = nil
+		return
+	end
+
+	if not alAlive(AL.target) then
+		AL.target = alGetTarget(fovCenter, Options.AL_FOV.Value)
+	end
+	local head = AL.target
+	if not head then return end
+
+	local alpha = 1 / math.max(Options.AL_Smooth.Value, 1)
+
+	if isCam then
+		local goal = CFrame.lookAt(cam.CFrame.Position, head.Position)
+		cam.CFrame = cam.CFrame:Lerp(goal, alpha)
+	else
+		local predicted = head.Position + head.AssemblyLinearVelocity * Options.AL_Pred.Value
+		local sp, on = cam:WorldToViewportPoint(predicted)
+		if not on or sp.Z <= 0 then return end
+		mousemoverel((sp.X - AL_Mouse.X) * alpha, (sp.Y - AL_Mouse.Y) * alpha)
+	end
+end)
+
+Tabs.Macro = Window:AddTab("Macro", "keyboard")
+
+local MacroBox = Tabs.Macro:AddGroupbox({ Side = 1, Name = "Macro Sequence", IconName = "list" })
+
+local MACRO_ACTIONS = { "None", "Melee", "Fruit", "Sword", "Gun", "Z", "X", "C", "V", "F", "M1", "Wait" }
+local MACRO_SLOTS = { Melee = Enum.KeyCode.One, Fruit = Enum.KeyCode.Two, Sword = Enum.KeyCode.Three, Gun = Enum.KeyCode.Four }
+local MACRO_KEYS = { Z = Enum.KeyCode.Z, X = Enum.KeyCode.X, C = Enum.KeyCode.C, V = Enum.KeyCode.V, F = Enum.KeyCode.F }
+local MACRO_DEFAULTS = { "Fruit", "Z", "X", "C", "None", "None" }
+local MR_STEPS = 6
+
+MacroBox:AddToggle("M_On", { Text = "Enabled", Default = false })
+
+MacroBox:AddDropdown("M_Mode", {
+	Values = { "Once", "Loop" },
+	Default = "Once",
+	Text = "Mode",
+})
+
+for i = 1, MR_STEPS do
+	MacroBox:AddDropdown("M_Step" .. i, {
+		Values = MACRO_ACTIONS,
+		Default = MACRO_DEFAULTS[i],
+		Text = "Passo " .. i,
+	})
+end
+
+MacroBox:AddSlider("M_Delay", { Text = "Delay entre passos", Default = 0.15, Min = 0.03, Max = 1, Rounding = 2, Suffix = "s" })
+MacroBox:AddSlider("M_Hold", { Text = "Tempo segurado", Default = 0.06, Min = 0.02, Max = 0.5, Rounding = 2, Suffix = "s" })
+
+MacroBox:AddLabel("Macro Key"):AddKeyPicker("M_Key", {
+	Default = "None",
+	Mode = "Hold",
+	Text = "Macro",
+	SyncToggleState = false,
+})
+
+local MR = { running = false, wasHeld = false }
+local MR_VIM = game:GetService("VirtualInputManager")
+local MR_RunService = game:GetService("RunService")
+
+local function mrEquipped()
+	local c = game.Players.LocalPlayer.Character
+	local tool = c and c:FindFirstChildOfClass("Tool")
+	if not tool then return nil end
+	local tip = string.lower(tool.ToolTip or "")
+	if tip == "gun" then return "Gun" end
+	if tip == "melee" then return "Melee" end
+	if tip == "sword" then return "Sword" end
+	return "Fruit"
+end
+
+local function mrTap(kc, hold)
+	MR_VIM:SendKeyEvent(true, kc, false, game)
+	task.wait(hold)
+	MR_VIM:SendKeyEvent(false, kc, false, game)
+end
+
+local function mrDo(action)
+	if action == "None" then return end
+	if action == "Wait" then
+		task.wait(Options.M_Delay.Value)
+		return
+	end
+	if MACRO_SLOTS[action] then
+		if mrEquipped() ~= action then
+			mrTap(MACRO_SLOTS[action], Options.M_Hold.Value)
+			task.wait(0.12)
+		end
+		return
+	end
+	if MACRO_KEYS[action] then
+		mrTap(MACRO_KEYS[action], Options.M_Hold.Value)
+		return
+	end
+	if action == "M1" then
+		MR_VIM:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+		task.wait(Options.M_Hold.Value)
+		MR_VIM:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+	end
+end
+
+local function macroRun()
+	if MR.running then return end
+	MR.running = true
+	task.spawn(function()
+		for i = 1, MR_STEPS do
+			if not Toggles.M_On.Value or Library.Unloaded then break end
+			local action = Options["M_Step" .. i].Value
+			mrDo(action)
+			if action ~= "None" and action ~= "Wait" then
+				task.wait(Options.M_Delay.Value)
+			end
+		end
+		MR.running = false
+	end)
+end
+
+MR_RunService.Heartbeat:Connect(function()
+	if Library.Unloaded or not Toggles.M_On.Value then
+		MR.wasHeld = false
+		return
+	end
+	local held = Options.M_Key:GetState()
+	if Options.M_Mode.Value == "Once" then
+		if held and not MR.wasHeld then macroRun() end
+	else
+		if held and not MR.running then macroRun() end
+	end
+	MR.wasHeld = held
 end)
 
 -- // === Z Boost (keybind configurável, impulso pra frente na direção da câmera) ===
@@ -708,15 +1000,29 @@ local function tapKey(kc)
 	vim:SendKeyEvent(false, kc, false, game)
 end
 
+local function equippedType()
+	local c = LocalPlayer.Character
+	local tool = c and c:FindFirstChildOfClass("Tool")
+	if not tool then return nil end
+	local tip = string.lower(tool.ToolTip or "")
+	if tip == "gun" then return "Gun" end
+	if tip == "melee" then return "Melee" end
+	if tip == "sword" then return "Sword" end
+	return "Fruit"
+end
+
 local function runSkillSoru()
 	if tick() - SS.last < 0.35 then return end
 	SS.last = tick()
 	task.spawn(function()
 		task.wait(Options.SS_Delay.Value)
 		if not Toggles.SkillSoru.Value then return end
-		local slot = SLOT[Options.SS_Weapon.Value]
-		if slot then tapKey(slot) end
-		task.wait(0.12)
+		local wanted = Options.SS_Weapon.Value
+		if equippedType() ~= wanted then
+			local slot = SLOT[wanted]
+			if slot then tapKey(slot) end
+			task.wait(0.12)
+		end
 		local key = Enum.KeyCode[Options.SS_Skill.Value]
 		if key then tapKey(key) end
 	end)
