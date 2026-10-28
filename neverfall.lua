@@ -20,6 +20,7 @@ local Window = Library:CreateWindow({
 
 local Tabs = {
 	Main = Window:AddTab("Main", "user"),
+	Macro = Window:AddTab("Macro", "keyboard"),
 	["UI Settings"] = Window:AddTab("UI Settings", "settings"),
 }
 
@@ -307,7 +308,7 @@ pcall(function()
 	setreadonly(mt, false)
 	mt.__index = wrap(function(self, key)
 		if self == rawMouse and (key == "Hit" or key == "Target") and not checkcaller() then
-			if Toggles.AimbotSoru.Value and os.clock() <= AimWin.soruUntil then
+				if Toggles.AimbotSoru and Toggles.AimbotSoru.Value and os.clock() <= AimWin.soruUntil then
 				local pos, part = aimTarget()
 				if pos then
 					if key == "Hit" then return CFrame.new(pos) end
@@ -382,31 +383,6 @@ local function fireSoru(thrp)
 	print("[soru assist] disparou em", thrp.Parent.Name, "dist", math.floor(toDest.Magnitude))
 end
 
-UIS.InputBegan:Connect(function(input, gp)
-	if gp or Library.Unloaded or input.KeyCode ~= Enum.KeyCode.R then return end
-	if Toggles.AimbotSoru.Value then
-		AimWin.soruUntil = os.clock() + AIM_WINDOW
-	end
-	if not Toggles.SA_Soru.Value then return end
-
-	local char = LocalPlayer.Character
-	if not char then return end
-
-	local ok, why = canSoru(char)
-	if not ok then
-		print("[soru assist] bloqueado:", why)
-		return
-	end
-
-	local target = nearestEnemy()
-	if not target then
-		print("[soru assist] sem alvo")
-		return
-	end
-
-	local thrp = aliveHrp(target)
-	if thrp then fireSoru(thrp) end
-end)
 
 -- // === Fast Attack (M1 rápido nos inimigos perto, fora de safe zone) ===
 local FA = { lastHit = 0, rA = nil, rH = nil }
@@ -778,17 +754,48 @@ AL_RunService:BindToRenderStep(AL_NAME, Enum.RenderPriority.Camera.Value + 1, fu
 	end
 end)
 
-Tabs.Macro = Window:AddTab("Macro", "keyboard")
+local FS_Box = Tabs.Main:AddGroupbox({ Side = 2, Name = "Fast Skill", IconName = "zap" })
 
-local MacroBox = Tabs.Macro:AddGroupbox({ Side = 1, Name = "Macro Sequence", IconName = "list" })
+FS_Box:AddToggle("FS_On", { Text = "Fast Skill (teste)", Default = false })
 
-local MACRO_ACTIONS = { "None", "Melee", "Fruit", "Sword", "Gun", "Z", "X", "C", "V", "F", "M1", "Wait" }
+local FS_VIM = game:GetService("VirtualInputManager")
+local FS_KEYS = {
+	[Enum.KeyCode.Z] = true,
+	[Enum.KeyCode.X] = true,
+	[Enum.KeyCode.C] = true,
+	[Enum.KeyCode.V] = true,
+}
+
+UIS.InputBegan:Connect(function(input, gp)
+	if gp or Library.Unloaded or not Toggles.FS_On.Value then return end
+	local kc = input.KeyCode
+	if not FS_KEYS[kc] then return end
+	FS_VIM:SendKeyEvent(true, kc, false, game)
+	FS_VIM:SendKeyEvent(false, kc, false, game)
+end)
+
+-- // === Macro ===
+local MacroSetBox = Tabs.Macro:AddGroupbox({ Side = 1, Name = "Macro Settings", IconName = "settings" })
+local MacroBox = Tabs.Macro:AddGroupbox({ Side = 2, Name = "Macro Steps", IconName = "list" })
+local MacroIOBox = Tabs.Macro:AddGroupbox({ Side = 1, Name = "Import / Export", IconName = "download" })
+
+local MACRO_ACTIONS = { "None", "Melee", "Fruit", "Sword", "Gun", "Soru", "Z", "X", "C", "V", "F", "M1", "Wait" }
 local MACRO_SLOTS = { Melee = Enum.KeyCode.One, Fruit = Enum.KeyCode.Two, Sword = Enum.KeyCode.Three, Gun = Enum.KeyCode.Four }
-local MACRO_KEYS = { Z = Enum.KeyCode.Z, X = Enum.KeyCode.X, C = Enum.KeyCode.C, V = Enum.KeyCode.V, F = Enum.KeyCode.F }
-local MACRO_DEFAULTS = { "Fruit", "Z", "X", "C", "None", "None" }
-local MR_STEPS = 6
+local MACRO_KEYS = { Soru = Enum.KeyCode.R, Z = Enum.KeyCode.Z, X = Enum.KeyCode.X, C = Enum.KeyCode.C, V = Enum.KeyCode.V, F = Enum.KeyCode.F }
+local MACRO_DEFAULTS = { "Fruit", "Z", "X", "C" }
+local MR_STEPS = 20
 
-MacroBox:AddToggle("M_On", { Text = "Enabled", Default = false })
+MacroSetBox:AddToggle("M_On", { Text = "Enabled", Default = false })
+
+MacroSetBox:AddLabel("Macro Key"):AddKeyPicker("M_Key", {
+	Default = "None",
+	Mode = "Hold",
+	Text = "Macro",
+	SyncToggleState = false,
+})
+
+MacroSetBox:AddSlider("M_Delay", { Text = "Delay entre passos", Default = 0.15, Min = 0.15, Max = 1, Rounding = 2, Suffix = "s" })
+MacroSetBox:AddSlider("M_Hold", { Text = "Tempo segurado", Default = 0.06, Min = 0.02, Max = 0.5, Rounding = 2, Suffix = "s" })
 
 MacroBox:AddDropdown("M_Mode", {
 	Values = { "Once", "Loop" },
@@ -799,20 +806,48 @@ MacroBox:AddDropdown("M_Mode", {
 for i = 1, MR_STEPS do
 	MacroBox:AddDropdown("M_Step" .. i, {
 		Values = MACRO_ACTIONS,
-		Default = MACRO_DEFAULTS[i],
+		Default = MACRO_DEFAULTS[i] or "None",
 		Text = "Passo " .. i,
 	})
 end
 
-MacroBox:AddSlider("M_Delay", { Text = "Delay entre passos", Default = 0.15, Min = 0.03, Max = 1, Rounding = 2, Suffix = "s" })
-MacroBox:AddSlider("M_Hold", { Text = "Tempo segurado", Default = 0.06, Min = 0.02, Max = 0.5, Rounding = 2, Suffix = "s" })
-
-MacroBox:AddLabel("Macro Key"):AddKeyPicker("M_Key", {
-	Default = "None",
-	Mode = "Hold",
-	Text = "Macro",
-	SyncToggleState = false,
+MacroIOBox:AddInput("M_IO", {
+	Text = "Config",
+	Default = "",
+	Placeholder = "cola a config aqui",
+	Finished = false,
 })
+
+local HttpService = game:GetService("HttpService")
+
+local function macroExport()
+	local data = { seq = {}, mode = Options.M_Mode.Value, delay = Options.M_Delay.Value, hold = Options.M_Hold.Value }
+	for i = 1, MR_STEPS do
+		data.seq[i] = Options["M_Step" .. i].Value
+	end
+	local json = HttpService:JSONEncode(data)
+	Options.M_IO:SetValue(json)
+	local ok = pcall(setclipboard, json)
+	Library:Notify(ok and "Config copiada" or "Config no campo, copia manual", 3)
+end
+
+local function macroImport()
+	local ok, err = pcall(function()
+		local data = HttpService:JSONDecode(Options.M_IO.Value)
+		for i = 1, MR_STEPS do
+			if data.seq[i] then
+				Options["M_Step" .. i]:SetValue(data.seq[i])
+			end
+		end
+		Options.M_Mode:SetValue(data.mode)
+		Options.M_Delay:SetValue(data.delay)
+		Options.M_Hold:SetValue(data.hold)
+	end)
+	Library:Notify(ok and "Config importada" or ("Erro: " .. tostring(err)), 3)
+end
+
+MacroIOBox:AddButton("Exportar", macroExport)
+MacroIOBox:AddButton("Importar", macroImport)
 
 local MR = { running = false, wasHeld = false }
 local MR_VIM = game:GetService("VirtualInputManager")
@@ -1064,7 +1099,7 @@ do
     local UIS = game:GetService("UserInputService")
     local LP = Players.LocalPlayer
 
-    local SGB = { on = false, speed = 300 }
+    local SGB = { on = false, speed = 350, delay = 1, busy = false }
     local DUR = 0.2
 
     local function skullGuitarEquipped()
@@ -1073,39 +1108,46 @@ do
         return tool ~= nil and string.find(string.lower(tool.Name), "skull guitar", 1, true) ~= nil
     end
 
-    local function tapBoost()
-        local c = LP.Character
-        local hrp = c and c:FindFirstChild("HumanoidRootPart")
-        local cam = workspace.CurrentCamera
-        if not hrp or not cam then return end
+	local function tapBoost()
+		local c = LP.Character
+		local hrp = c and c:FindFirstChild("HumanoidRootPart")
+		local cam = workspace.CurrentCamera
+		if not hrp or not cam then return end
 
-        local look = cam.CFrame.LookVector
-        local flat = Vector3.new(look.X, 0, look.Z)
-        if flat.Magnitude < 0.001 then return end
+		local look = cam.CFrame.LookVector
+		if look.Magnitude < 0.001 then return end
 
-        local att = Instance.new("Attachment")
-        att.Name = "Spooky_SGBoost"
-        att.Parent = hrp
+		local att = Instance.new("Attachment")
+		att.Name = "Spooky_SGBoost"
+		att.Parent = hrp
 
-        local lv = Instance.new("LinearVelocity")
-        lv.Name = "Spooky_SGBoost"
-        lv.Attachment0 = att
-        lv.MaxForce = math.huge
-        lv.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
-        lv.VectorVelocity = flat.Unit * SGB.speed
-        lv.Parent = hrp
+		local lv = Instance.new("LinearVelocity")
+		lv.Name = "Spooky_SGBoost"
+		lv.Attachment0 = att
+		lv.MaxForce = math.huge
+		lv.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
+		lv.VectorVelocity = look.Unit * SGB.speed
+		lv.Parent = hrp
 
-        task.delay(DUR, function()
-            if lv then lv:Destroy() end
-            if att then att:Destroy() end
-        end)
-    end
+		task.delay(DUR, function()
+			if lv then lv:Destroy() end
+			if att then att:Destroy() end
+		end)
+	end
 
     UIS.InputBegan:Connect(function(input, gp)
-        if gp or not SGB.on then return end
+        if gp or not SGB.on or SGB.busy then return end
         if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
         if not skullGuitarEquipped() then return end
-        tapBoost()
+
+        SGB.busy = true
+        task.spawn(function()
+            task.wait(SGB.delay)
+            if SGB.on and skullGuitarEquipped() then
+                tapBoost()
+            end
+            SGB.busy = false
+        end)
     end)
 
     local Box = Tabs.Main:AddGroupbox({
@@ -1121,6 +1163,18 @@ do
             SGB.on = v
         end,
     })
+
+	Box:AddSlider("SGB_Delay", {
+		Text = "Delay (tap até boost)",
+		Default = 0,
+		Min = 0,
+		Max = 0.4,
+		Rounding = 2,
+		Suffix = "s",
+		Callback = function(v)
+			SGB.delay = v
+		end,
+	})
 
     Box:AddSlider("SGB_Speed", {
         Text = "Velocidade",
@@ -1190,7 +1244,7 @@ do
         Text = "Distância",
         Default = 200,
         Min = 200,
-        Max = 300,
+        Max = 520,
         Rounding = 0,
         Suffix = "studs",
         Callback = function(v)
@@ -1843,8 +1897,6 @@ MenuGroup:AddButton("Unload", function()
 	SJ.held = false
 	sjSetPower(SJ_DEFAULT_JUMP)
 	sbClear()
-	Toggles.SA_Soru:SetValue(false)
-	Toggles.AimbotSoru:SetValue(false)
 	Toggles.InfinitySoru:SetValue(false)
 	Toggles.FastAttack:SetValue(false)
 	Toggles.ZBoost:SetValue(false)
