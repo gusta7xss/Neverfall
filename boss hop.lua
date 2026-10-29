@@ -1486,12 +1486,68 @@ tbl11.InitSettings = function()
 	print("[Settings]", "Initialize Settings Successful!")
 end
 
+local finderFound = {}
+local finderSent = {}
+local fruitImages = {
+	-- FILL: ["Nome da Fruta"] = "https://url-publica-da-imagem.png",
+}
+
+local function finderPost(fruitName, title, color)
+	local url = tbl["Finder Webhook Url"]
+	if not url or url == "" then
+		return
+	end
+
+	local embed = {
+		title = title,
+		color = color,
+		fields = {
+			{ name = "Fruit", value = "```" .. tostring(fruitName) .. "```" },
+			{ name = "Account", value = "```" .. localPlayer.Name .. "```" },
+			{ name = "Sea", value = "```" .. tostring(attribute) .. "```" },
+			{ name = "JobId", value = "||" .. tostring(game.JobId) .. "||" },
+		},
+	}
+
+	if fruitImages[fruitName] then
+		embed.thumbnail = { url = fruitImages[fruitName] }
+	end
+
+	pcall(request, {
+		Url = url,
+		Method = "POST",
+		Headers = { ["Content-Type"] = "application/json" },
+		Body = HttpService:JSONEncode({ embeds = { embed } }),
+	})
+end
+
+local function finderFlushFound()
+	if not tbl["Send Found Fruit"] then
+		return
+	end
+
+	for _, child in pairs(workspace:GetChildren()) do
+		if (child:IsA("Model") or child:IsA("Tool")) and string.find(child.Name, "Fruit") and child:FindFirstChild("Handle") then
+			local name = child:GetAttribute("OriginalName") or child.Name
+			local key = name .. "|" .. tostring(game.JobId)
+
+			if not finderSent[key] then
+				finderSent[key] = true
+				finderFound[#finderFound + 1] = name
+				finderPost(name, "Fruit Found (antes do hop)", 3447003)
+			end
+		end
+	end
+end
+
 tbl7.FuncManager = function()
 	local tbl15
 
 	tbl15 = {
 		JoinServer = function(arg, arg2)
 			v:Notify({ Title = "NeverFall Finder Hub", Content = arg2 or "Joining Server...", Duration = 5 })
+
+			finderFlushFound()
 
 			local queue = queue_on_teleport or (syn and syn.queue_on_teleport)
 			if queue then
@@ -1652,17 +1708,24 @@ tbl7.FuncManager = function()
 		end
 	end
 
-	tbl15.StoreBF = function()
-		for _, child in pairs(localPlayer.Backpack:GetChildren()) do
+		tbl15.StoreBF = function()
+		local function store(child)
 			if string.find(child.Name, "Fruit") and child:GetAttribute("OriginalName") then
-				commF:InvokeServer("StoreFruit", child:GetAttribute("OriginalName"), child)
+				local name = child:GetAttribute("OriginalName")
+				commF:InvokeServer("StoreFruit", name, child)
+
+				if tbl["Send Stored Fruit"] then
+					finderPost(name, "Fruit Stored", 5763719)
+				end
 			end
 		end
 
+		for _, child in pairs(localPlayer.Backpack:GetChildren()) do
+			store(child)
+		end
+
 		for _, child in pairs(localPlayer.Character:GetChildren()) do
-			if string.find(child.Name, "Fruit") and child:GetAttribute("OriginalName") then
-				commF:InvokeServer("StoreFruit", child:GetAttribute("OriginalName"), child)
-			end
+			store(child)
 		end
 	end
 
@@ -2787,6 +2850,30 @@ tbl10.StartingUI = function()
 					Callback = function()
 						local v7, v8 = v4.SendWebhook(tbl["Enter Webhook Url"], { content = "@everyone Hello, This is test message in Hop Boss V2" })
 						v:Notify({ Title = "Webhook Test", Content = tostring(v8), Duration = 5 })
+					end,
+				},
+			},
+						{ "Seperator", { Title = "Finder Fruit" } },
+			{
+				"Textbox",
+				{
+					Title = "Finder Webhook Url",
+					Desc = "webhook separado pras frutas",
+					PlaceHolder = "Put webhook here!",
+					Callback = function(arg)
+						tbl["Finder Webhook Url"] = arg
+					end,
+				},
+			},
+			{ "Toggle", { Title = "Send Found Fruit", Desc = "manda as frutas achadas antes de trocar de server" } },
+			{ "Toggle", { Title = "Send Stored Fruit", Desc = "manda quando guarda uma fruta" } },
+			{
+				"Button",
+				{
+					Title = "Test Finder Webhook",
+					Callback = function()
+						finderPost("Test", "Finder Webhook Test", 3447003)
+						v:Notify({ Title = "Finder Webhook", Content = "Teste enviado, confere no Discord", Duration = 5 })
 					end,
 				},
 			},
