@@ -2896,7 +2896,7 @@ local function mirageTweenStart()
 			if not (island and island.PrimaryPart) then
 				wait(1)
 			else
-				local ok, msg = tbl6.Tweento(island.PrimaryPart.CFrame * CFrame.new(0, 250, 0))
+				local ok, msg = tbl6.Tweento(island.PrimaryPart.CFrame * CFrame.new(0, 350, 0))
 
 				if msg == "Arrived" then
 					tbl["Tween Mirage"] = false
