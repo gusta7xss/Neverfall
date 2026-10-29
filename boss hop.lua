@@ -2830,6 +2830,7 @@ tbl10.StartingUI = function()
 			{ "Toggle", { Title = "Auto Hop Castle Raid" } },
 			{ "Toggle", { Title = "Auto Hop Legendary Sword", Desc = "Auto buy in Farm Tab" } },
 			{ "Toggle", { Title = "Auto Hop Berry" } },
+			{ "Toggle", { Title = "Auto Hop Dough King" } },
 			{ "Toggle", { Title = "Auto Hop Near Moon" } },
 			{ "Toggle", { Title = "Auto Hop Mirage Island" } },
 			{ "Toggle", { Title = "Auto Hop Prehistoric Island" } },
@@ -2942,6 +2943,8 @@ tbl10.StartingUI = function()
 			{ "Toggle", { Title = "Auto True Triple Katana" } },
 			{ "Seperator", { Title = "Race" } },
 			{ "Toggle", { Title = "Auto Ghoul" } },
+			{ "Seperator", { Title = "Auto Calice" } },
+			{ "Toggle", { Title = "Auto Calice", Desc = "farma elite até pegar o calice, depois para de hopar" } },
 		},
 		Webhook = {
 			{
@@ -3500,6 +3503,33 @@ tbl3.LoadFuncs = function()
 			if localPlayer.Team == nil or localPlayer.Team.Name ~= want then
 				commF:InvokeServer("SetTeam", want)
 				wait(1)
+			end
+		end,
+		["Auto Hop Dough King"] = function()
+			local ok, msg = v4.StartHop("Dough King")
+			if not ok then
+				wait(2)
+			end
+		end,
+				["Auto Calice"] = function()
+			local CALICE = "Calice"
+
+			if v4.CheckInventory(CALICE) then
+				v:Notify({ Title = "Auto Calice", Content = "Calice pego, desligando", Duration = 6 })
+				tbl10.Features["Auto Calice"]:SetValue(false)
+				return
+			end
+
+			local boss = tbl9.GetBoss({ "Urban", "Deandre", "Diablo" })
+
+			if boss then
+				if not tbl9.CheckQuest(boss.Name) then
+					commF:InvokeServer("EliteHunter")
+				end
+				tbl9.Kill(boss, "Auto Calice")
+			else
+				wait(2)
+				v4.StartHop("Elite")
 			end
 		end,
 		["Auto True Triple Katana"] = function()
