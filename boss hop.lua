@@ -2323,7 +2323,7 @@ tbl10.CreateWindow = function()
 			TabWidth = 145,
 			Size = userInputService.TouchEnabled and UDim2.fromOffset(450, 400) or UDim2.fromOffset(550, 450),
 			Acrylic = false,
-			Image = "rbxassetid://121723458936137",
+			Image = "rbxassetid://10511856020",
 			MinimizeKey = Enum.KeyCode.RightShift,
 			Theme = tbl["Select Theme"],
 		})
@@ -2386,7 +2386,7 @@ tbl10.CreateWindow = function()
 	frame.BorderSizePixel = 0
 	imageButton.Parent = frame
 	imageButton.Size = UDim2.new(0, 55, 0, 45)
-	imageButton.Image = "rbxassetid://101533193988556"
+	imageButton.Image = "rbxassetid://10511856020"
 	imageButton.AnchorPoint = Vector2.new(0.5, 0.5)
 	imageButton.Position = UDim2.new(0.5, 0, 0.5, 0)
 	imageButton.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -2728,16 +2728,6 @@ tbl10.StartingUI = function()
 			},
 		},
 		["Hop Auto"] = {
-			{
-				"Button",
-				{
-					Title = "Open Old Hop Script",
-					Description = "If you don't like this version hop boss, click it to open old Hop Script V1.5",
-					Callback = function()
-						tbl3.SafeLoadstring("https://raw.githubusercontent.com/WhiteX1208/Scripts/refs/heads/main/HopScriptOld.luau")
-					end,
-				},
-			},
 			{
 				"Dropdown",
 				{
