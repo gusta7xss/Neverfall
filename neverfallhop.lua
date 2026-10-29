@@ -2460,6 +2460,7 @@ tbl10.CreateTabs = function(arg)
 		{ "Server", "server" },
 		{ "Hop Auto", "home" },
 		{ "Farm", "layers" },
+		{ "Mirage", "map" },
 		{ "ESP", "eye" },
 		{ "Webhook", "rbxassetid://136418130625199" },
 		{ "Settings", "settings" },
@@ -2700,6 +2701,186 @@ local function espStart()
 	end)
 end
 
+local BOSS_NAMES = {
+	"Soul Reaper", "Cake Prince", "Urban", "Deandre", "Diablo", "Rip Indra",
+	"rip_indra", "rip_indra True Form", "Dough King", "Tyrant of the Skies",
+	"Darkbeard", "Cursed Captain", "Cake Queen", "Longma",
+}
+
+local bossEspCache = {}
+local bossEspRunning = false
+
+local function bossIsWanted(name)
+	local lower = string.lower(name)
+	for _, n in ipairs(BOSS_NAMES) do
+		if string.lower(n) == lower then
+			return true
+		end
+	end
+	return false
+end
+
+local function bossEspClear()
+	for model, gui in pairs(bossEspCache) do
+		if gui then
+			gui:Destroy()
+		end
+		bossEspCache[model] = nil
+	end
+end
+
+local function bossEspUpdate()
+	local root = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+	local found = {}
+
+	for _, container in ipairs({ enemies, replicatedStorage }) do
+		for _, child in pairs(container:GetChildren()) do
+			if child:IsA("Model") and bossIsWanted(child.Name) and tbl9.IsAlive(child) then
+				found[child] = true
+			end
+		end
+	end
+
+	for model, gui in pairs(bossEspCache) do
+		if not found[model] or not model.Parent then
+			if gui then
+				gui:Destroy()
+			end
+			bossEspCache[model] = nil
+		end
+	end
+
+	for model in pairs(found) do
+		local hrp = model:FindFirstChild("HumanoidRootPart")
+		local hum = model:FindFirstChildOfClass("Humanoid")
+
+		if not bossEspCache[model] then
+			local gui = Instance.new("BillboardGui")
+			gui.Name = "NightHubBossESP"
+			gui.Adornee = hrp
+			gui.AlwaysOnTop = true
+			gui.Size = UDim2.fromOffset(220, 40)
+			gui.StudsOffset = Vector3.new(0, 4, 0)
+			gui.Parent = hrp
+
+			local label = Instance.new("TextLabel")
+			label.Name = "Info"
+			label.Size = UDim2.fromScale(1, 1)
+			label.BackgroundTransparency = 1
+			label.TextStrokeTransparency = 0
+			label.TextColor3 = Color3.fromRGB(255, 90, 90)
+			label.TextSize = 14
+			label.Font = Enum.Font.GothamBold
+			label.Parent = gui
+
+			bossEspCache[model] = gui
+		end
+
+		local gui = bossEspCache[model]
+		local parts = { model.Name }
+
+		if hum then
+			table.insert(parts, math.floor(hum.Health) .. " HP")
+		end
+		if root and hrp then
+			table.insert(parts, math.floor((hrp.Position - root.Position).Magnitude) .. "m")
+		end
+
+		gui.Info.Text = table.concat(parts, " | ")
+	end
+end
+
+local function bossEspStart()
+	if bossEspRunning then
+		return
+	end
+	bossEspRunning = true
+
+	task.spawn(function()
+		while tbl["ESP Boss"] do
+			local ok, err = pcall(bossEspUpdate)
+			if not ok then
+				warn("[Boss ESP]", err)
+			end
+			task.wait(0.3)
+		end
+		bossEspClear()
+		bossEspRunning = false
+	end)
+end
+
+local mirageEspGui = nil
+local mirageEspRunning = false
+
+local function mirageEspClear()
+	if mirageEspGui then
+		mirageEspGui:Destroy()
+		mirageEspGui = nil
+	end
+end
+
+local function mirageEspUpdate()
+	local island = workspace.Map:FindFirstChild("MysticIsland")
+	if not island then
+		mirageEspClear()
+		return
+	end
+
+	local part = island.PrimaryPart or island:FindFirstChildWhichIsA("BasePart")
+	if not part then
+		return
+	end
+
+	if not mirageEspGui or not mirageEspGui.Parent then
+		local gui = Instance.new("BillboardGui")
+		gui.Name = "NightHubMirageESP"
+		gui.Adornee = part
+		gui.AlwaysOnTop = true
+		gui.Size = UDim2.fromOffset(220, 40)
+		gui.StudsOffset = Vector3.new(0, 10, 0)
+		gui.Parent = part
+
+		local label = Instance.new("TextLabel")
+		label.Name = "Info"
+		label.Size = UDim2.fromScale(1, 1)
+		label.BackgroundTransparency = 1
+		label.TextStrokeTransparency = 0
+		label.TextColor3 = Color3.fromRGB(120, 200, 255)
+		label.TextSize = 14
+		label.Font = Enum.Font.GothamBold
+		label.Parent = gui
+
+		mirageEspGui = gui
+	end
+
+	local root = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+	local text = "Mirage Island"
+	if root then
+		text = text .. " | " .. math.floor((part.Position - root.Position).Magnitude) .. "m"
+	end
+	mirageEspGui.Info.Text = text
+	mirageEspGui.Adornee = part
+end
+
+local function mirageEspStart()
+	if mirageEspRunning then
+		return
+	end
+	mirageEspRunning = true
+
+	task.spawn(function()
+		while tbl["ESP Mirage"] do
+			local ok, err = pcall(mirageEspUpdate)
+			if not ok then
+				warn("[Mirage ESP]", err)
+			end
+			task.wait(0.3)
+		end
+		mirageEspClear()
+		mirageEspRunning = false
+	end)
+end
+
 local lightingConns = {}
 local fogBackup = nil
 
@@ -2860,6 +3041,21 @@ tbl10.StartingUI = function()
 				},
 			},
 			{ "Toggle", { Title = "Start Farm Boss" } },
+			{
+				"Toggle",
+				{
+					Title = "ESP Boss",
+					Desc = "marca os bosses vivos com nome, vida e distância",
+					Callback = function(arg)
+						tbl["ESP Boss"] = arg
+						if arg then
+							bossEspStart()
+						else
+							bossEspClear()
+						end
+					end,
+				},
+			},
 			{ "Toggle", { Title = "Auto Hop Find Boss" } },
 			{ "Seperator", { Title = "Others" } },
 			{ "Toggle", { Title = "Auto Hop Fullmoon" } },
@@ -2868,7 +3064,6 @@ tbl10.StartingUI = function()
 			{ "Toggle", { Title = "Auto Hop Berry" } },
 			{ "Toggle", { Title = "Auto Hop Dough King" } },
 			{ "Toggle", { Title = "Auto Hop Near Moon" } },
-			{ "Toggle", { Title = "Auto Hop Mirage Island" } },
 			{ "Toggle", { Title = "Auto Hop Prehistoric Island" } },
 			{ "Toggle", { Title = "Auto Hop Kitsune Island" } },
 			{ "Toggle", { Title = "Auto Hop Find Fruits" } },
@@ -2915,15 +3110,6 @@ tbl10.StartingUI = function()
 					Title = "Hop Berry",
 					Callback = function()
 						v4.StartHop("Berry")
-					end,
-				},
-			},
-			{
-				"Button",
-				{
-					Title = "Hop Mirage Island",
-					Callback = function()
-						v4.StartHop("Mirage")
 					end,
 				},
 			},
@@ -3063,6 +3249,50 @@ tbl10.StartingUI = function()
 					Default = "1000000",
 					Callback = function(arg)
 						tbl["Finder Min Price"] = arg
+					end,
+				},
+			},
+		},
+		Mirage = {
+			{ "Toggle", { Title = "Auto Hop Mirage Island" } },
+			{
+				"Button",
+				{
+					Title = "Hop Mirage Island",
+					Callback = function()
+						v4.StartHop("Mirage")
+					end,
+				},
+			},
+			{ "Seperator", { Title = "ESP" } },
+			{
+				"Toggle",
+				{
+					Title = "ESP Mirage",
+					Desc = "marca a mirage island com distância",
+					Callback = function(arg)
+						tbl["ESP Mirage"] = arg
+						if arg then
+							mirageEspStart()
+						else
+							mirageEspClear()
+						end
+					end,
+				},
+			},
+			{ "Seperator", { Title = "Tween" } },
+			{
+				"Button",
+				{
+					Title = "Tween Mirage",
+					Desc = "vai até 250 studs acima da mirage",
+					Callback = function()
+						local island = workspace.Map:FindFirstChild("MysticIsland")
+						if island and island.PrimaryPart then
+							tbl6.Tweento(island.PrimaryPart.CFrame * CFrame.new(0, 250, 0))
+						else
+							v:Notify({ Title = "Tween Mirage", Content = "mirage não está nesse server", Duration = 5 })
+						end
 					end,
 				},
 			},
@@ -3631,8 +3861,14 @@ fn = function()
 		tbl10.StartingUI()
 		tbl3.LoadFuncs()
 		tbl3.StartFuncs()
+		if tbl["ESP Boss"] then
+			bossEspStart()
+		end
 		if tbl["ESP Fruit"] or tbl["ESP Fruit Arrow"] then
 			espStart()
+		end
+		if tbl["ESP Mirage"] then
+			mirageEspStart()
 		end
 		if tbl["Send Found Fruit"] then
 			task.delay(3, finderShowServerFruits)
