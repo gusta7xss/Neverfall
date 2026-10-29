@@ -2386,7 +2386,7 @@ tbl10.CreateWindow = function()
 	frame.BorderSizePixel = 0
 	imageButton.Parent = frame
 	imageButton.Size = UDim2.new(0, 55, 0, 45)
-	imageButton.Image = "rbxassetid://10511856020"
+	imageButton.Image = "rbxassetid://10511855986"
 	imageButton.AnchorPoint = Vector2.new(0.5, 0.5)
 	imageButton.Position = UDim2.new(0.5, 0, 0.5, 0)
 	imageButton.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -2662,6 +2662,43 @@ local function espStart()
 		espClear()
 		espRunning = false
 	end)
+end
+
+local lightingConns = {}
+local fogBackup = nil
+
+local function applyFog()
+	local L = game:GetService("Lighting")
+	L.FogColor = Color3.fromRGB(255, 255, 255)
+	L.FogEnd = 999999999
+end
+
+local function setFog(on)
+	local L = game:GetService("Lighting")
+
+	for _, c in ipairs(lightingConns) do
+		c:Disconnect()
+	end
+	lightingConns = {}
+
+	if on then
+		if not fogBackup then
+			fogBackup = { start = L.FogStart, en = L.FogEnd, color = L.FogColor }
+		end
+
+		applyFog()
+
+		lightingConns[1] = L.Changed:Connect(function(prop)
+			if prop == "FogEnd" or prop == "FogColor" then
+				applyFog()
+			end
+		end)
+	elseif fogBackup then
+		L.FogStart = fogBackup.start
+		L.FogEnd = fogBackup.en
+		L.FogColor = fogBackup.color
+		fogBackup = nil
+	end
 end
 
 tbl10.StartingUI = function()
@@ -3041,6 +3078,16 @@ tbl10.StartingUI = function()
 					Callback = function(arg)
 						v:SetTheme(arg)
 						tbl["Select Theme"] = arg
+					end,
+				},
+			},
+						{
+				"Toggle",
+				{
+					Title = "Remove Fog",
+					Callback = function(arg)
+						tbl["Remove Fog"] = arg
+						setFog(arg)
 					end,
 				},
 			},
@@ -3523,6 +3570,9 @@ fn = function()
 		end
 		if tbl["Send Found Fruit"] then
 			task.delay(3, finderShowServerFruits)
+		end
+		if tbl["Remove Fog"] then
+			setFog(true)
 		end
 	end)
 
