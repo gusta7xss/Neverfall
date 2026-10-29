@@ -1441,26 +1441,26 @@ tbl11.InitSettings = function()
 	local v5 = makefolder
 
 	local function fn24()
-		if not v4("Night Hub") then
-			v5("Night Hub")
+		if not v4("NeverFall Hub") then
+			v5("NeverFall Hub")
 		end
 
-		if not v4("Night Hub/Hop Boss") then
-			v5("Night Hub/Hop Boss")
+		if not v4("NeverFall Hub/Hop Boss") then
+			v5("NeverFall Hub/Hop Boss")
 		end
 
-		writefile("Night Hub/Hop Boss/Night-" .. localPlayer.Name .. "-Settings.json", HttpService:JSONEncode(tbl11.DefaultSettings))
+		writefile("NeverFall Hub/Hop Boss/Night-" .. localPlayer.Name .. "-Settings.json", HttpService:JSONEncode(tbl11.DefaultSettings))
 	end
 
 	local fn25 = nil
 
 	fn25 = function()
 		local ok, result = pcall(function()
-			if not v4("Night Hub") or not v4("Night Hub/Hop Boss") then
+			if not v4("NeverFall Hub") or not v4("NeverFall Hub/Hop Boss") then
 				fn24()
 			end
 
-			return HttpService:JSONDecode(readfile("Night Hub/Hop Boss/Night-" .. localPlayer.Name .. "-Settings.json"))
+			return HttpService:JSONDecode(readfile("NeverFall Hub/Hop Boss/Night-" .. localPlayer.Name .. "-Settings.json"))
 		end)
 
 		if ok then
