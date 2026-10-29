@@ -526,8 +526,8 @@ local function fn18()
 	local str4 = "Noctelis/key.txt"
 
 	local tbl15 = {
-		interfaceName = "Night Hub",
-		titleText = "Night Hub",
+		interfaceName = "NeverFall Hub Find",
+		titleText = "NeverFall",
 		hintText = "Enter your key to continue",
 		keyInputLabelText = "License key",
 		submitButtonText = "Submit Key",
@@ -1486,11 +1486,11 @@ tbl7.FuncManager = function()
 
 	tbl15 = {
 		JoinServer = function(arg, arg2)
-			v:Notify({ Title = "Night Hub Hop Boss", Content = arg2 or "Joining Server...", Duration = 5 })
+			v:Notify({ Title = "NeverFall Finder Hub", Content = arg2 or "Joining Server...", Duration = 5 })
 
 			local queue = queue_on_teleport or (syn and syn.queue_on_teleport)
 			if queue then
-				queue([[loadstring(game:HttpGet("https://raw.githubusercontent.com/gusta7xss/Neverfall/refs/heads/main/boss%20hop.lua"))()]])
+				queue('task.wait(5)\nloadstring(game:HttpGet("https://raw.githubusercontent.com/gusta7xss/Neverfall/refs/heads/main/boss%20hop.lua"))()')
 			end
 
 			wait(0.2)
@@ -2163,13 +2163,13 @@ end
 tbl10.CreateWindow = function()
 	local ok, result = pcall(function()
 		return v:CreateWindow({
-			Title = "Night Hub Hop Boss " .. (tbl8.IsPremiumUser and "<font color='rgb(255,255,0)'>[PREMIUM]</font>" or "[FREEMIUM]"),
-			SubTitle = "by @_luongminhnghia",
+			Title = "NeverFall Hub Finder " .. (tbl8.IsPremiumUser and "<font color='rgb(255,255,0)'>[PREMIUM]</font>" or "[FREEMIUM]"),
+			SubTitle = "by @gusta7x0_",
 			TabWidth = 145,
 			Size = userInputService.TouchEnabled and UDim2.fromOffset(450, 400) or UDim2.fromOffset(550, 450),
 			Acrylic = false,
-			Image = "rbxassetid://118583787829543",
-			MinimizeKey = Enum.KeyCode.RightControl,
+			Image = "rbxassetid://121723458936137",
+			MinimizeKey = Enum.KeyCode.RightShift,
 			Theme = tbl["Select Theme"],
 		})
 	end)
