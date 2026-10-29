@@ -1109,31 +1109,31 @@ do
     end
 
 	local function tapBoost()
-		local c = LP.Character
-		local hrp = c and c:FindFirstChild("HumanoidRootPart")
-		local cam = workspace.CurrentCamera
-		if not hrp or not cam then return end
+    local c = LP.Character
+    local hrp = c and c:FindFirstChild("HumanoidRootPart")
+    local cam = workspace.CurrentCamera
+    if not hrp or not cam then return end
 
-		local look = cam.CFrame.LookVector
-		if look.Magnitude < 0.001 then return end
+    local look = cam.CFrame.LookVector
+    if look.Magnitude < 0.001 then return end
 
-		local att = Instance.new("Attachment")
-		att.Name = "Spooky_SGBoost"
-		att.Parent = hrp
+    local att = Instance.new("Attachment")
+    att.Name = "Spooky_SGBoost"
+    att.Parent = hrp
 
-		local lv = Instance.new("LinearVelocity")
-		lv.Name = "Spooky_SGBoost"
-		lv.Attachment0 = att
-		lv.MaxForce = math.huge
-		lv.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
-		lv.VectorVelocity = look.Unit * SGB.speed
-		lv.Parent = hrp
+    local lv = Instance.new("LinearVelocity")
+    lv.Name = "Spooky_SGBoost"
+    lv.Attachment0 = att
+    lv.MaxForce = math.huge
+    lv.VelocityConstraintMode = Enum.VelocityConstraintMode.Vector
+    lv.VectorVelocity = look.Unit * SGB.speed
+    lv.Parent = hrp
 
-		task.delay(DUR, function()
-			if lv then lv:Destroy() end
-			if att then att:Destroy() end
-		end)
-	end
+    task.delay(DUR, function()
+        if lv then lv:Destroy() end
+        if att then att:Destroy() end
+    end)
+end
 
     UIS.InputBegan:Connect(function(input, gp)
         if gp or not SGB.on or SGB.busy then return end
