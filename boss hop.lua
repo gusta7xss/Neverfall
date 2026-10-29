@@ -112,6 +112,7 @@ local tbl11 = {
 		["Enable Fast Attack"] = true,
 		["Select Theme"] = "Dark",
 		["Select Team"] = "Marines",
+		["Finder Min Price"] = "1000000",
 	},
 }
 
@@ -1540,6 +1541,92 @@ local function finderFlushFound()
 	end
 end
 
+local function finderShowServerFruits()
+	local list = {}
+
+	for _, child in pairs(workspace:GetChildren()) do
+			if (child:IsA("Model") or child:IsA("Tool")) and string.find(child.Name, "Fruit") and child:FindFirstChild("Handle") and finderPassesMin(child) then
+			list[#list + 1] = child:GetAttribute("OriginalName") or child.Name
+		end
+	end
+
+	local text = #list > 0 and table.concat(list, ", ") or "nenhuma"
+	finderPost(text, "Fruits In Server", 3447003)
+	return text
+end
+
+local fruitPrices = {
+	-- míticas
+	["West Dragon"] = 3700000000,
+	["East Dragon"] = 3200000000,
+	["Kitsune"] = 490000000,
+	["Yeti"] = 140000000,
+	["Control"] = 120000000,
+	["Gas"] = 75000000,
+	["Leopard"] = 65000000,
+	["Magnet"] = 50000000,
+	["Dough"] = 30000000,
+	["T-Rex"] = 20000000,
+	["Gravity"] = 10000000,
+	["Mammoth"] = 10000000,
+	["Spirit"] = 10000000,
+	["Venom"] = 10000000,
+	["Shadow"] = 6500000,
+
+	-- lendárias
+	["Portal"] = 15000000,
+	["Buddha"] = 10000000,
+	["Rumble"] = 7000000,
+	["Blizzard"] = 5000000,
+	["Sound"] = 3000000,
+	["Phoenix"] = 3000000,
+	["Pain"] = 2000000,
+	["Spider"] = 1500000,
+	["Love"] = 1200000,
+	["Quake"] = 1000000,
+
+	-- raras
+	["Magma"] = 1100000,
+	["Light"] = 900000,
+	["Ghost"] = 850000,
+	["Diamond"] = 800000,
+	["Rubber"] = 780000,
+	["Barrier"] = 700000,
+	["Creation"] = 700000,
+
+	-- comuns / incomuns
+	["Eagle"] = 600000,
+	["Ice"] = 500000,
+	["Sand"] = 500000,
+	["Dark"] = 500000,
+	["Flame"] = 280000,
+	["Spike"] = 180000,
+	["Smoke"] = 100000,
+	["Bomb"] = 80000,
+	["Spring"] = 60000,
+	["Chop"] = 30000,
+	["Blade"] = 30000,
+	["Spin"] = 7500,
+	["Rocket"] = 5000,
+}
+
+local function fruitPrice(child)
+	local attr = child:GetAttribute("Price") or child:GetAttribute("Value")
+	if type(attr) == "number" then
+		return attr
+	end
+	return fruitPrices[child:GetAttribute("OriginalName") or child.Name]
+end
+
+local function finderPassesMin(child)
+	local min = tonumber(tbl["Finder Min Price"]) or 0
+	if min <= 0 then
+		return true
+	end
+	local price = fruitPrice(child)
+	return price ~= nil and price >= min
+end
+
 tbl7.FuncManager = function()
 	local tbl15
 
@@ -2877,6 +2964,42 @@ tbl10.StartingUI = function()
 					end,
 				},
 			},
+						{
+				"Button",
+				{
+					Title = "Test Show Fruits",
+					Callback = function()
+						local text = finderShowServerFruits()
+						v:Notify({ Title = "Test Show Fruits", Content = text, Duration = 6 })
+					end,
+				},
+			},
+						{
+				"Toggle",
+				{
+					Title = "Show Fruits In Server",
+					Desc = "manda as frutas do server no webhook ao ligar",
+					Callback = function(arg)
+						tbl["Show Fruits In Server"] = arg
+						if arg then
+							local text = finderShowServerFruits()
+							v:Notify({ Title = "Fruits In Server", Content = text, Duration = 6 })
+						end
+					end,
+				},
+			},
+						{
+				"Dropdown",
+				{
+					Title = "Finder Min Price",
+					Desc = "só acha fruta a partir desse valor",
+					Values = { "0", "500000", "1000000", "5000000", "10000000" },
+					Default = "1000000",
+					Callback = function(arg)
+						tbl["Finder Min Price"] = arg
+					end,
+				},
+			},
 		},
 		ESP = {
 			{
@@ -3407,6 +3530,9 @@ fn = function()
 		tbl3.StartFuncs()
 		if tbl["ESP Fruit"] or tbl["ESP Fruit Arrow"] then
 			espStart()
+		end
+		if tbl["Send Found Fruit"] then
+			task.delay(3, finderShowServerFruits)
 		end
 	end)
 
