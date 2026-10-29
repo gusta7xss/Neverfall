@@ -2354,31 +2354,42 @@ local espColors = {
 
 local espCache = {}
 local espRunning = false
+local espArrowGui = nil
 
-local function espRarityOf(name)
-	local lower = string.lower(name)
-	for tier, list in pairs(espRarityList) do
-		for _, n in ipairs(list) do
-			if string.find(lower, string.lower(n), 1, true) then
-				return tier
-			end
-		end
+local function espGetArrowGui()
+	if espArrowGui and espArrowGui.Parent then
+		return espArrowGui
 	end
-	return "Common"
+	espArrowGui = Instance.new("ScreenGui")
+	espArrowGui.Name = "NightHubFruitArrows"
+	espArrowGui.IgnoreGuiInset = true
+	espArrowGui.ResetOnSpawn = false
+	espArrowGui.Parent = localPlayer:WaitForChild("PlayerGui")
+	return espArrowGui
+end
+
+local function espDestroyEntry(inst, data)
+	if data.gui then
+		data.gui:Destroy()
+	end
+	if data.arrow then
+		data.arrow:Destroy()
+	end
+	espCache[inst] = nil
 end
 
 local function espClear()
 	for inst, data in pairs(espCache) do
-		if data.gui then
-			data.gui:Destroy()
-		end
-		espCache[inst] = nil
+		espDestroyEntry(inst, data)
 	end
 end
 
 local function espUpdate()
+	local camera = workspace.CurrentCamera
 	local character = localPlayer.Character
 	local root = character and character:FindFirstChild("HumanoidRootPart")
+	local showLabel = tbl["ESP Fruit"] == true
+	local showArrow = tbl["ESP Fruit Arrow"] == true
 	local found = {}
 
 	for _, child in pairs(workspace:GetChildren()) do
@@ -2389,16 +2400,24 @@ local function espUpdate()
 
 	for inst, data in pairs(espCache) do
 		if not found[inst] or not inst.Parent then
-			data.gui:Destroy()
-			espCache[inst] = nil
+			espDestroyEntry(inst, data)
 		end
 	end
+
+	local viewport = camera.ViewportSize
+	local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
+	local radius = math.min(viewport.X, viewport.Y) / 2 - 40
 
 	for inst in pairs(found) do
 		local handle = inst:FindFirstChild("Handle")
 		local data = espCache[inst]
 
 		if not data then
+			data = {}
+			espCache[inst] = data
+		end
+
+		if not data.gui then
 			local gui = Instance.new("BillboardGui")
 			gui.Name = "NightHubFruitESP"
 			gui.Adornee = handle
@@ -2411,28 +2430,63 @@ local function espUpdate()
 			label.Size = UDim2.fromScale(1, 1)
 			label.BackgroundTransparency = 1
 			label.TextStrokeTransparency = 0
+			label.TextColor3 = Color3.fromRGB(255, 255, 255)
 			label.TextSize = 14
 			label.Font = Enum.Font.GothamBold
 			label.Parent = gui
 
-			data = { gui = gui, label = label }
-			espCache[inst] = data
+			data.gui = gui
+			data.label = label
 		end
 
 		local name = inst:GetAttribute("OriginalName") or inst.Name
-		local parts = {}
+		local parts = { name }
 
-		if tbl["ESP Fruit Name"] then
-			table.insert(parts, name)
-		end
 		if tbl["ESP Fruit Distance"] and root then
 			table.insert(parts, math.floor((handle.Position - root.Position).Magnitude) .. "m")
 		end
 
-		local tier = espRarityOf(name)
 		data.label.Text = table.concat(parts, " | ")
-		data.label.TextColor3 = tbl["ESP Fruit Color"] and espColors[tier] or espColors.Common
-		data.gui.Enabled = #parts > 0
+		data.gui.Enabled = showLabel
+
+		if showArrow and root and camera then
+			if not data.arrow then
+				local arrow = Instance.new("TextLabel")
+				arrow.Size = UDim2.fromOffset(28, 28)
+				arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+				arrow.BackgroundTransparency = 1
+				arrow.Text = "➤"
+				arrow.TextSize = 22
+				arrow.TextColor3 = Color3.fromRGB(255, 255, 255)
+				arrow.TextStrokeTransparency = 0
+				arrow.Font = Enum.Font.GothamBold
+				arrow.Parent = espGetArrowGui()
+				data.arrow = arrow
+			end
+
+			local pos, onScreen = camera:WorldToViewportPoint(handle.Position)
+			local inView = onScreen and pos.Z > 0
+
+			if inView then
+				data.arrow.Visible = false
+			else
+				local dir = Vector2.new(pos.X, pos.Y) - center
+				if pos.Z < 0 then
+					dir = -dir
+				end
+				if dir.Magnitude < 0.001 then
+					dir = Vector2.new(0, -1)
+				end
+				dir = dir.Unit
+
+				local edge = center + dir * radius
+				data.arrow.Position = UDim2.fromOffset(edge.X, edge.Y)
+				data.arrow.Rotation = math.deg(math.atan2(dir.Y, dir.X))
+				data.arrow.Visible = true
+			end
+		elseif data.arrow then
+			data.arrow.Visible = false
+		end
 	end
 end
 
@@ -2443,7 +2497,7 @@ local function espStart()
 	espRunning = true
 
 	task.spawn(function()
-		while tbl["ESP Fruit"] do
+		while tbl["ESP Fruit"] or tbl["ESP Fruit Arrow"] do
 			local ok, err = pcall(espUpdate)
 			if not ok then
 				warn("[ESP]", err)
@@ -2732,7 +2786,7 @@ tbl10.StartingUI = function()
 				},
 			},
 		},
-		 ESP = {
+		ESP = {
 			{
 				"Toggle",
 				{
@@ -2741,15 +2795,24 @@ tbl10.StartingUI = function()
 						tbl["ESP Fruit"] = arg
 						if arg then
 							espStart()
-						else
-							espClear()
+						end
+					end,
+				},
+			},
+			{
+				"Toggle",
+				{
+					Title = "ESP Fruit Arrow",
+					Callback = function(arg)
+						tbl["ESP Fruit Arrow"] = arg
+						if arg then
+							espStart()
 						end
 					end,
 				},
 			},
 			{ "Seperator", { Title = "Settings" } },
 			{ "Toggle", { Title = "ESP Fruit Name" } },
-			{ "Toggle", { Title = "ESP Fruit Color" } },
 			{ "Toggle", { Title = "ESP Fruit Distance" } },
 		},
 		Settings = {
@@ -3250,7 +3313,7 @@ fn = function()
 		tbl10.StartingUI()
 		tbl3.LoadFuncs()
 		tbl3.StartFuncs()
-		if tbl["ESP Fruit"] then
+		if tbl["ESP Fruit"] or tbl["ESP Fruit Arrow"] then
 			espStart()
 		end
 	end)
