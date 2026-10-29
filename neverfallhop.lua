@@ -1,12 +1,3652 @@
---[[
- .____                  ________ ___.    _____                           __                
- |    |    __ _______   \_____  \\_ |___/ ____\_ __  ______ ____ _____ _/  |_  ___________ 
- |    |   |  |  \__  \   /   |   \| __ \   __\  |  \/  ___// ___\\__  \\   __\/  _ \_  __ \
- |    |___|  |  // __ \_/    |    \ \_\ \  | |  |  /\___ \\  \___ / __ \|  | (  <_> )  | \/
- |_______ \____/(____  /\_______  /___  /__| |____//____  >\___  >____  /__|  \____/|__|   
-         \/          \/         \/    \/                \/     \/     \/                   
-          \_Welcome to LuaObfuscator.com   (Alpha 0.10.9) ~  Much Love, Ferib 
 
-]]--
 
-repeat wait();until game:IsLoaded() print("Game Loaded");local v0=setmetatable({},{__index=function(v152,v153) return game:GetService(v153);end});local v1=getgenv() or _G ;if v1.NightHubRunning then return;end v1.NightHubRunning=true;if (v1.Config and (typeof(v1.Config)=="table")) then end local v3={};local v4="http://163.223.9.144/boss";tick();print("[Time]","Start Script");local v5=v0.Players;local v6=v5.LocalPlayer;local v7=v0.Workspace;local v8=v0.ReplicatedStorage;local v9=v0.RunService;local v10=v0.UserInputService;local v11=v0.CollectionService;local v12=v0.VirtualInputManager;local v13=v0.TweenService;local v14=v7:WaitForChild("Enemies");v6:WaitForChild("PlayerGui");local v15=v6:WaitForChild("PlayerScripts");local v16=v8:WaitForChild("Remotes"):WaitForChild("CommF_");local v17=v8:WaitForChild("Modules");local v18=v17:WaitForChild("Net");local v19=v18:WaitForChild("RE/RegisterAttack");local v20=v18:WaitForChild("RE/RegisterHit");local v21=v17:WaitForChild("Flags");local v22=v7:GetAttribute("MAP");require(v8.Controllers.UI.Inventory);local v23=require(v8.Economy.ItemId);local v24=require(v8.ItemReplicationService);local v25=require(v8.ItemReplicationService.KEYS);v24:GetItems(v25.QUANTITY);local v26={Berries={"Blue Icicle Berry","Green Toad Berry","Orange Berry","Pink Pig Berry","Purple Jelly Berry","Red Cherry Berry","White Cloud Berry","Yellow Star Berry"}};local v27={};local v28={};local v29="";local v30={};local v31=false;local v32=CFrame.new( -5541,45 + 269 , -2961);local v33=false;local v34=require(v21).COMBAT_REMOTE_THREAD or false ;task.spawn(function() while true do wait();if  not ((v6.Team~=nil) and v6.Character) then continue;end break;end if ( not v1.HitFunc or (typeof(v1.HitFunc)~="function")) then for v822,v823 in pairs(v15:GetChildren()) do if (v823 and v823:IsA("LocalScript")) then local v983=0 -0 ;local v984;local v985;while true do if (v983==(336 -(144 + 192))) then v984,v985=pcall(getsenv,v823);if (v984 and v985) then v1.HitFunc=v985._G.SendHitsToServer;end break;end end end end end end);print("[Game]","Loaded Game Modules and Remotes");local v35={};local v36={};local v37={Whitelisted=false,IsPremiumUser=false};local v38={};local v39={};local v40=nil;local v41=nil;local v42={DefaultSettings={["Select Tool"]="Melee",["Tween Speed"]=466 -(42 + 174) ,["Auto Buso"]=true,["Enable Fast Attack"]=true,["Select Theme"]="Dark",["Select Team"]="Marines",["Finder Min Price"]="1000000"}};local v43=nil;function v43(v154) if (type(v154)=="table") then local v707=0 + 0 ;local v708;while true do if (v707==(1 + 0)) then return v708;end if (v707==(0 + 0)) then v708={};for v1041,v1042 in ipairs(v154) do v708[v1041]=v43(v1042);end v707=1505 -(363 + 1141) ;end end end return (tostring(v154):gsub("%s+",""));end local function v44(v155) local v156=nil;for v482,v483 in pairs(v6.Backpack:GetChildren()) do if (v483 and (v483.Name==v155)) then v156=v483;break;else v156=nil;end end for v484,v485 in pairs(v6.Character:GetChildren()) do if (v485 and (v485.Name==v155)) then v156=v485;break;end end return v156;end local v45={};local v46=bit32.bxor;local v47=bit32.band;local v48=bit32.lshift;local v49=bit32.rshift;local v50=bit32.lrotate;local v51="NIGHTHUB|";local v52=1588 -(1183 + 397) ;local v53=11 -7 ;local v54=4294967296;local v55={1221913346 + 412847459 ,540199386 + 317561492 ,2036479167 -(565 + 1368) ,1797286897 -(1477 + 184) };local function v56(v157) local v158={};for v486=1 -0 , #v157,2 do v158[ #v158 + 1 ]=tonumber(v157:sub(v486,v486 + 1 + 0 ),872 -(564 + 292) );end return v158;end local function v57(v159) local v160=0 -0 ;local v161;while true do if (v160==(2 -1)) then return v161;end if (v160==(304 -(244 + 60))) then v161={};for v887=1, #v159 do v161[v887]=v159:byte(v887);end v160=1;end end end local function v58(v162) local v163={};for v488=1 + 0 , #v162 do v163[v488]=string.char(v162[v488]);end return table.concat(v163);end local function v59(v164,v165) return v164[v165] + (v164[v165 + (477 -(41 + 435)) ] * (1257 -(938 + 63))) + (v164[v165 + 2 ] * 65536) + (v164[v165 + 3 ] * (12902972 + 3874244)) ;end local function v60(v166,v167,v168,v169,v170) v166[v167]=(v166[v167] + v166[v168])%v54 ;v166[v170]=v50(v46(v166[v170],v166[v167]),1141 -(936 + 189) );v166[v169]=(v166[v169] + v166[v170])%v54 ;v166[v168]=v50(v46(v166[v168],v166[v169]),4 + 8 );v166[v167]=(v166[v167] + v166[v168])%v54 ;v166[v170]=v50(v46(v166[v170],v166[v167]),8);v166[v169]=(v166[v169] + v166[v170])%v54 ;v166[v168]=v50(v46(v166[v168],v166[v169]),7);end local function v61(v175) for v490=1614 -(1565 + 48) ,7 + 3  do v60(v175,1,1143 -(782 + 356) ,276 -(176 + 91) ,33 -20 );v60(v175,2 -0 ,6,1102 -(975 + 117) ,14);v60(v175,3,7,11,1890 -(157 + 1718) );v60(v175,4 + 0 ,28 -20 ,40 -28 ,1034 -(697 + 321) );v60(v175,2 -1 ,12 -6 ,25 -14 ,7 + 9 );v60(v175,3 -1 ,7,32 -20 ,1240 -(322 + 905) );v60(v175,3,619 -(602 + 9) ,1198 -(449 + 740) ,14);v60(v175,876 -(826 + 46) ,5,957 -(245 + 702) ,47 -32 );end end local function v62(v176,v177,v178) local v179=0;local v180;while true do if (v179==2) then return v180;end if (v179==0) then v180={v55[1 + 0 ],v55[2],v55[9 -6 ],v55[8 -4 ]};for v889=0 -0 ,1212 -(902 + 303)  do v180[(10 -5) + v889 ]=v59(v176,(2 -1) + ((1 + 3) * v889) );end v179=1;end if (v179==(1691 -(1121 + 569))) then v180[13]=v177%v54 ;for v891=214 -(22 + 192) ,685 -(483 + 200)  do v180[(1477 -(1404 + 59)) + v891 ]=v59(v178,(2 -1) + (4 * v891) );end v179=2 -0 ;end end end local function v63(v181,v182,v183) local v184=0;local v185;local v186;local v187;while true do if (v184==(766 -(468 + 297))) then for v893=1,578 -(334 + 228)  do v186[v893]=v185[v893];end v61(v186);v184=6 -4 ;end if (v184==(4 -2)) then v187={};for v896=1,16 do local v897=0;local v898;local v899;while true do if (v897==0) then v898=(v186[v896] + v185[v896])%v54 ;v899=(v896-(1 -0)) * (2 + 2) ;v897=237 -(141 + 95) ;end if (v897==(1 + 0)) then v187[v899 + 1 ]=v47(v898,656 -401 );v187[v899 + 2 ]=v47(v49(v898,18 -10 ),60 + 195 );v897=2;end if (v897==(5 -3)) then v187[v899 + 3 ]=v47(v49(v898,12 + 4 ),133 + 122 );v187[v899 + (5 -1) ]=v47(v49(v898,24),255);break;end end end v184=2 + 1 ;end if (v184==(166 -(92 + 71))) then return v187;end if (v184==(0 + 0)) then v185=v62(v181,v182,v183);v186={};v184=1 -0 ;end end end local function v64(v188,v189,v190,v191) local v192={};local v193=765 -(574 + 191) ;while v193<v191  do local v491=v63(v188,v190,v189);for v709=1 + 0 ,160 -96  do if  not (v193>=v191) then v193+=(1 + 0) v192[v193]=v491[v709];continue;end break;end v190+=1 end return v192;end local function v65(v194,v195,v196) local v197=v62(v194,4294968144 -(254 + 595) ,v195);v61(v197);local v198= #v196;for v492=126 -(55 + 71) ,(v198 + (((20 -4) -(v198%16))%16)) -(1791 -(573 + 1217)) ,44 -28  do for v710=0 + 0 ,4 -1  do local v711=939 -(714 + 225) ;local v712;while true do if (v711==(0 -0)) then v712=v492 + (4 * v710) ;v197[v710 + (1 -0) ]=v46(v197[v710 + 1 + 0 ],(v196[v712 + (1 -0) ] or (806 -(118 + 688))) + ((v196[v712 + (50 -(25 + 23)) ] or 0) * (50 + 206)) + ((v196[v712 + (1889 -(927 + 959)) ] or (0 -0)) * (66268 -(16 + 716))) + ((v196[v712 + 4 ] or 0) * 16777216) );break;end end end v61(v197);end v197[1]=v46(v197[1 -0 ],v198);v61(v197);local v200=v197[1];local v201={};local v202=v47(v200,352 -(11 + 86) );local v203=v47(v49(v200,8),621 -366 );local v204=v47(v49(v200,301 -(175 + 110) ),643 -388 );local v205=v49(v200,118 -94 );v201[1797 -(503 + 1293) ]=v202;v201[5 -3 ]=v203;v201[3 + 0 ]=v204;do local v493=table.pack(v47(v205,255));table.move(v493,1,v493.n,1065 -(810 + 251) ,v201);end return v201;end local v66={};local function v67(v209) local v210=table.concat(v209,",");if v66[v210] then return v66[v210];end local v211=v64(v209,{0,0 + 0 ,0,0,0,0 -0 ,0 + 0 ,0 -0 ,1744 -(1344 + 400) ,0,0 + 0 ,0 -0 },11259375,413 -285 );local v212={};for v494=1740 -(404 + 1335) ,470 -(183 + 223)  do v212[v494]=("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"):sub(v494,v494);end for v496=64,2 -0 , -(1 + 0) do local v497=v496-(1 + 0) ;local v498=(((v211[((339 -(10 + 327)) * v497) + 1 ] * 256) + v211[((2 + 0) * v497) + (340 -(118 + 220)) ])%v496) + 1 ;local v499=v212[v496];v212[v496]=v212[v498];v212[v498]=v499;end local v213=table.concat(v212);v66[v210]=v213;return v213;end local function v68(v215,v216) local v217=0 + 0 ;local v218;local v219;local v220;while true do if (v217==(450 -(108 + 341))) then v220=1 + 0 ;while v220<=v219  do local v902=v215[v220];local v903=v215[v220 + 1 ];local v904=v215[v220 + (8 -6) ];local v905=v49(v902,2);v218[ #v218 + (1494 -(711 + 782)) ]=v216:sub(v905 + 1 ,v905 + (1 -0) );local v907=v48(v47(v902,472 -(270 + 199) ),4) + v49(v903 or 0 ,2 + 2 ) ;v218[ #v218 + (1820 -(580 + 1239)) ]=v216:sub(v907 + (2 -1) ,v907 + 1 );if (v903~=nil) then local v1044=v48(v47(v903,15 + 0 ),1 + 1 ) + v49(v904 or (0 + 0) ,15 -9 ) ;v218[ #v218 + 1 + 0 ]=v216:sub(v1044 + 1 ,v1044 + (1168 -(645 + 522)) );if (v904~=nil) then local v1114=v47(v904,1853 -(1010 + 780) );v218[ #v218 + 1 + 0 ]=v216:sub(v1114 + 1 ,v1114 + 1 );v220+=(14 -11) continue;end end break;end v217=5 -3 ;end if (v217==(1838 -(1045 + 791))) then return table.concat(v218);end if (v217==0) then v218={};v219= #v215;v217=1;end end end local function v69(v221,v222) local v223=0;local v224;local v225;local v226;while true do if (v223==(2 -1)) then v225={};for v909=1 -0 , #v221 do local v910=v224[v221:sub(v909,v909)];if (v910==nil) then return nil;end v225[ #v225 + 1 ]=v910;end v223=507 -(351 + 154) ;end if (v223==(1574 -(1281 + 293))) then v224={};for v912=267 -(28 + 238) ,142 -78  do v224[v222:sub(v912,v912)]=v912-1 ;end v223=1;end if (v223==(1561 -(1381 + 178))) then v226={};for v914=1 + 0 , #v225,4 + 0  do local v915=v225[v914];local v916=v225[v914 + 1 + 0 ];local v917=v225[v914 + 2 ];local v918=v225[v914 + (10 -7) ];if (v916==nil) then return nil;end v226[ #v226 + 1 ]=v47(v48(v915,2 + 0 ) + v49(v916,4) ,725 -(381 + 89) );if (v917~=nil) then v226[ #v226 + 1 ]=v47(v48(v47(v916,14 + 1 ),4) + v49(v917,2 + 0 ) ,436 -181 );end if (v918~=nil) then v226[ #v226 + (1157 -(1074 + 82)) ]=v47(v48(v47(v917,6 -3 ),6) + v918 ,2039 -(214 + 1570) );end end v223=3;end if (v223==(1458 -(990 + 465))) then return v226;end end end local v70=v56("8992d555ed7846a562b058523100fbd0e59b5f6f28e98003230ffb4d9db60411");local v71=(Random and Random.new and Random.new()) or nil ;local function v72() local v227={};for v502=1,4 + 4  do v227[v502]=(v71 and v71:NextInteger(0 + 0 ,248 + 7 )) or math.random(0 -0 ,1981 -(1668 + 58) ) ;end return v227;end v45.encode=function(v228,v229,v230) local v231=0;local v232;local v233;local v234;local v235;local v236;local v237;while true do if (v231==(629 -(512 + 114))) then for v920=2 -1 ,4 do v237[ #v237 + (1 -0) ]=v236[v920];end for v923=1, #v235 do v237[ #v237 + (3 -2) ]=v235[v923];end return v51   .. v68(v237,v67(v229)) ;end if (v231==(1 + 1)) then for v926=1 + 0 , #v232 do v235[v926]=v46(v232[v926],v234[v926]);end v236=v65(v229,v233,v235);v237={};for v928=1,8 do v237[ #v237 + 1 ]=v230[v928];end v231=3 + 0 ;end if (v231==(0 -0)) then v229=v229 or v70 ;v230=v230 or v72() ;v232=v57(v228);v233={};v231=1995 -(109 + 1885) ;end if (v231==1) then for v931=1470 -(1269 + 200) ,14 -6  do v233[v931]=v230[v931];end for v934=v52 + 1 ,827 -(98 + 717)  do v233[v934]=826 -(802 + 24) ;end v234=v64(v229,v233,1 -0 , #v232);v235={};v231=2 -0 ;end end end;v45.decode=function(v238,v239) local v240=0 + 0 ;local v241;local v242;local v243;local v244;local v245;local v246;local v247;local v248;while true do if ((3 + 0)==v240) then v245=v65(v241,v243,v244);v246=0 + 0 ;for v936=1,1 + 3  do (((v246+=v245[v936])==v242[v52 + v936 ]) and (0 -0)) or (3 -2) end v240=2 + 2 ;end if (0==v240) then v241=v239 or v70 ;if ((type(v238)~="string") or (v238:sub(1 + 0 , #v51)~=v51)) then return nil,"bad prefix";end v242=v69(v238:sub( #v51 + 1 ),v67(v241));v240=1 + 0 ;end if (v240==4) then if (v246~=(0 + 0)) then return nil,"bad tag";end v247=v64(v241,v243,1 + 0 , #v244);v248={};v240=5;end if (v240==1) then if ( not v242 or ( #v242<(v52 + v53))) then return nil,"malformed";end v243={};for v937=1434 -(797 + 636) ,38 -30  do v243[v937]=v242[v937];end v240=1621 -(1427 + 192) ;end if (v240==2) then for v940=v52 + 1 + 0 ,12 do v243[v940]=0 -0 ;end v244={};for v942=v52 + v53 + 1 + 0 , #v242 do v244[(v942-v52) -v53 ]=v242[v942];end v240=2 + 1 ;end if (v240==(331 -(192 + 134))) then for v945=1277 -(316 + 960) , #v244 do v248[v945]=v46(v244[v945],v247[v945]);end return true,v58(v248);end end end;v27.CheckAndJoinTeam=function() if (v6.Team==nil) then repeat local v825=0 + 0 ;while true do if (v825==(0 + 0)) then wait();v16:InvokeServer("SetTeam","Marines");break;end end until v6.Team~=nil  end end;local function v76() local v249=game:GetService("TweenService");local v250=0;local v251="Noctelis/key.txt";local v252={interfaceName="NeverFall Hub Find",titleText="NeverFall",hintText="Enter your key to continue",keyInputLabelText="License key",submitButtonText="Submit Key",getKeyButtonText="GET KEY",getKeyUrl="https://103.69.96.168/key?ver=NightHub",loadingStageMessages={"Authorising session","Fetching components","Building interface","Restoring settings","Finishing up"},maximumKeyLength=233 -183 ,savedKeyFilePath="NightHub/key.txt",savedKeyCheckMessage="Checking saved key",savedKeyCheckTimeoutSeconds=15,validateLicenseKey=nil,onLicenseKeyAccepted=nil};local function v253(v504,v505,v506) return Color3.fromRGB(v504,v505,v506);end local v254=v253(24,24,42 -16 );local v255=v253(49 -31 ,18,345 -(45 + 280) );local v256=v253(229 + 8 ,237,206 + 29 );local v257=v253(150,55 + 95 ,81 + 65 );local v258=v253(143,143,139);local v259=v253(111,140,208);local v260=v253(38 + 176 ,90,136 -62 );local v261=v253(2033 -(340 + 1571) ,190,128);local v262=v253(51 + 77 ,1928 -(1733 + 39) ,604 -384 );local v263=v253(92,1151 -(125 + 909) ,2123 -(1096 + 852) );local v264=v253(27 + 31 ,122,96 -28 );local v265=v259;local v266=v253(248 + 7 ,767 -(409 + 103) ,255);local v267=v253(240,482 -(46 + 190) ,335 -(51 + 44) );local v268=126 + 318 ;local v269=1671 -(1114 + 203) ;local v270=1046 -(228 + 498) ;local v271=20 + 68 ;local v272=4;local v273=TweenInfo.new(0.15,Enum.EasingStyle.Quad,Enum.EasingDirection.Out);local v274=Enum.FontWeight.Regular;local v275=Enum.FontWeight.Bold;local function v276(v507) return Font.new("rbxasset://fonts/families/RobotoMono.json",v507 or v274 );end local function v277(v508,v509,v510) local v511=0 + 0 ;local v512;while true do if ((664 -(174 + 489))==v511) then v512.Parent=v510;return v512;end if (v511==(0 -0)) then v512=Instance.new(v508);for v987,v988 in pairs(v509) do v512[v987]=v988;end v511=1;end end end local function v278(v513,v514,v515) return v277("UICorner",{Name=v514,CornerRadius=UDim.new(0,v513)},v515);end local function v279(v516,v517) return v277("UIStroke",{Name=v516,Color=v253(2160 -(830 + 1075) ,779 -(303 + 221) ,255),Transparency=1269.65 -(231 + 1038) ,Thickness=1 + 0 ,ApplyStrokeMode=Enum.ApplyStrokeMode.Border,LineJoinMode=Enum.LineJoinMode.Round},v517);end local function v280(v518,v519,v520,v521,v522,v523,v524) return v277("TextLabel",{Name=v518,Size=UDim2.new(1162 -(171 + 991) ,v523,0 -0 ,math.floor((v520 * (2.2 -1)) + (0.5 -0) )),Position=v522,BackgroundTransparency=1,Text=v519,TextColor3=v521,TextSize=v520,FontFace=v276(),TextXAlignment=Enum.TextXAlignment.Left},v524);end local function v281() local v525=(gethui and gethui()) or game:WaitForChild("CoreGui") ;if (syn and syn.protect_gui) then return v525,syn.protect_gui;end return v525,protect_gui;end local function v282(v526) return (v526:gsub("^%s+",""):gsub("%s+$",""));end local function v283(v527) local v528=setclipboard or toclipboard ;if (type(v528)~="function") then return false;end return pcall(v528,v527);end local function v284(v529) local v530=0;local v531;while true do if (v530==1) then pcall(writefile,v252.savedKeyFilePath,v529);break;end if (v530==(0 + 0)) then v531=v252.savedKeyFilePath:match("^(.*)[/]");if (v531 and isfolder and makefolder and  not isfolder(v531)) then pcall(makefolder,v531);end v530=3 -2 ;end end end v252.deleteSavedLicenseKey=function() if (isfile and isfile(v252.savedKeyFilePath)) then pcall(delfile,v252.savedKeyFilePath);end if (isfile and isfile("Noctelis/key.txt")) then pcall(delfile,"Noctelis/key.txt");end end;local function v286() local v532=0;local v533;local v534;local v535;local v536;local v537;while true do if (v532==0) then if  not (isfile and readfile) then return;end v533=(isfile(v252.savedKeyFilePath) and v252.savedKeyFilePath) or (isfile("Noctelis/key.txt") and "Noctelis/key.txt") ;v532=2 -1 ;end if (v532==2) then if ( not v534 or (type(v535)~="string")) then return;end if (v533==v251) then v284(v535);end v532=4 -1 ;end if (v532==(12 -8)) then if ( not v537 or (v537>v252.maximumKeyLength)) then return;end return v536;end if (v532==(1249 -(111 + 1137))) then if  not v533 then return;end v534,v535=pcall(readfile,v533);v532=2;end if ((161 -(91 + 67))==v532) then v536=v282(v535);v537=(v536~="") and utf8.len(v536) ;v532=11 -7 ;end end end v252.destroyInterface=function() local v538=0 + 0 ;local v539;while true do if (v538==1) then if v539 then v539:Destroy();end break;end if (v538==(523 -(423 + 100))) then v250+=1 v539=v281():FindFirstChild(v252.interfaceName);v538=1;end end end;v252.showInterface=function(v540,v541) v252.destroyInterface();local v542=v250;local v543=v286();local v544=(v540~=nil) and (type(v540)~="string") ;local v545=((type(v540)=="string") and v282(v540)) or nil ;if (v545=="") then v545=nil;end local v546=( not v544 and (v545 or v543)) or nil ;local v547,v548=v281();local v549=v277("ScreenGui",{Name=v252.interfaceName,DisplayOrder=10,IgnoreGuiInset=true,ResetOnSpawn=false,ZIndexBehavior=Enum.ZIndexBehavior.Sibling},v547);if v548 then pcall(v548,v549);end local v550=v277("Frame",{Name="Scrim",Size=UDim2.fromScale(1,1 + 0 ),BackgroundColor3=v253(0,0 -0 ,0 + 0 ),BackgroundTransparency=772 -(326 + 445) ,BorderSizePixel=0 -0 ,Active=true,ZIndex=1},v549);local v551=v277("CanvasGroup",{Name="Root",Size=UDim2.fromOffset(v268 + (v272 * (8 -4)) ,v269 + (v272 * (9 -5)) ),Position=UDim2.new(711.5 -(530 + 181) ,881 -(614 + 267) ,32.5 -(19 + 13) ,0 -0 ),AnchorPoint=Vector2.new(0.5 -0 ,0.5 -0 ),BackgroundTransparency=1,GroupTransparency=1 + 0 ,ZIndex=3 -1 },v549);for v713=7 -3 ,1813 -(1293 + 519) , -(1 -0) do local v714=v713 * (4 -2) ;local v715=v277("Frame",{Name=("Aura%*"):format(v713),Size=UDim2.new(1 -0 ,((v714 * (8 -6)) -(v272 * (9 -5))) -(3 + 1) ,1 + 0 ,((v714 * (4 -2)) -(v272 * 4)) -(1 + 3) ),Position=UDim2.fromScale(0.5 + 0 ,0.5 + 0 ),AnchorPoint=Vector2.new(1096.5 -(709 + 387) ,1858.5 -(673 + 1185) ),BackgroundColor3=v259,BackgroundTransparency=0.83,BorderSizePixel=0 -0 },v551);v278(12 + v714 ,"AuraCorner",v715);end local v552=v277("Frame",{Name="Panel",Size=UDim2.new(1,( -v272 * 4) -4 ,3 -2 ,( -v272 * (6 -2)) -(3 + 1) ),Position=UDim2.fromScale(0.5,0.5 + 0 ),AnchorPoint=Vector2.new(0.5 -0 ,0.5 + 0 ),BackgroundColor3=v254,BorderSizePixel=0 -0 },v551);v278(23 -11 ,"PanelCorner",v552);v279("PanelStroke",v552);local v553=v277("CanvasGroup",{Name="Body",Size=UDim2.fromScale(1881 -(446 + 1434) ,1284 -(1040 + 243) ),BackgroundTransparency=1},v552);v280("Title",v252.titleText,59 -39 ,v256,UDim2.new(1847 -(559 + 1288) ,22,1931 -(609 + 1322) ,22),340,v553).FontFace=v276(v275);v280("Hint",v252.hintText,13,v257,UDim2.new(0,476 -(13 + 441) ,0 -0 ,52),890 -550 ,v553);local v555=v277("TextButton",{Name="Close",Size=UDim2.new(0 -0 ,2 + 30 ,0,116 -84 ),Position=UDim2.new(1 + 0 , -(6 + 6),0,53 -35 ),AnchorPoint=Vector2.new(1 + 0 ,0 -0 ),BackgroundTransparency=1 + 0 ,Text="",FontFace=v276(),AutoButtonColor=false},v553);local v556={};for v716,v717 in ipairs({45, -45}) do v556[v716]=v277("Frame",{Name=("Bar%*"):format(v716),Size=UDim2.new(0,13,0 + 0 ,1 + 0 ),Position=UDim2.fromScale(0.5 + 0 ,0.5 + 0 ),AnchorPoint=Vector2.new(0.5,0.5),BackgroundColor3=v258,Rotation=v717,BorderSizePixel=433 -(153 + 280) },v555);end v277("Frame",{Name="Divider",Size=UDim2.new(1, -(126 -82),0 + 0 ,1),Position=UDim2.new(0 + 0 ,12 + 10 ,0 + 0 ,88),BackgroundColor3=v253(185 + 70 ,388 -133 ,158 + 97 ),BackgroundTransparency=667.86 -(89 + 578) ,BorderSizePixel=0},v553);v280("Label",v252.keyInputLabelText,10 + 3 ,v257,UDim2.new(0 -0 ,1071 -(572 + 477) ,0 + 0 ,108),133 + 87 ,v553);local v557=v277("Frame",{Name="Field",Size=UDim2.new(1, -44,0 + 0 ,50),Position=UDim2.new(0,108 -(84 + 2) ,0,130),BackgroundColor3=v255,BorderSizePixel=0},v553);v278(13 -5 ,"FieldCorner",v557);local v558=v279("FieldStroke",v557);local v559=v277("TextBox",{Name="Box",Size=UDim2.new(1 + 0 , -(874 -(497 + 345)),1 + 0 ,0 + 0 ),Position=UDim2.new(1333 -(605 + 728) ,12 + 4 ,0,0),BackgroundTransparency=1,Text="",PlaceholderText="Paste your key here",PlaceholderColor3=v258,TextColor3=v256,TextSize=16,FontFace=v276(),TextXAlignment=Enum.TextXAlignment.Left,ClearTextOnFocus=false,MultiLine=false},v557);local v560=v280("Err","",28 -15 ,v260,UDim2.new(0 + 0 ,81 -59 ,0 + 0 ,192),1108 -708 ,v553);local v561=v277("TextButton",{Name="Submit",Size=UDim2.new(1 + 0 , -44,489 -(457 + 32) ,50),Position=UDim2.new(0 + 0 ,22,0,1620 -(832 + 570) ),BackgroundColor3=v265,Text="",FontFace=v276(),AutoButtonColor=false,BorderSizePixel=0 + 0 },v553);v278(3 + 5 ,"SubmitCorner",v561);local v562=v277("TextLabel",{Name="SubmitTitle",Size=UDim2.fromScale(1,3 -2 ),BackgroundTransparency=1,Text=v252.submitButtonText,TextColor3=v266,TextSize=18,FontFace=v276()},v561);local v563=v277("TextButton",{Name="GetKey",Size=UDim2.new(1, -44,0 + 0 ,50),Position=UDim2.new(0,22,0,1074 -(588 + 208) ),BackgroundColor3=v265,Text="",FontFace=v276(),AutoButtonColor=false,BorderSizePixel=0},v553);v278(21 -13 ,"GetKeyCorner",v563);v277("TextLabel",{Name="GetKeyTitle",Size=UDim2.fromScale(1801 -(884 + 916) ,1),BackgroundTransparency=1 -0 ,Text=v252.getKeyButtonText,TextColor3=v266,TextSize=11 + 7 ,FontFace=v276()},v563);local v564=v277("CanvasGroup",{Name="Load",Size=UDim2.fromScale(654 -(232 + 421) ,1),BackgroundTransparency=1890 -(1569 + 320) ,GroupTransparency=1 + 0 ,Visible=false},v552);local v565=v280("Step","",3 + 11 ,v256,UDim2.new(0 -0 ,627 -(316 + 289) ,0,72 -44 ),9 + 181 ,v564);local v566=v280("Pct","0%",1466 -(666 + 787) ,v257,UDim2.new(426 -(360 + 65) , -(21 + 1),254 -(79 + 175) ,29),60,v564);v566.AnchorPoint=Vector2.new(1 -0 ,0 + 0 );v566.TextXAlignment=Enum.TextXAlignment.Right;local v570=v277("Frame",{Name="Track",Size=UDim2.new(2 -1 , -(84 -40),899 -(503 + 396) ,183 -(92 + 89) ),Position=UDim2.new(0 -0 ,12 + 10 ,0 + 0 ,234 -174 ),BackgroundColor3=v253(35 + 220 ,581 -326 ,223 + 32 ),BackgroundTransparency=0.88 + 0 ,BorderSizePixel=0 -0 },v564);local v571=v277("Frame",{Name="Fill",Size=UDim2.fromScale(0,1 + 0 ),BackgroundColor3=v259,BorderSizePixel=0 -0 },v570);local v572=TweenInfo.new(1244.18 -(485 + 759) ,Enum.EasingStyle.Quad,Enum.EasingDirection.Out);local v573=TweenInfo.new(0.12 -0 ,Enum.EasingStyle.Quad,Enum.EasingDirection.In);local v574=TweenInfo.new(0.3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out);if v546 then local v826=0;while true do if (v826==(1190 -(442 + 747))) then v553.GroupTransparency=1;v564.Visible=true;v826=2;end if (v826==2) then v564.GroupTransparency=1135 -(832 + 303) ;break;end if (v826==0) then v551.Size=UDim2.fromOffset(v270 + (v272 * (950 -(88 + 858))) ,v271 + (v272 * (2 + 2)) );v553.Visible=false;v826=1 + 0 ;end end end v249:Create(v550,v273,{BackgroundTransparency=0.45 + 0 }):Play();v249:Create(v551,v572,{GroupTransparency=789 -(766 + 23) }):Play();local function v575(v719,v720) v249:Create(v719,v273,v720):Play();end local v576=nil;local v577=nil;local v578=nil;local function v579() return  not v577 and (v542==v250) and (v549.Parent~=nil) ;end local function v580() if  not v579() then return;end v577=true;v250+=1 v249:Create(v550,v573,{BackgroundTransparency=4 -3 }):Play();v249:Create(v551,v573,{GroupTransparency=1 -0 }):Play();task.delay(0.12 -0 ,v549.Destroy,v549);end local function v581(v721,v722) v575(v558,{Color=v721,Transparency=v722,Thickness=((v722<0.3) and (6 -4)) or 1 });end local function v582(v723) if  not v579() then return;end local v724=v560;local v725=v260;local v726=v559.Text;v560.Text=v723;v724.TextColor3=v725;v578=v726;v581(v260,1073 -(1036 + 37) );end local function v583() if ((v560.Text=="") or (v559.Text==v578)) then return;end v560.Text="";if v559:IsFocused() then return v581(v259,0);end v581(v253(181 + 74 ,496 -241 ,255),0.65 + 0 );end local function v584(v730) v565.TextTransparency=1481 -(641 + 839) ;v565.Text=v730;v249:Create(v565,v572,{TextTransparency=913 -(910 + 3) }):Play();end local function v585(v733,v734,v735) local v736=0 -0 ;local v737;while true do if (v736==0) then v737=os.clock();while true do if  not v579() then return;else local v1116=math.min((os.clock() -v737)/v735 ,1685 -(1466 + 218) );local v1117=v733 + ((v734-v733) * ((1 + 0) -((1 -v1116)^(1150 -(556 + 592))))) ;v571.Size=UDim2.fromScale(v1117,1 + 0 );v566.Text=math.floor(v1117 * (908 -(329 + 479)) )   .. "%" ;if (v1116>=(855 -(174 + 680))) then break;end task.wait();end end break;end end end local function v586(v738) local v739= #v252.loadingStageMessages;local v740=(3 -2) -v738 ;for v827,v828 in ipairs(v252.loadingStageMessages) do local v829=0;while true do if (v829==(1 -0)) then v585(v738 + ((v740 * (v827-(1 + 0)))/v739) ,v738 + ((v740 * v827)/v739) ,739.55 -(396 + 343) );break;end if (v829==(0 + 0)) then if  not v579() then return;end v584(v828);v829=1478 -(29 + 1448) ;end end end end local function v587(v741,v742) task.wait(1389.4 -(135 + 1254) );if  not v579() then return;end v580();local v743=v250;task.wait(0.16);if ((v743==v250) and v252.onLicenseKeyAccepted) then task.spawn(v252.onLicenseKeyAccepted,v741,v742);end end local function v588() v564.Visible=true;v249:Create(v553,v573,{GroupTransparency=3 -2 }):Play();v249:Create(v551,v574,{Size=UDim2.fromOffset(v270 + (v272 * (18 -14)) ,v271 + (v272 * 4) )}):Play();task.wait(0.13);if  not v579() then return;end v553.Visible=false;task.wait(0.17);if  not v579() then return;end v249:Create(v564,v572,{GroupTransparency=0}):Play();end local function v589(v746,v747,v748) local v749=0;while true do if (v749==(2 + 1)) then if  not v579() then return;end v564.Visible=false;v749=1531 -(389 + 1138) ;end if (0==v749) then if  not v579() then return;end if ((type(v747)=="table") and (v747.shouldForgetSavedKey==true) and (v286()==v748)) then v252.deleteSavedLicenseKey();end v749=575 -(102 + 472) ;end if (v749==4) then v249:Create(v553,v572,{GroupTransparency=0 + 0 }):Play();v582(v746);break;end if ((2 + 0)==v749) then v249:Create(v551,v574,{Size=UDim2.fromOffset(v268 + (v272 * (4 + 0)) ,v269 + (v272 * (1549 -(320 + 1225))) )}):Play();task.wait(0.14 -0 );v749=2 + 1 ;end if (v749==(1465 -(157 + 1307))) then v553.Visible=true;v249:Create(v564,v573,{GroupTransparency=1860 -(821 + 1038) }):Play();v749=2;end end end local function v590(v750,v751) if ((type(v750)=="table") and (type(v750.message)=="string") and (v750.message~="")) then return v750.message;end return v751;end local function v591(v752) local v753=0 -0 ;local v754;local v755;local v756;local v757;local v758;local v759;local v760;while true do if (v753==(1 + 2)) then v760=math.clamp(tonumber(v252.savedKeyCheckTimeoutSeconds) or 15 ,1 -0 ,23 + 37 );while  not v754 and v579() and ((os.clock() -v759)<v760)  do task.wait();end v753=9 -5 ;end if (v753==(1026 -(834 + 192))) then v754=false;v755=nil;v753=1 + 0 ;end if (v753==(1 + 1)) then v758=task.spawn(function() local v1053,v1054,v1055=pcall(v252.validateLicenseKey,v752);v755=v1053;v756=v1054;v757=v1055;v754=true;end);v759=os.clock();v753=1 + 2 ;end if (v753==(1 -0)) then v756=nil;v757=nil;v753=2;end if (v753==4) then if  not v754 then pcall(task.cancel,v758);return false,false,{message="Key check timed out, try again",shouldForgetSavedKey=false};end return v755,v756==true ,v757;end end end local function v592() local v761=0;local v762;local v763;local v764;local v765;local v766;local v767;while true do if ((309 -(300 + 4))==v761) then v767.Text="Verified";v559:ReleaseFocus();v575(v561,{BackgroundColor3=v264});v761=6;end if ((0 + 0)==v761) then if (v576 or  not v579()) then return;end v762=v282(v559.Text);if (v762=="") then return v582("Enter your key first");end v761=1;end if ((2 -1)==v761) then if (type(v252.validateLicenseKey)~="function") then return v582("No verifier attached");end v763=v562;v576=true;v761=364 -(112 + 250) ;end if (v761==(1 + 1)) then v763.Text="Checking...";v575(v561,{BackgroundColor3=v263});v764,v765,v766=v591(v762);v761=3;end if (v761==(9 -5)) then if  not v765 then local v1086=0;while true do if (v1086==(1 + 0)) then if ((type(v766)=="table") and (v766.shouldForgetSavedKey==true) and (v286()==v762)) then v252.deleteSavedLicenseKey();end return v582(v590(v766,"Key not valid, check it and retry"));end if (v1086==(0 + 0)) then v562.Text=v252.submitButtonText;v575(v561,{BackgroundColor3=v265});v1086=1;end end end v767=v562;v576=true;v761=4 + 1 ;end if (v761==(3 + 3)) then v575(v562,{TextColor3=v267});v581(v261,0 + 0 );v284(v762);v761=1421 -(1001 + 413) ;end if (v761==8) then v586(0 -0 );v587(v762,v766);break;end if (v761==7) then task.wait(882.35 -(244 + 638) );if  not v579() then return;end v588();v761=701 -(627 + 66) ;end if (3==v761) then if  not v579() then return;end v576=false;if  not v764 then v562.Text=v252.submitButtonText;v575(v561,{BackgroundColor3=v265});return v582(v590(v766,"Check failed, try again"));end v761=11 -7 ;end end end local function v593(v768) local v769=602 -(512 + 90) ;local v770;local v771;local v772;local v773;while true do if (v769==(1908 -(1665 + 241))) then if  not v772 then return v589(v590(v773,(v545 and "Configured key not valid") or "Saved key no longer valid" ),v773,v768);end if v545 then if ((type(v773)~="table") or (v773.valid~=true)) then return v589("Configured key is not valid");end v284(v768);end v586((718 -(373 + 344))/v770 );v587(v768,v773);break;end if ((1 + 0)==v769) then if  not v579() then return;end v771,v772,v773=v591(v768);if  not v579() then return;end if  not v771 then return v589(v590(v773,(v545 and "Configured key check failed") or "Saved key check failed" ));end v769=1 + 1 ;end if (v769==(0 -0)) then if (type(v252.validateLicenseKey)~="function") then return v589("No verifier attached");end v770= #v252.loadingStageMessages + (1 -0) ;v584((v545 and "Checking configured key") or v252.savedKeyCheckMessage );v585(1099 -(35 + 1064) ,(1 + 0)/v770 ,0.5 -0 );v769=1;end end end v559:GetPropertyChangedSignal("Text"):Connect(function() local v774=0;local v775;while true do if (v774==(0 + 0)) then v775=utf8.len(v559.Text);if (v775 and (v775>v252.maximumKeyLength)) then local v1089=0;while true do if ((1236 -(298 + 938))==v1089) then v559.Text=v559.Text:sub(1260 -(233 + 1026) ,utf8.offset(v559.Text,v252.maximumKeyLength + (1667 -(636 + 1030)) ) -(1 + 0) );return;end end end v774=1 + 0 ;end if (v774==(1 + 0)) then v583();break;end end end);v559.Focused:Connect(function() if (v560.Text=="") then v581(v259,0);end end);v559.FocusLost:Connect(function(v776) if (v560.Text=="") then v581(v253(255,18 + 237 ,476 -(55 + 166) ),0.65 + 0 );end if v776 then v592();end end);v561.MouseEnter:Connect(function() if  not v576 then v575(v561,{BackgroundColor3=v262});end end);v561.MouseLeave:Connect(function() if  not v576 then v575(v561,{BackgroundColor3=v265});end end);v561.MouseButton1Down:Connect(function() if  not v576 then v575(v561,{BackgroundColor3=v263});end end);v561.MouseButton1Click:Connect(v592);v563.MouseEnter:Connect(function() v575(v563,{BackgroundColor3=v262});end);v563.MouseLeave:Connect(function() v575(v563,{BackgroundColor3=v265});end);v563.MouseButton1Down:Connect(function() v575(v563,{BackgroundColor3=v263});end);v563.MouseButton1Click:Connect(function() local v777=v283(v252.getKeyUrl);v560.Text=(v777 and "Get Key link copied") or v252.getKeyUrl ;v560.TextColor3=(v777 and v261) or v257 ;v578=v559.Text;v575(v563,{BackgroundColor3=v262});end);local v594="Click the cross again to close";local v595=false;local v596=false;local function v597() local v781=0 + 0 ;local v782;while true do if (v781==(0 -0)) then v782=(v596 and v260) or (v595 and v256) or v258 ;for v1056,v1057 in ipairs(v556) do v575(v1057,{BackgroundColor3=v782});end break;end end end v555.MouseEnter:Connect(function() v595=true;v597();end);v555.MouseLeave:Connect(function() v595=false;v597();end);v555.MouseButton1Click:Connect(function() local v783=297 -(36 + 261) ;local v784;local v785;local v786;while true do if (v783==(3 -1)) then v786=v559.Text;v560.Text=v594;v783=3;end if ((1372 -(34 + 1334))==v783) then v597();task.delay(4 + 6 ,function() local v1058=0;while true do if (v1058==(0 + 0)) then if v577 then return;end v596=false;v1058=1284 -(1035 + 248) ;end if (1==v1058) then if (v560.Text==v594) then v560.Text="";end v597();break;end end end);break;end if (v783==3) then v784.TextColor3=v785;v578=v786;v783=25 -(20 + 1) ;end if (v783==1) then v784=v560;v785=v257;v783=2;end if (v783==0) then if v596 then return v580();end v596=true;v783=1;end end end);if v544 then v582("Configured key must be a string");elseif v546 then task.spawn(v593,v546);elseif ((type(v541)=="string") and (v541~="")) then v582(v541);end return v549,v559;end;return v252;end local v77=game:GetService("HttpService");local v78=((type(getgenv)=="function") and getgenv()) or _G ;local v79=request or http_request or (syn and syn.request) ;local v80=crypt and crypt.hash ;local v81=crypt and crypt.hmac ;local v82="https://103.69.96.168";local v83=v76();local function v84(v289,v290,v291) return false,{valid=false,code=v289,message=v290,shouldForgetSavedKey=v291==true };end local function v85(v292,v293) return (type(v292)=="string") and ( #v292==v293) and  not v292:find("[^a-f0-9]") ;end local function v86(v294) return (type(v294)=="number") and (v294==v294) and (v294>(0 + 0)) and (v294<math.huge) and ((v294%1)==0) ;end local function v87(v295,v296) local v297=0;local v298;while true do if (v297==(320 -(134 + 185))) then for v948,v949 in pairs(v295) do if ((type(v948)=="string") and (v948:lower()==v298) and (type(v949)=="string")) then return v949;end end break;end if (v297==0) then if (type(v295)~="table") then return nil;end v298=v296:lower();v297=1134 -(549 + 584) ;end end end local function v88(v299,v300) local v301=685 -(314 + 371) ;local v302;local v303;local v304;local v305;while true do if (v301==(0 -0)) then v302,v303=pcall(v79,{Url=v82   .. "/auth" ,Method="POST",Headers={["Content-Type"]="application/json",Accept="application/json, text/plain"},Body=v77:JSONEncode(v299),Timeout=983 -(478 + 490) });if ( not v302 or (type(v303)~="table")) then return nil,"Cannot reach the license server";end v301=1;end if (v301==(2 + 0)) then if v304 then v305=v304;else v305= #v303.Body>(v300 or (9364 -(786 + 386))) ;end if v305 then return nil,"Invalid response from the license server";end v301=3;end if (v301==(3 -2)) then v304=(type(v303.Body)~="string") or ( #v303.Body<(1380 -(1055 + 324))) ;v305=nil;v301=2;end if (v301==(1343 -(1093 + 247))) then return v303;end end end local function v89(v306) return true,{valid=true,version="NightHub",subscriptionTier="Pro",expiresAt=nil,serverTime=os.time()};end local v90={Valid=false,Details=nil,Stop=function() v83.destroyInterface();end};v83.validateLicenseKey=v89;v83.onLicenseKeyAccepted=function(v307,v308) if v90.Valid then return;end v90.Valid=true;v90.Details=v308;v37.Whitelisted=true;v37.IsPremiumUser=v308.subscriptionTier=="Pro" ;if v41 then task.spawn(v41);else v90.PendingStart=true;end end;print("[Authenticate] System Loaded");v78.NightHubAuthRewrite=v90;local v94=rawget(v78,"Key");task.defer(function() if (type(v83.onLicenseKeyAccepted)=="function") then v83.onLicenseKeyAccepted("LOCAL",{valid=true,version="NightHub",subscriptionTier="Pro"});end end);v37.decodeResponse=function(v313) local v314=0 + 0 ;local v315;local v316;while true do if (v314==(0 + 0)) then if (type(v313)~="string") then return false,"Response body is missing";end v315,v316=pcall(v77.JSONDecode,v77,v313);v314=3 -2 ;end if (v314==(3 -2)) then if ( not v315 or (type(v316)~="table")) then return false,"Response body is invalid";end return true,v316;end end end;v42.InitSettings=function() local v317=isfolder;local v318=makefolder;local function v319() if  not v317("NeverFall Hub") then v318("NeverFall Hub");end if  not v317("NeverFall Hub/Hop Boss") then v318("NeverFall Hub/Hop Boss");end writefile("NeverFall Hub/Hop Boss/Night-"   .. v6.Name   .. "-Settings.json" ,v77:JSONEncode(v42.DefaultSettings));end local v320=nil;function v320() local v598,v599=pcall(function() local v788=0 -0 ;while true do if (v788==(0 -0)) then if ( not v317("NeverFall Hub") or  not v317("NeverFall Hub/Hop Boss")) then v319();end return v77:JSONDecode(readfile("NeverFall Hub/Hop Boss/Night-"   .. v6.Name   .. "-Settings.json" ));end end end);if v598 then return v599;end v319();return v320();end v42.DefaultSettings=v320();setmetatable(v3,{__index=v42.DefaultSettings,__newindex=function(v600,v601,v602) if  not v601 then warn("Settings","Missing index!");return;end rawset(v42.DefaultSettings,v601,v602);v319();end});print("[Settings]","Initialize Settings Successful!");end;local v97={};local v98={};local v99={};local function v100(v322,v323,v324) local v325=v3["Finder Webhook Url"];if ( not v325 or (v325=="")) then return;end local v326={title=v323,color=v324,fields={{name="Fruit",value="```"   .. tostring(v322)   .. "```" },{name="Account",value="```"   .. v6.Name   .. "```" },{name="Sea",value="```"   .. tostring(v22)   .. "```" },{name="JobId",value="||"   .. tostring(game.JobId)   .. "||" }}};if v99[v322] then v326.thumbnail={url=v99[v322]};end pcall(request,{Url=v325,Method="POST",Headers={["Content-Type"]="application/json"},Body=v77:JSONEncode({embeds={v326}})});end local function v101() if  not v3["Send Found Fruit"] then return;end for v603,v604 in pairs(v7:GetChildren()) do if ((v604:IsA("Model") or v604:IsA("Tool")) and string.find(v604.Name,"Fruit") and v604:FindFirstChild("Handle")) then local v830=v604:GetAttribute("OriginalName") or v604.Name ;local v831=v830   .. "|"   .. tostring(game.JobId) ;if  not v98[v831] then v98[v831]=true;v97[ #v97 + 1 ]=v830;v100(v830,"Fruit Found (antes do hop)",3447691 -(364 + 324) );end end end end local function v102() local v327=0;local v328;local v329;while true do if (v327==(2 -1)) then v329=(( #v328>0) and table.concat(v328,", ")) or "nenhuma" ;v100(v329,"Fruits In Server",8271532 -4824529 );v327=1 + 1 ;end if (2==v327) then return v329;end if (v327==(0 -0)) then v328={};for v950,v951 in pairs(v7:GetChildren()) do if ((v951:IsA("Model") or v951:IsA("Tool")) and string.find(v951.Name,"Fruit") and v951:FindFirstChild("Handle") and finderPassesMin(v951)) then v328[ #v328 + (1 -0) ]=v951:GetAttribute("OriginalName") or v951.Name ;end end v327=2 -1 ;end end end local v103={["West Dragon"]=3700000000,["East Dragon"]=3200000000,Kitsune=490001268 -(1249 + 19) ,Yeti=126369074 + 13630926 ,Control=120000000,Gas=75000000,Leopard=253013200 -188013200 ,Magnet=50001086 -(686 + 400) ,Dough=30000000,["T-Rex"]=20000000,Gravity=10000000,Mammoth=7846018 + 2153982 ,Spirit=10000229 -(73 + 156) ,Venom=47301 + 9952699 ,Shadow=6500811 -(721 + 90) ,Portal=168635 + 14831365 ,Buddha=10000000,Rumble=22728189 -15728189 ,Blizzard=5000000,Sound=3000470 -(224 + 246) ,Phoenix=4860054 -1860054 ,Pain=3682478 -1682478 ,Spider=1500000,Love=217670 + 982330 ,Quake=23796 + 976204 ,Magma=807924 + 292076 ,Light=1789341 -889341 ,Ghost=850000,Diamond=2662259 -1862259 ,Rubber=780513 -(203 + 310) ,Barrier=700000,Creation=701993 -(1238 + 755) ,Eagle=41918 + 558082 ,Ice=501534 -(709 + 825) ,Sand=921385 -421385 ,Dark=728353 -228353 ,Flame=280864 -(196 + 668) ,Spike=710691 -530691 ,Smoke=207142 -107142 ,Bomb=80833 -(171 + 662) ,Spring=60093 -(4 + 89) ,Chop=105149 -75149 ,Blade=10924 + 19076 ,Spin=32941 -25441 ,Rocket=1961 + 3039 };local function v104(v330) local v331=v330:GetAttribute("Price") or v330:GetAttribute("Value") ;if (type(v331)=="number") then return v331;end return v103[v330:GetAttribute("OriginalName") or v330.Name ];end local function v105(v332) local v333=tonumber(v3["Finder Min Price"]) or (1486 -(35 + 1451)) ;if (v333<=0) then return true;end local v334=v104(v332);return (v334~=nil) and (v334>=v333) ;end local function v106() local function v335(v605) local v606=1453 -(28 + 1425) ;local v607;while true do if (v606==(1994 -(941 + 1052))) then for v999,v1000 in ipairs(v607) do if string.find(v605,v1000,1,true) then return true;end end return false;end if (v606==(0 + 0)) then v605=string.lower(tostring(v605));v607={"Calice","Chalice","God's Chalice","God Chalice"};v606=1;end end end if v24.IsInitialized then for v832,v833 in pairs(v24:GetItems(v25.QUANTITY)) do local v834=0;local v835;local v836;while true do if (v834==0) then v835,v836=pcall(function() return v23.getDataFromId(v833.ItemId):unwrap();end);if (v835 and v836 and v335(v836.StorageKey) and ((v833.Value or (297 -(45 + 252)))>=(1 + 0))) then return true;end break;end end end end for v608,v609 in ipairs({v6.Backpack,v6.Character}) do if v609 then for v952,v953 in pairs(v609:GetChildren()) do if v335(v953.Name) then return true;end end end end return false;end v36.FuncManager=function() local v336;v336={JoinServer=function(v610,v611) local v612=433 -(114 + 319) ;local v613;while true do if (v612==(1 -0)) then v613=queue_on_teleport or (syn and syn.queue_on_teleport) ;if v613 then v613('task.wait(5)\nloadstring(game:HttpGet("https://raw.githubusercontent.com/gusta7xss/Neverfall/refs/heads/main/neverfallhop.lua"))()');end v612=2 -0 ;end if (v612==(0 + 0)) then v40:Notify({Title="NeverFall Finder Hub",Content=v611 or "Joining Server..." ,Duration=7 -2 });v101();v612=1 -0 ;end if ((1965 -(556 + 1407))==v612) then wait(1206.2 -(741 + 465) );return v8.__ServerBrowser:InvokeServer("teleport",tostring(v610));end end end,HopServers=function() local v614=game.ReplicatedStorage:WaitForChild("__ServerBrowser");for v790=466 -(170 + 295) ,100 do local v791=0 + 0 ;local v792;while true do if (v791==(0 + 0)) then v792=v614:InvokeServer(v790);for v1060,v1061 in pairs(v792) do local v1062=0 -0 ;while true do if (v1062==0) then v1061=v1061 and (v1061.Count<(10 + 2)) ;if v1061 then v336.JoinServer(v1060);end break;end end end break;end end end end,GetCountByApi=function(v615) local v616=0 + 0 ;local v617;local v618;local v619;local v620;while true do if (v616==0) then v617,v618=pcall(function() return request({Url=v4   .. "/"   .. v43(v615) ,Method="GET"});end);if  not v617 then return false,"Failed to check boss in api, error: "   .. tostring(v618) ;end v616=1 + 0 ;end if (v616==1) then v619,v620=v37.decodeResponse(v618.Body);if  not v619 then return false,v620;end v616=1232 -(957 + 273) ;end if (v616==(1 + 1)) then return true,"Check "   .. tostring(v615)   .. " successful, found "   .. tostring(v620.count)   .. " servers" ;end end end,SaveServerJoined=function() local v621=0 + 0 ;while true do if (v621==(0 -0)) then table.insert(v28,game.JobId);writefile("ServerJoined.json",v77:JSONEncode(v28));break;end end end};if  not isfile("ServerJoined.json") then v336.SaveServerJoined();end v28=v77:JSONDecode(readfile("ServerJoined.json"));v336.StartHop=function(v622) local v623,v624=pcall(function() return request({Url=v4   .. "/"   .. v43(v622) ,Method="GET"});end);if  not v623 then return false,"Failed to check boss in api, error: "   .. tostring(v624) ;end local v625,v626=v37.decodeResponse(v624.Body);if  not v625 then return false,v626;end if (v626.count<=0) then return false,"No Boss Found!";end table.sort(v626.data,function(v793,v794) return v793.Age<v794.Age ;end);if  not table.find(v28,game.JobId) then v336.SaveServerJoined();end for v795,v796 in pairs(v626.data) do if ((v796.PlaceId==game.PlaceId) and (v796.Players<(31 -19)) and (v796.Sea==v22)) then local v954=0 -0 ;local v955;local v956;while true do if (v954==(0 -0)) then v955,v956=v45.decode(v796.JobId);if (v955 and v956 and (game.JobId~=v956) and  not table.find(v28,v956)) then v336.JoinServer(v956);task.wait(1780.3 -(389 + 1391) );end break;end end end end return true,nil;end;v336.CheckInventory=function(v627) local v628=0 + 0 ;while true do if (v628==(0 + 0)) then if v24.IsInitialized then local v1063=0 -0 ;local v1064;while true do if (v1063==0) then v1064=v24:GetItems(v25.QUANTITY);for v1160,v1161 in pairs(v1064) do local v1162=v23.getDataFromId(v1161.ItemId):unwrap();if ((v1162.StorageKey==v627) and (v1161.Value>=1)) then return {Name=v1162.StorageKey,Count=v1161.Value or (951 -(783 + 168)) ,Type=v1162.Type};end end break;end end end return false;end end end;v336.GetMaterial=function(v629) local v630=0;local v631;while true do if (v630==(0 -0)) then v631=v336.CheckInventory(v629);return (v629 and (typeof(v629)~="boolean") and v631.Count) or (0 + 0) ;end end end;v336.IsFullmoon=function() return ((game.Lighting.ClockTime>=(329 -(309 + 2))) or (game.Lighting.ClockTime<5)) and (game:GetService("Lighting").Sky.MoonTextureId=="http://www.roblox.com/asset/?id=9709149431") ;end;v336.FoundBerries=function() local v632=v11:GetTagged("BerryBush");local v633=math.huge;local v634=nil;for v797=2 -1 , #v632 do local v798=v632[v797];local v799=next;local v800,v801=v798:GetAttributes();for v837,v838 in v799,v800,v801 do if table.find(v26.Berries,v838) then local v1001=v6.Character.HumanoidRootPart.Position;local v1002=(v798.Parent:GetPivot().Position-v1001).Magnitude;if (v1002<=v633) then v633=v1002;v634=v798;end end end end return v634;end;v336.CheckNotify=function(v635) local v636=1212 -(1090 + 122) ;while true do if (v636==0) then for v1003,v1004 in pairs(v6.PlayerGui.Notifications:GetChildren()) do if (v1004 and v1004.Parent and v1004:IsA("TextLabel") and v1004.Text and string.find(string.lower(v1004.Text),v635)) then return true;end end return false;end end end;v336.CheckFruit=function() local v637=next;local v638,v639=v7:GetChildren();for v802,v803 in v637,v638,v639 do if ((v803:IsA("Model") or v803:IsA("Tool")) and string.find(v803.Name,"Fruit") and v803.Parent and v803:FindFirstChild("Handle")) then return v803;end end end;v336.StoreBF=function() local function v640(v804) if (string.find(v804.Name,"Fruit") and v804:GetAttribute("OriginalName")) then local v957=v804:GetAttribute("OriginalName");v16:InvokeServer("StoreFruit",v957,v804);if v3["Send Stored Fruit"] then v100(v957,"Fruit Stored",5763719);end end end for v805,v806 in pairs(v6.Backpack:GetChildren()) do v640(v806);end for v807,v808 in pairs(v6.Character:GetChildren()) do v640(v808);end end;v336.SendWebhook=function(v641,v642) local v643=0 + 0 ;local v644;local v645;while true do if (v643==(0 -0)) then if  not v641 then return false,"Missing Webhook Url!";end if ( not v642 or (typeof(v642)~="table")) then return false,"Missing Body or Body type mismatch!";end v643=1;end if (v643==(2 + 0)) then if (v644 and v645 and (v645.StatusCode==204)) then return true,"Send Webhook Success!";end return false,nil;end if (v643==(1119 -(628 + 490))) then v644,v645=pcall(function() return request({Url=v641,Method="POST",Headers={["Content-Type"]="application/json"},Body=v77:JSONEncode(v642)});end);if ( not v644 or (v645 and (v645.StatusCode~=(37 + 167)))) then return false,"Send Failed, Error: "   .. tostring(v645) ;end v643=4 -2 ;end end end;v336.CheckRaidCastle=function() return v38.GetMobInCFrame(v32);end;return v336;end;v35.Tween=nil;v35.NoClipParts={};v35.Portals={Sea1={["Sky Arena 1"]=Vector3.new( -(21268 -16614),872, -(2533 -(431 + 343))),["Sky Arena 2"]=Vector3.new( -(15942 -8048),5547, -(1099 -719)),["UnderWater City 1"]=Vector3.new(3063 + 813 ,5 + 30 , -1939),["UnderWater City 2"]=Vector3.new(62858 -(556 + 1139) ,11,1819)},Sea2={Mansion=Vector3.new( -288,305,613),["Swan Room"]=Vector3.new(2299 -(6 + 9) ,3 + 12 ,897),["Out Ship"]=Vector3.new( -(3340 + 3178),252 -(28 + 141) , -(57 + 88)),["In Ship"]=Vector3.new(1138 -215 ,125,23290 + 9593 )},Sea3={Mansion=Vector3.new( -(13867 -(486 + 831)),876 -539 , -(26320 -18844)),["Castle On The Sea"]=Vector3.new( -(959 + 4114),314, -(9966 -6814)),["Hydra Island"]=Vector3.new(6944 -(668 + 595) ,1013, -(282 + 31))}};local function v111() local v347=v6.Character;if  not v347 then return nil;end local v348=v347:FindFirstChild("HumanoidRootPart");local v349=v347:FindFirstChildOfClass("Humanoid");if ( not v348 or  not v349 or (v349.Health<=(0 + 0))) then return nil;end return v347,v348,v349;end local function v112(v350) local v351=0 -0 ;while true do if ((290 -(23 + 267))==v351) then if (typeof(v350)=="CFrame") then return v350;end if (typeof(v350)=="Vector3") then return CFrame.new(v350);end v351=1945 -(1129 + 815) ;end if (v351==(388 -(371 + 16))) then if (typeof(v350)=="Instance") then if v350:IsA("Model") then return v350:GetPivot();end if v350:IsA("BasePart") then return v350.CFrame;end end return nil;end end end v35.GetDistance=function(v352,v353,v354) if  not v352 then return;end local v355=((typeof(v352)=="CFrame") and v352.Position) or v352 ;if v353 then v353=((typeof(v353)=="CFrame") and v353.Position) or v353 ;end v353=v353 or v6.Character.HumanoidRootPart.Position ;return (Vector3.new(v355.X,(v354 and (1750 -(1326 + 424))) or v355.Y ,v355.Z) -Vector3.new(v353.X,(v354 and (0 -0)) or v353.Y ,v353.Z)).Magnitude;end;v35.GetArenaName=function(v356) local v357=math.huge;local v358="";for v646,v647 in pairs(v7._WorldOrigin.PlayerSpawns.Pirates:GetChildren()) do if (v647 and v647:FindFirstChild("Part")) then local v839=v35.GetDistance(v647.Part.Position,v356.Position);if (v839<=v357) then v358=v647.Name;v357=v839;end end end return v358;end;v35.GetPortal=function(v359) if ((v22=="Sea3") and (v31~=true)) then return false,nil;end local v360=math.huge;local v361=nil;for v648,v649 in pairs(v35.Portals[v22]) do if (v649 and ((v649-v359.Position).Magnitude<=v360)) then local v840=0 -0 ;while true do if (v840==(118 -(88 + 30))) then v360=(v649-v359.Position).Magnitude;v361=v649;break;end end end end if (v361 and (((v361-v359.Position).Magnitude + (1021 -(720 + 51)))<=v35.GetDistance(v359))) then return true,v361;end return false,nil;end;v35.AddBodyVelocity=function(v362) local v363=0 -0 ;local v364;local v365;local v366;while true do if (v363==0) then v364,v365=v111();if  not v364 then return false;end v363=1;end if (v363==1) then v366=v364:FindFirstChild("Head") or v365 ;if  not v366 then return false;end v363=1778 -(421 + 1355) ;end if (v363==(2 -0)) then if v362 then if  not v366:FindFirstChild("BodyVelocity") then local v1090=Instance.new("BodyVelocity");v1090.Name="BodyVelocity";v1090.MaxForce=Vector3.new(40000,19649 + 20351 ,41083 -(286 + 797) );v1090.Velocity=Vector3.zero;v1090.P=1500;v1090.Parent=v366;end else local v1006=0;local v1007;while true do if (v1006==0) then v1007=v366:FindFirstChild("BodyVelocity");if (v1007 and v1007:IsA("BodyVelocity")) then v1007:Destroy();end v1006=3 -2 ;end if (v1006==1) then for v1150= #v35.NoClipParts,1, -1 do local v1151=v35.NoClipParts[v1150];if (v1151 and v1151.Parent) then v1151.CanCollide=true;end table.remove(v35.NoClipParts,v1150);end break;end end end return true;end end end;v35.UseNoClip=function() local v367=0 -0 ;local v368;while true do if (v367==0) then v368=v111();if  not v368 then return false;end v367=440 -(397 + 42) ;end if (v367==1) then for v958,v959 in pairs(v368:GetDescendants()) do if (v959:IsA("BasePart") and v959.CanCollide) then v959.CanCollide=false;table.insert(v35.NoClipParts,v959);end end return true;end end end;v35.StopTween=function() local v369=0 + 0 ;while true do if (v369==(800 -(24 + 776))) then if v35.Tween then v35.Tween:Cancel();v35.Tween=nil;end v35.AddBodyVelocity(false);break;end end end;v35.Tweento=function(v370,v371) local v372,v373,v374=v111();if ( not v372 or  not v373 or  not v374 or (v374.Health<=(0 -0))) then return false,"Character is not loaded";end local v375=v112(v370);if  not v375 then return false,"Invalid target";end if ((v371==nil) or (v371==true)) then local v809=785 -(222 + 563) ;while true do if ((0 -0)==v809) then v35.AddBodyVelocity(true);v35.UseNoClip();break;end end end if (v35.GetDistance(v375.Position,nil,true)<=(18 + 7)) then v35.StopTween();v373.CFrame=v375;return true,"Arrived";end local v376=v375.Position;local v377,v378=v35.GetPortal(v370);if (v377 and v378) then if (v35.GetDistance(v378,nil,true)<=(210 -(23 + 167))) then v35.StopTween();v16:InvokeServer("requestEntrance",v378);wait(0.2);return false,"Entering Portal";end v376=v378;end if (v35.Tween and (v35.MoveTarget==v376) and  not v35.Tween.Cancelled) then return false,"Tweening";end if v35.Tween then v35.Tween:Cancel();end local v379=v373;local v380={Cancelled=false,Cancel=function(v650) v650.Cancelled=true;end};v35.Tween=v380;v35.MoveTarget=v376;task.spawn(function() local v652=1798 -(690 + 1108) ;local v653;local v654;while true do if (v652==(1 + 0)) then while true do if ( not v380.Cancelled and (v373==v379) and v379.Parent) then local v1097=v9.Heartbeat:Wait();if  not ( not v374 or (v374.Health<=(0 + 0))) then local v1152=v379.Position;local v1153=(v1152-v376).Magnitude;if (v1153<(856 -(40 + 808))) then local v1179=v379.CFrame.Rotation;v379.CFrame=CFrame.new(v376) * v1179 ;break;else local v1181=((tick()<(v35.SlowUntil or (0 + 0))) and 150) or tonumber(v3["Tween Speed"]) or 250 ;if (((v1152-v653).Magnitude>math.max(45 -33 ,v1181 * math.max(v1097,0.004166666666666667 + 0 ) * (3 + 1) )) and (v1153>(v654 + 6))) then v35.SlowUntil=tick() + 4 + 3 ;v1181=721 -(47 + 524) ;end v653=v1152 + ((v376-v1152).Unit * math.min(v1153,v1181 * math.min(v1097,0.1 + 0 ) )) ;local v1182=v379.CFrame.Rotation;v379.CFrame=CFrame.new(v653) * v1182 ;v379.AssemblyLinearVelocity=Vector3.zero;v654=(v653-v376).Magnitude;continue;end end end break;end if (v35.Tween==v380) then v35.Tween=nil;end break;end if (v652==(0 -0)) then v653=v379.Position;v654=(v653-v376).Magnitude;v652=1 -0 ;end end end);return true,"Tweening";end;v38.IsAlive=function(v383) return v383 and v383.Parent and v383:FindFirstChild("Humanoid") and  not v383:FindFirstChild("VehicleSeat") and (v383.Humanoid.Health>(0.5 -0)) and v383:FindFirstChild("HumanoidRootPart") ;end;v38.GetBoss=function(v384) local v385=((typeof(v384)=="string") and {v384}) or v384 ;local v386=nil;for v655,v656 in pairs(v8:GetChildren()) do if (v656 and v38.IsAlive(v656) and table.find(v385,v656.Name)) then v386=v656;break;else v386=nil;end end for v657,v658 in pairs(v14:GetChildren()) do if (v658 and v38.IsAlive(v658) and table.find(v385,v658.Name)) then v386=v658;break;end end return v386;end;v38.TurnBuso=function() if  not v6.Character:FindFirstChild("HasBuso") then local v811=0 + 0 ;while true do if (v811==0) then v16:InvokeServer("Buso");return;end end end end;v38.EquipTool=function(v387) local v388=v6.Backpack:FindFirstChild(v387);if (v388 and v6.Character:FindFirstChild("Humanoid")) then local v812=0 -0 ;while true do if (v812==0) then v6.Character.Humanoid:EquipTool(v388);return;end end end end;v38.EquipWeapon=function(v389) local v390=0 + 0 ;local v391;while true do if ((479 -(341 + 138))==v390) then v391=v389 or v3["Select Tool"] or "Melee" ;for v962,v963 in pairs(v6.Backpack:GetChildren()) do if (v963 and v963:IsA("Tool") and (v963.ToolTip==v391)) then v38.EquipTool(v963.Name);break;end end break;end end end;v38.GetMobInCFrame=function(v392) local v393=next;local v394,v395=v14:GetChildren();local v396=nil;for v659,v660 in v393,v394,v395 do local v661=v660:IsA("Model") and v38.IsAlive(v660) ;if v661 then v661=(v660.HumanoidRootPart.Position-v392.Position).Magnitude<=(Range or 1000) ;end if v661 then v396=v660;end end local v397=next;local v398,v399=v8:GetChildren();for v662,v663 in v397,v398,v399 do local v664=v663:IsA("Model") and v38.IsAlive(v663) ;if v664 then v664=(v663.HumanoidRootPart.Position-v392.Position).Magnitude<=(Range or 1000) ;end if v664 then v396=v663;end end return v396;end;v38.GetNearMob=function() local v400=0 + 0 ;local v401;while true do if (v400==(1 -0)) then return v401;end if (v400==(326 -(89 + 237))) then v401={};for v964,v965 in pairs(v14:GetChildren()) do if (v965 and v38.IsAlive(v965) and ((v965.HumanoidRootPart.Position-v6.Character.HumanoidRootPart.Position).Magnitude<=80)) then v401[ #v401 + 1 ]=v965;end end v400=1;end end end;v38.Kill=function(v402,v403) if (v402 and v38.IsAlive(v402)) then while v3[v403] and v402 and v38.IsAlive(v402)  do task.wait();v38.TurnBuso();v38.EquipWeapon();v35.Tweento(v402.HumanoidRootPart.CFrame * CFrame.new(0 -0 ,63 -33 ,886 -(581 + 300) ) );end end end;local function v128() local v404=v6.PlayerGui:FindFirstChild("TrackedQuestFrame");local v405=v404 and v404:FindFirstChild("Frame") ;if ( not v405 or (v404:IsA("ScreenGui") and  not v404.Enabled) or  not v405.Visible) then return nil;end return v405;end function GetTextTrackedQuest() local v406=1220 -(855 + 365) ;local v407;local v408;while true do if (v406==(4 -2)) then return table.concat(v408,"\n");end if (v406==(0 + 0)) then v407=v128();if  not v407 then return "";end v406=1;end if (v406==(1236 -(1030 + 205))) then v408={};for v966,v967 in pairs(v407:GetDescendants()) do if (v967:IsA("TextLabel") and v967.Visible and (v967.Text~="")) then local v1069= #v408 + 1 ;local v1070=string.lower;local v1071=string.gsub(v967.Text,"-","");v408[v1069]=v1070(v1071);end end v406=2 + 0 ;end end end v38.CheckQuest=function(v409) local v410=GetTextTrackedQuest();local v411=string.lower;local v412=string.gsub(v409,"-","");local v413=v411(v412);return (v410~="") and (string.find(v410,v413,1 + 0 ,true)~=nil) ;end;local function v130() local v414=v38.GetNearMob();local v415=v6.Character:FindFirstChildOfClass("Tool");local v416=( #v414>(286 -(156 + 130))) and v415 ;local v417;if v416 then v417=(v415.ToolTip=="Sword") or (v415.ToolTip=="Melee") ;else v417=v416;end if v417 then local v813={};for v841,v842 in pairs(v414) do if (v842 and v38.IsAlive(v842)) then table.insert(v813,{v842,v842.HumanoidRootPart});end end if ( #v813>0) then local v968=0 -0 ;local v969;while true do if (v968==0) then v969=v813[1][3 -1 ];v19:FireServer(0 + 0 );v968=1;end if (v968==1) then if (v34 and v1.HitFunc) then v1.HitFunc(v969,v813);else v20:FireServer(v969,v813);end break;end end end elseif (( #v414>(0 + 0)) and v415 and (v415.ToolTip=="Blox Fruit")) then local v970=69 -(10 + 59) ;local v971;while true do if (v970==0) then v971=v415:FindFirstChild("LeftClickRemote");if (v971 and v971:IsA("RemoteEvent")) then v971:FireServer(Vector3.new(0 + 0 , -(2462 -1962),1163 -(671 + 492) ),3 + 0 ,true);task.wait(1215.01 -(369 + 846) );v971:FireServer(false);end break;end end end end v39.CreateWindow=function() local v418,v419=pcall(function() return v40:CreateWindow({Title="NeverFall Hub Finder "   .. ((v37.IsPremiumUser and "<font color='rgb(255,255,0)'>[PREMIUM]</font>") or "[FREEMIUM]") ,SubTitle="by @gusta7x0_",TabWidth=39 + 106 ,Size=(v10.TouchEnabled and UDim2.fromOffset(450,342 + 58 )) or UDim2.fromOffset(2495 -(1036 + 909) ,358 + 92 ) ,Acrylic=false,Image="rbxassetid://10511856020",MinimizeKey=Enum.KeyCode.RightShift,Theme=v3["Select Theme"]});end);local function v420(v665,v666) local v667=nil;local v668=nil;local v669=nil;local v670=nil;local function v671(v814) local v815=0 -0 ;local v816;local v817;while true do if (v815==1) then v13:Create(v666,TweenInfo.new(203.2 -(11 + 192) ),{Position=v817}):Play();break;end if (v815==0) then v816=v814.Position-v669 ;v817=UDim2.new(v670.X.Scale,v670.X.Offset + v816.X ,v670.Y.Scale,v670.Y.Offset + v816.Y );v815=1;end end end v665.InputBegan:Connect(function(v818) if ((v818.UserInputType==Enum.UserInputType.MouseButton1) or (v818.UserInputType==Enum.UserInputType.Touch)) then local v972=0;while true do if (v972==0) then v667=true;v669=v818.Position;v972=1 + 0 ;end if ((176 -(135 + 40))==v972) then v670=v666.Position;v818.Changed:Connect(function() if (v818.UserInputState==Enum.UserInputState.End) then v667=false;end end);break;end end end end);v665.InputChanged:Connect(function(v819) if ((v819.UserInputType==Enum.UserInputType.MouseMovement) or (v819.UserInputType==Enum.UserInputType.Touch)) then v668=v819;end end);v10.InputChanged:Connect(function(v820) if ((v820==v668) and v667) then v671(v820);end end);end if  not v418 then return false,"Failed to create window, BUGS: "   .. tostring(v419) ;end local v421=Instance.new("ScreenGui");local v422=Instance.new("ImageButton");local v423=Instance.new("UICorner");local v424=Instance.new("Frame");v421.Parent=game.CoreGui;v424.Parent=v421;v424.Size=UDim2.new(0 -0 ,37 + 23 ,0,132 -72 );v424.BackgroundTransparency=0;v424.AnchorPoint=Vector2.new(0.5,0.5 -0 );v424.Position=UDim2.new(0.2,176 -(50 + 126) ,0.2,0);v424.BackgroundColor3=Color3.new(0,0 -0 ,0);v424.BorderColor3=Color3.fromRGB(0 + 0 ,1413 -(1233 + 180) ,0);v424.BorderSizePixel=969 -(522 + 447) ;v422.Parent=v424;v422.Size=UDim2.new(1421 -(107 + 1314) ,26 + 29 ,0,137 -92 );v422.Image="rbxassetid://10511855986";v422.AnchorPoint=Vector2.new(0.5,0.5);v422.Position=UDim2.new(0.5,0 + 0 ,0.5 -0 ,0 -0 );v422.BackgroundColor3=Color3.new(0,1910 -(716 + 1194) ,0 + 0 );v422.BorderColor3=Color3.fromRGB(0 + 0 ,503 -(74 + 429) ,0);v422.BackgroundTransparency=1;v422.BorderSizePixel=0 -0 ;v422.AutoButtonColor=false;v423.Parent=v424;v423.CornerRadius=UDim.new(0,50 + 50 );v422.MouseButton1Click:Connect(function() local v672=0 -0 ;local v673;while true do if (v672==2) then v12:SendKeyEvent(true,"RightShift",false,game);v12:SendKeyEvent(false,"RightShift",false,game);break;end if (v672==(1 + 0)) then v673:Play();v673.Completed:Connect(function() v422.Rotation=0 -0 ;end);v672=4 -2 ;end if (v672==(433 -(279 + 154))) then v422.Size=UDim2.new(0,833 -(454 + 324) ,0 + 0 ,62 -(12 + 5) );v673=v13:Create(v422,TweenInfo.new(0.85 + 0 ,Enum.EasingStyle.Quad),{Rotation=917 -557 ,Size=UDim2.new(0 + 0 ,55,0,45)});v672=1094 -(277 + 816) ;end end end);v420(v424,v422);print("[UI]","Create Window");return true,v419;end;v39.CreateTabs=function(v447) v39.Tabs={};v39.Features={};v39.TotalTabs=0 -0 ;for v674,v675 in pairs({{"Server","server"},{"Hop Auto","home"},{"Farm","layers"},{"ESP","eye"},{"Webhook","rbxassetid://136418130625199"},{"Settings","settings"}}) do v39.TotalTabs=v39.TotalTabs + (1775 -(1111 + 663)) ;v39.Tabs[v675[1]]=v447:AddTab({Title=v675[1],Icon=v675[2]});v39.Features[v675[1]]={};end print("[UI]","Created Total",tostring(v39.TotalTabs),"Tabs!");end;v39.BuildUI=function(v451,v452,v453) if  not v451 then return false,"Missing Tab";end if  not v452 then return false,"Missing Type of Feature";end if  not v453 then return false,"Missing the feauture configs";end if (v452=="Button") then v39.Features[v453.Title]=v451:AddButton(v453);elseif (v452=="Textbox") then local v974=1579 -(874 + 705) ;while true do if (v974==(0 + 0)) then v453.Numberic=v453.Numberic or false ;v453.Default=v453.Default or v3[v453.Title] or "" ;v974=1 + 0 ;end if (v974==1) then v453.Callback=v453.Callback or function() end ;v39.Features[v453.Title]=v451:AddInput("IDK",v453);break;end end elseif (v452=="Paragraph") then v39.Features[v453.Title]=v451:AddParagraph(v453);elseif (v452=="Toggle") then local v1120=0 -0 ;while true do if (v1120==(0 + 0)) then v453.Default=v453.Default or v3[v453.Title] or false ;v453.Callback=v453.Callback or function(v1199) v3[v453.Title]=v1199;end ;v1120=680 -(642 + 37) ;end if (1==v1120) then v39.Features[v453.Title]=v451:AddToggle("Toggle",v453);break;end end elseif (v452=="Dropdown") then v453.Multi=v453.Multi or false ;v453.Default=v453.Default or v3[v453.Title] or (v453.Multi and {}) or "" ;v453.Callback=v453.Callback or function(v1190) v3[v453.Title]=v1190;end ;v39.Features[v453.Title]=v451:AddDropdown("Dropdown",v453);elseif (v452=="Slider") then v453.Rounding=v453.Rounding or 1 ;v453.Default=v453.Default or v3[v453.Title] or v453.Min ;v453.Callback=v453.Callback or function(v1206) v3[v453.Title]=v1206;end ;v39.Features[v453.Title]=v451:AddSlider("Slider",v453);elseif (v452=="Seperator") then v451:AddSection(v453.Title);end return true,nil;end;local v134=v36.FuncManager();local v135={Mythical={"Dragon","Kitsune","Leopard","Dough","Buddha","Control","Venom","Spirit"},Legendary={"Phoenix","Shadow","Portal","Rumble","Sound","Dark"}};local v136={Mythical=Color3.fromRGB(255,1295 -(636 + 589) ,90),Legendary=Color3.fromRGB(605 -350 ,350 -180 ,48 + 12 ),Common=Color3.fromRGB(93 + 162 ,255,255)};local v137={};local v138=false;local v139=nil;local function v140() local v454=1015 -(657 + 358) ;while true do if (v454==(2 -1)) then v139.Name="NightHubFruitArrows";v139.IgnoreGuiInset=true;v454=2;end if (v454==(4 -2)) then v139.ResetOnSpawn=false;v139.Parent=v6:WaitForChild("PlayerGui");v454=1190 -(1151 + 36) ;end if (v454==(3 + 0)) then return v139;end if (v454==(0 + 0)) then if (v139 and v139.Parent) then return v139;end v139=Instance.new("ScreenGui");v454=1;end end end local function v141(v455,v456) if v456.gui then v456.gui:Destroy();end if v456.arrow then v456.arrow:Destroy();end v137[v455]=nil;end local function v142() for v679,v680 in pairs(v137) do v141(v679,v680);end end local function v143() local v458=v7.CurrentCamera;local v459=v6.Character;local v460=v459 and v459:FindFirstChild("HumanoidRootPart") ;local v461=v3["ESP Fruit"]==true ;local v462=v3["ESP Fruit Arrow"]==true ;local v463={};for v681,v682 in pairs(v7:GetChildren()) do if ((v682:IsA("Model") or v682:IsA("Tool")) and string.find(v682.Name,"Fruit") and v682:FindFirstChild("Handle")) then v463[v682]=true;end end for v683,v684 in pairs(v137) do if ( not v463[v683] or  not v683.Parent) then v141(v683,v684);end end local v464=v458.ViewportSize;local v465=Vector2.new(v464.X/(5 -3) ,v464.Y/(1834 -(1552 + 280)) );local v466=(math.min(v464.X,v464.Y)/2) -(874 -(64 + 770)) ;for v685 in pairs(v463) do local v686=v685:FindFirstChild("Handle");local v687=v137[v685];if  not v687 then v687={};v137[v685]=v687;end if  not v687.gui then local v849=Instance.new("BillboardGui");v849.Name="NightHubFruitESP";v849.Adornee=v686;v849.AlwaysOnTop=true;v849.Size=UDim2.fromOffset(150 + 70 ,90 -50 );v849.StudsOffset=Vector3.new(0 + 0 ,3,1243 -(157 + 1086) );v849.Parent=v686;local v856=Instance.new("TextLabel");v856.Size=UDim2.fromScale(1 -0 ,1);v856.BackgroundTransparency=1;v856.TextStrokeTransparency=0;v856.TextColor3=Color3.fromRGB(1116 -861 ,255,390 -135 );v856.TextSize=14;v856.Font=Enum.Font.GothamBold;v856.Parent=v849;v687.gui=v849;v687.label=v856;end local v688=v685:GetAttribute("OriginalName") or v685.Name ;local v689={v688};if (v3["ESP Fruit Distance"] and v460) then table.insert(v689,math.floor((v686.Position-v460.Position).Magnitude)   .. "m" );end v687.label.Text=table.concat(v689," | ");v687.gui.Enabled=v461;if (v462 and v460 and v458) then local v867=0;local v868;local v869;local v870;while true do if (v867==(820 -(599 + 220))) then v870=v869 and (v868.Z>(0 -0)) ;if v870 then v687.arrow.Visible=false;else local v1122=1931 -(1813 + 118) ;local v1123;local v1124;while true do if (v1122==(1 + 0)) then if (v1123.Magnitude<(1217.001 -(841 + 376))) then v1123=Vector2.new(0, -1);end v1123=v1123.Unit;v1122=2 -0 ;end if (v1122==(1 + 1)) then v1124=v465 + (v1123 * v466) ;v687.arrow.Position=UDim2.fromOffset(v1124.X,v1124.Y);v1122=8 -5 ;end if (v1122==0) then v1123=Vector2.new(v868.X,v868.Y) -v465 ;if (v868.Z<(859 -(464 + 395))) then v1123= -v1123;end v1122=1;end if (v1122==3) then v687.arrow.Rotation=math.deg(math.atan2(v1123.Y,v1123.X));v687.arrow.Visible=true;break;end end end break;end if (v867==0) then if  not v687.arrow then local v1125=Instance.new("TextLabel");v1125.Size=UDim2.fromOffset(71 -43 ,28);v1125.AnchorPoint=Vector2.new(0.5 + 0 ,837.5 -(467 + 370) );v1125.BackgroundTransparency=1;v1125.Text="➤";v1125.TextSize=44 -22 ;v1125.TextColor3=Color3.fromRGB(255,188 + 67 ,874 -619 );v1125.TextStrokeTransparency=0 + 0 ;v1125.Font=Enum.Font.GothamBold;v1125.Parent=v140();v687.arrow=v1125;end v868,v869=v458:WorldToViewportPoint(v686.Position);v867=1;end end elseif v687.arrow then v687.arrow.Visible=false;end end end local function v144() if v138 then return;end v138=true;task.spawn(function() local v692=0;while true do if ((2 -1)==v692) then v138=false;break;end if (v692==(520 -(150 + 370))) then while v3["ESP Fruit"] or v3["ESP Fruit Arrow"]  do local v1011=0;local v1012;local v1013;while true do if (v1011==(1282 -(74 + 1208))) then v1012,v1013=pcall(v143);if  not v1012 then warn("[ESP]",v1013);end v1011=1;end if (v1011==1) then task.wait(0.2 -0 );break;end end end v142();v692=1;end end end);end local v145={};local v146=nil;local function v147() local v467=game:GetService("Lighting");v467.FogColor=Color3.fromRGB(255,255,1209 -954 );v467.FogEnd=711554648 + 288445351 ;end local function v148(v470) local v471=0;local v472;while true do if (v471==1) then v145={};if v470 then if  not v146 then v146={start=v472.FogStart,en=v472.FogEnd,color=v472.FogColor};end v147();v145[391 -(14 + 376) ]=v472.Changed:Connect(function(v1074) if ((v1074=="FogEnd") or (v1074=="FogColor")) then v147();end end);elseif v146 then v472.FogStart=v146.start;v472.FogEnd=v146.en;v472.FogColor=v146.color;v146=nil;end break;end if ((0 -0)==v471) then v472=game:GetService("Lighting");for v975,v976 in ipairs(v145) do v976:Disconnect();end v471=1;end end end v39.StartingUI=function() local v473=0;local v474;local v475;while true do if (v473==(2 + 0)) then for v977,v978 in pairs({Server={{"Paragraph",{Title="Boss Spawns In Server",Content="Checking..."}},{"Paragraph",{Title="Status Script",Content="No action"}},{"Paragraph",{Title="Server Data",Content="Click button show server data to see"}},{"Seperator",{Title="Teleport"}},{"Textbox",{Title="Enter Night Hub JobId",Desc="enter night hub job id, you can get it in my discord server.",PlaceHolder="Enter Job Id",Callback=function(arg) local FlatIdent_1D0A6=901 -(652 + 249) ;local v7;local v8;while true do if (FlatIdent_1D0A6==0) then v7,v8=v45.decode(arg,v70);if (v7 and v8) then v134.JoinServer(v8);else print(v8);end break;end end end}},{"Textbox",{Title="Enter Job Id",Desc="enter any server job id",PlaceHolder="Enter Job Id",Callback=function(arg) v134.JoinServer(tostring(arg));end}},{"Button",{Title="Show Server Data",Callback=function() v40:Notify({Title="Show Server Data",Content="Update Successful!",Duration=6});v39.Features["Server Data"]:SetDesc("JobId: "   .. tostring(game.JobId)   .. "\nPlayers: "   .. tostring( #v5:GetPlayers())   .. "\nPlaceId: "   .. tostring(game.PlaceId) );end}},{"Button",{Title="Rejoin Server",Callback=function() v134.JoinServer(game.JobId);end}}},["Hop Auto"]={{"Dropdown",{Title="Teleport World",Desc="Click any option to teleport, ex: Sea1, Sea2, ...",Values={"Sea 1","Sea 2","Sea 3"},Callback=function(arg) local FlatIdent_63284=0;while true do if (FlatIdent_63284==(0 + 0)) then v40:Notify({Title="Start Teleporting...",Content="Processing...",Duration=4 + 6 });if (arg=="Sea 1") then v16:InvokeServer("TravelMain");elseif (arg=="Sea 2") then v16:InvokeServer("TravelDressrosa");elseif (arg=="Sea 3") then v16:InvokeServer("TravelZou");end break;end end end}},{"Seperator",{Title="Configuration"}},{"Dropdown",{Title="Select Tool",Desc="select tool to attack boss",Values={"Melee","Sword","Blox Fruit"}}},{"Toggle",{Title="Auto Buso"}},{"Seperator",{Title="Farm"}},{"Dropdown",{Title="Select Boss",Desc="no desc",Values={"Soul Reaper","Cake Prince","Elite","Rip Indra","Dough King","Tyrant Of The Skies","Darkbeard","Cursed Captain","Cake Queen"}}},{"Button",{Title="Check Boss In API",Callback=function() local v7,v8=v134.GetCountByApi(v3["Select Boss"]);v40:Notify({Title="Check Boss In API",Content=tostring(v8),Duration=8});end}},{"Toggle",{Title="Start Farm Boss"}},{"Toggle",{Title="Auto Hop Find Boss"}},{"Seperator",{Title="Others"}},{"Toggle",{Title="Auto Hop Fullmoon"}},{"Toggle",{Title="Auto Hop Castle Raid"}},{"Toggle",{Title="Auto Hop Legendary Sword",Desc="Auto buy in Farm Tab"}},{"Toggle",{Title="Auto Hop Berry"}},{"Toggle",{Title="Auto Hop Dough King"}},{"Toggle",{Title="Auto Hop Near Moon"}},{"Toggle",{Title="Auto Hop Mirage Island"}},{"Toggle",{Title="Auto Hop Prehistoric Island"}},{"Toggle",{Title="Auto Hop Kitsune Island"}},{"Toggle",{Title="Auto Hop Find Fruits"}},{"Seperator",{Title="Hop Click"}},{"Button",{Title="Hop Sword Legendary",Callback=function() v134.StartHop("SwordLegendary");end}},{"Button",{Title="Hop Fullmoon",Callback=function() v134.StartHop("Fullmoon");end}},{"Button",{Title="Hop Castle Raid",Callback=function() v134.StartHop("CastleRaid");end}},{"Button",{Title="Hop Near Moon",Callback=function() v134.StartHop("NearMoon");end}},{"Button",{Title="Hop Berry",Callback=function() v134.StartHop("Berry");end}},{"Button",{Title="Hop Mirage Island",Callback=function() v134.StartHop("Mirage");end}},{"Button",{Title="Hop Prehistoric Island",Callback=function() v134.StartHop("PrehistoricIsland");end}},{"Button",{Title="Hop Kitsune Island",Callback=function() v134.StartHop("KitsuneIsland");end}},{"Button",{Title="Hop Fruits",Callback=function() v134.StartHop("Fruits");end}}},Farm={{"Paragraph",{Title="Trick",Content="You find Auto Hop Boss or Auto Farm Boss?\nAuto Hop and Auto Farm Boss in Hop Auto Tab"}},{"Toggle",{Title="Teleport to Fruits"}},{"Toggle",{Title="Teleport to Berry"}},{"Toggle",{Title="Auto Buy Legendary Sword",Desc="make sure you have more than 2,000,000$ beli"}},{"Toggle",{Title="Auto Castle Raid",Desc="Auto hop castle raid in Hop Auto Tab"}},{"Seperator",{Title="Items"}},{"Toggle",{Title="Auto Yama"}},{"Toggle",{Title="Auto Tushita"}},{"Toggle",{Title="Auto True Triple Katana"}},{"Seperator",{Title="Race"}},{"Toggle",{Title="Auto Ghoul"}},{"Seperator",{Title="Auto Calice"}},{"Toggle",{Title="Auto Calice",Desc="farma elite até pegar o calice, depois para de hopar"}}},Webhook={{"Textbox",{Title="Enter Webhook Url",Desc="Put your discord webhook url here!",PlaceHolder="Put webhook here!",Callback=function(arg) v3["Enter Webhook Url"]=arg;end}},{"Toggle",{Title="Send Webhook Killed Boss"}},{"Toggle",{Title="@everyone"}},{"Button",{Title="Send Test",Callback=function() local FlatIdent_74EA4=0 -0 ;local v7;local v8;while true do if (FlatIdent_74EA4==0) then v7,v8=v134.SendWebhook(v3["Enter Webhook Url"],{content="@everyone Hello, This is test message in Hop Boss V2"});v40:Notify({Title="Webhook Test",Content=tostring(v8),Duration=5});break;end end end}},{"Seperator",{Title="Finder Fruit"}},{"Textbox",{Title="Finder Webhook Url",Desc="webhook separado pras frutas",PlaceHolder="Put webhook here!",Callback=function(arg) v3["Finder Webhook Url"]=arg;end}},{"Toggle",{Title="Send Found Fruit",Desc="manda as frutas achadas antes de trocar de server"}},{"Toggle",{Title="Send Stored Fruit",Desc="manda quando guarda uma fruta"}},{"Button",{Title="Test Finder Webhook",Callback=function() local FlatIdent_84C31=0;while true do if ((0 -0)==FlatIdent_84C31) then v100("Test","Finder Webhook Test",3447361 -(237 + 121) );v40:Notify({Title="Finder Webhook",Content="Teste enviado, confere no Discord",Duration=902 -(525 + 372) });break;end end end}},{"Button",{Title="Test Show Fruits",Callback=function() local FlatIdent_2DD98=777 -(643 + 134) ;local text;while true do if ((0 + 0)==FlatIdent_2DD98) then text=v102();v40:Notify({Title="Test Show Fruits",Content=text,Duration=14 -8 });break;end end end}},{"Toggle",{Title="Show Fruits In Server",Desc="manda as frutas do server no webhook ao ligar",Callback=function(arg) local FlatIdent_69531=0;while true do if (FlatIdent_69531==(0 -0)) then v3["Show Fruits In Server"]=arg;if arg then local FlatIdent_6134A=0;local text;while true do if (FlatIdent_6134A==0) then text=v102();v40:Notify({Title="Fruits In Server",Content=text,Duration=725 -(316 + 403) });break;end end end break;end end end}},{"Dropdown",{Title="Finder Min Price",Desc="só acha fruta a partir desse valor",Values={"0","500000","1000000","5000000","10000000"},Default="1000000",Callback=function(arg) v3["Finder Min Price"]=arg;end}}},ESP={{"Toggle",{Title="ESP Fruit",Callback=function(arg) local FlatIdent_4FAC8=0 -0 ;while true do if (FlatIdent_4FAC8==0) then v3["ESP Fruit"]=arg;if arg then v144();end break;end end end}},{"Toggle",{Title="ESP Fruit Arrow",Callback=function(arg) local FlatIdent_9010=0 -0 ;while true do if (FlatIdent_9010==(0 + 0)) then v3["ESP Fruit Arrow"]=arg;if arg then v144();end break;end end end}},{"Seperator",{Title="Settings"}},{"Toggle",{Title="ESP Fruit Name"}},{"Toggle",{Title="ESP Fruit Distance"}}},Settings={{"Seperator",{Title="Team"}},{"Toggle",{Title="Auto Join Team"}},{"Dropdown",{Title="Select Team",Desc="time que o script força ao entrar",Values={"Marines","Pirates"}}},{"Toggle",{Title="Enable Fast Attack"}},{"Slider",{Title="Tween Speed",Max=1023 -723 ,Min=236 -56 }},{"Dropdown",{Title="Select Theme",Values={"Dark","Darker","Light","Aqua","Amethyst","Rose"},Callback=function(arg) v40:SetTheme(arg);v3["Select Theme"]=arg;end}},{"Toggle",{Title="Remove Fog",Callback=function(arg) v3["Remove Fog"]=arg;v148(arg);end}}}}) do local v979=0 -0 ;local v980;while true do if (v979==(0 -0)) then v980=v39.Tabs[v977];if v980 then for v1167,v1168 in pairs(v978) do v39.BuildUI(v980,v1168[1957 -(1869 + 87) ],v1168[2]);end end break;end end end print("[UI]","Started UI!");break;end if (v473==(3 -2)) then v39.CreateTabs(v475);v475:SelectTab(1902 -(484 + 1417) );v473=2;end if (v473==(0 -0)) then v474,v475=v39.CreateWindow();if  not v474 then local v1015=0 -0 ;while true do if (v1015==(773 -(48 + 725))) then warn("Library","Cannot Create Window!, BUGS:",v475);return;end end end v473=1;end end end;v27.LoadFuncs=function() v27.Funcs={["Auto Buso"]=function() if  not v6.Character:FindFirstChild("HasBuso") then v16:InvokeServer("Buso");wait(1);end end,["Enable Fast Attack"]=v130,["Start Farm Boss"]=function() if ((v3["Select Boss"]==nil) or (v3["Select Boss"]=="")) then return;end local v693=(v3["Select Boss"]=="Rip Indra") and {"rip_indra","rip_indra True Form"} ;local v694;if v693 then v694=v693;else v694=(v3["Select Boss"]=="Elite") and {"Urban","Deandre","Diablo"} ;end local v695=v38.GetBoss(v694 or ((v3["Select Boss"]=="Tyrant Of The Skies") and "Tyrant of the Skies") or v3["Select Boss"] );if v695 then local v871=0;while true do if (v871==(0 + 0)) then v29=v695.Name;if ((v3["Select Boss"]=="Elite") and  not v38.CheckQuest(v695.Name)) then v16:InvokeServer("EliteHunter");elseif (((v3["Select Boss"]=="Cake Prince") or (v3["Select Boss"]=="Dough King")) and (v35.GetDistance(v695.HumanoidRootPart.Position)>=(4008 -2508))) then local v1169=0;local v1170;local v1171;local v1172;while true do if ((0 + 0)==v1169) then v1170=v7.Map:FindFirstChild("CakeLoaf");v1171=v1170 and v1170:FindFirstChild("BigMirror") ;v1169=1 + 0 ;end if (v1169==1) then v1172=v1171 and v1171:FindFirstChild("Main") ;if (v1170 and v1171 and v1172 and v1172:FindFirstChild("TouchInterest")) then local v1209=0;while true do if (v1209==(853 -(152 + 701))) then firetouchinterest(v1172,v6.Character.HumanoidRootPart,1311 -(430 + 881) );firetouchinterest(v1172,v6.Character.HumanoidRootPart,1 + 0 );v1209=1;end if (v1209==(896 -(557 + 338))) then wait(0.1 + 0 );break;end end else v35.Tweento(CFrame.new( -(5985 -3861),69, -(43425 -31024)));end break;end end else v38.Kill(v695,"Start Farm Boss");end break;end end else local v872=v134.CheckNotify("earned");local v873=v134.CheckNotify("fragments");if ((v872 or v873) and (v29~="") and v3["Send Webhook Killed Boss"] and  not v30[v872]) then local v1016=0 -0 ;local v1017;local v1018;local v1019;local v1020;local v1021;local v1022;local v1023;local v1024;local v1025;local v1026;local v1027;local v1028;while true do if (v1016==(2 -1)) then v1019={content=((v3["@everyone"] and "@everyone ") or "")   .. "Killed "   .. tostring(v29) };v1020={};v1021={author={name="Night Hub Hop Boss V2"}};v1016=803 -(499 + 302) ;end if (0==v1016) then v30[v872]=true;v1017=v134.SendWebhook;v1018=v3["Enter Webhook Url"];v1016=1;end if (v1016==(871 -(39 + 827))) then v1021.fields=v1022;v1021.thumbnail={url="https://cdn.discordapp.com/attachments/1481159425652822117/1492901169696215111/Sparxie_Laugh.gif?ex=69e63e8f&is=69e4ed0f&hm=8713614b8ddc0704b2b23baf87fc4ebe7ae3a4089aa5546dde443010f44c609e&"};v1020[2 -1 ]=v1021;v1016=13 -7 ;end if (6==v1016) then v1019.embeds=v1020;v1027,v1028=v1017(v1018,v1019);print(v1027,v1028);v1016=7;end if (v1016==4) then v1022[2]=v1024;v1022[11 -8 ]=v1025;v1022[5 -1 ]=v1026;v1016=5;end if ((1 + 2)==v1016) then v1025={name="Sea",value="```"   .. tostring(v22)   .. "```" };v1026={name="JobId",value="||"   .. tostring(game.JobId)   .. "||" };v1022[2 -1 ]=v1023;v1016=1 + 3 ;end if (v1016==(10 -3)) then wait(104.2 -(103 + 1) );break;end if (v1016==(556 -(475 + 79))) then v1022={};v1023={name="Boss Name",value="```"   .. tostring(v29)   .. "```" };v1024={name="Account Name",value="```"   .. tostring(v6.Name)   .. "```" };v1016=3;end end end if v3["Auto Hop Find Boss"] then local v1029=0;while true do if (v1029==0) then wait(4 -2 );v134.StartHop(v3["Select Boss"]);break;end end end end end,["Auto Hop Fullmoon"]=function() if (v22=="Sea3") then if v134.IsFullmoon() then local v1030=0 -0 ;while true do if (v1030==(0 + 0)) then v40:Notify({Title="Auto Hop Fullmoon",Content="Current Server is Fullmoon, Please turn off auto hop fullmoon!!",Duration=5 + 0 });wait(1509 -(1395 + 108) );break;end end else v134.StartHop("Fullmoon");wait(2);end end end,["Auto Hop Berry"]=function() if  not v134.FoundBerries() then local v874=0 -0 ;while true do if (v874==(1204 -(7 + 1197))) then v134.StartHop("Berry");wait(1 + 1 );break;end end else v40:Notify({Title="Auto Hop Berry",Content="Current Server have Berry, Please turn off auto hop berry!!",Duration=2 + 3 });wait(325 -(27 + 292) );end end,["Auto Hop Near Moon"]=function() if ((v22=="Sea3") and (game:GetService("Lighting").Sky.MoonTextureId=="http://www.roblox.com/asset/?id=9709149052")) then v40:Notify({Title="Auto Hop Near Moon",Content="Current Moon in Server is Near Moon, Please turn off auto hop near moon!!",Duration=14 -9 });wait(7 -1 );elseif (v22=="Sea3") then local v1031=0 -0 ;while true do if (v1031==(0 -0)) then v134.StartHop("NearMoon");wait(2);break;end end end end,["Auto Hop Mirage Island"]=function() if ((v22=="Sea3") and v7.Map:FindFirstChild("MysticIsland")) then local v875=0 -0 ;while true do if (0==v875) then v40:Notify({Title="Auto Hop Mirage Island",Content="Current Server Found Mirage Island, Please turn off auto hop mirage island!!",Duration=144 -(43 + 96) });wait(24 -18 );break;end end elseif (v22=="Sea3") then v134.StartHop("Mirage");wait(3 -1 );end end,["Auto Hop Prehistoric Island"]=function() if ((v22=="Sea3") and v7.Map:FindFirstChild("PrehistoricIsland")) then local v876=0 + 0 ;while true do if (v876==(0 + 0)) then v40:Notify({Title="Auto Hop Prehistoric Island",Content="Current Server Found Prehistoric Island, Please turn off auto hop Prehistoric Island!!",Duration=9 -4 });wait(6);break;end end elseif (v22=="Sea3") then local v1032=0;while true do if (v1032==(0 + 0)) then v134.StartHop("PrehistoricIsland");wait(3 -1 );break;end end end end,["Auto Hop Kitsune Island"]=function() if ((v22=="Sea3") and v7.Map:FindFirstChild("KitsuneIsland")) then local v877=0 + 0 ;while true do if (v877==0) then v40:Notify({Title="Auto Hop Kitsune Island",Content="Current Server Found Kitsune Island, Please turn off auto hop Kitsune Island!!",Duration=1 + 4 });wait(6);break;end end elseif (v22=="Sea3") then v134.StartHop("KitsuneIsland");wait(1753 -(1414 + 337) );end end,["Auto Hop Find Fruits"]=function() if v134.CheckFruit() then if  not v3["Teleport to Fruits"] then v40:Notify({Title="Auto Hop Find Fruits",Content="Current Server Found Fruit Spawn, Please turn on auto Teleport to Fruits!!",Duration=5});wait(1946 -(1642 + 298) );end else local v878=0 -0 ;while true do if (v878==0) then wait(5 -3 );v134.StartHop("Fruits");break;end end end end,["Teleport to Fruits"]=function() local v696=0 -0 ;while true do if (v696==(0 + 0)) then v134.StoreBF();if v134.CheckFruit() then local v1076=v134.CheckFruit();if (v1076.Name=="Fruit ") then v35.Tweento(v1076.Handle.CFrame,true);else local v1148=0;while true do if ((0 + 0)==v1148) then firetouchinterest(v1076.Handle,v6.Character.PrimaryPart,972 -(357 + 615) );firetouchinterest(v1076.Handle,v6.Character.PrimaryPart,1 + 0 );break;end end end end break;end end end,["Teleport to Berry"]=function() local v697=v134.FoundBerries();if v697 then local v879=v697:FindFirstChildOfClass("Model");if v879 then local v1033=v6.Character.HumanoidRootPart.Position;if ((v879:GetPivot().Position-v1033).Magnitude<=15) then fireproximityprompt(v879.ProximityPrompt);end v35.Tweento(v879:GetPivot(),true);else v35.Tweento(v697.Parent:GetPivot(),true);end end end,["Auto Buy Legendary Sword"]=function() if v16:InvokeServer("LegendarySwordDealer","1") then local v880=0;local v881;while true do if (v880==(0 -0)) then v881=v16:InvokeServer("LegendarySwordDealer","2");if (v881==0) then v40:Notify({Title="Buy Legendary Sword",Content="Bro it's fucking poor 😭🙏🙏, you don't enough money!",Duration=7});wait(8);elseif (v881==(2 + 0)) then v40:Notify({Title="Buy Legendary Sword",Content="You already have this sword",Duration=7});wait(16 -8 );else v40:Notify({Title="Buy Legendary Sword",Content="Buyed "   .. tostring(v16:InvokeServer("LegendarySwordDealer","1")) ,Duration=6 + 1 });end break;end end end end,["Auto Hop Legendary Sword"]=function() if ( not v16:InvokeServer("LegendarySwordDealer","1") and (v22=="Sea2")) then wait(1 + 1 );v134.StartHop("SwordLegendary");end end,["Auto Castle Raid"]=function() if (v22=="Sea3") then local v882= not raidcastletime;if  not v882 then local v1034=raidcastletime;v882=(tick() -v1034)>=(22 + 13) ;end if v882 then raidcastletime=tick();end local v883= not v134.CheckRaidCastle();if v883 then local v1035=raidcastletime;v883=(tick() -v1035)>=(1331 -(384 + 917)) ;end if (v883 and  not v33) then wait(699 -(128 + 569) );v134.StartHop("CastleRaid");else local v1036=1543 -(1407 + 136) ;local v1037;while true do if (v1036==1) then if (v134.CheckNotify("fragment") or v134.CheckNotify("good job!") or v134.CheckNotify("100f")) then v33=false;end break;end if ((1887 -(687 + 1200))==v1036) then v1037=v38.GetMobInCFrame(v32);if v1037 then local v1173=1710 -(556 + 1154) ;while true do if (v1173==(0 -0)) then v33=true;v38.Kill(v1037,"Auto Castle Raid");break;end end end v1036=96 -(9 + 86) ;end end end end end,["Auto Yama"]=function() if (v22=="Sea3") then if (v16:InvokeServer("EliteHunter","Progress")>=(451 -(275 + 146))) then if ( not v7.Map:FindFirstChild("Waterfall") or  not v7.Map.Waterfall:FindFirstChild("SealedKatana")) then v35.Tweento(CFrame.new(854.7192400000004 + 4396 ,19.842907,517.177002 -(29 + 35) ));elseif (v35.GetDistance(v7.Map.Waterfall.SealedKatana.Hitbox.Position)<=15) then fireclickdetector(v7.Map.Waterfall.SealedKatana.Hitbox.ClickDetector);else v35.Tweento(v7.Map.Waterfall.SealedKatana.Hitbox.CFrame);end else local v1038=v38.GetBoss({"Urban","Deandre","Diablo"});if v1038 then v38.Kill(v1038,"Auto Yama");else local v1112=0 + 0 ;while true do if (v1112==0) then wait(1);v134.StartHop("Elite");break;end end end end end end,["Auto Tushita"]=function() if (v22=="Sea3") then if (v134.CheckInventory("Tushita") or (v6.Data.Level.Value<(3012 -(53 + 959)))) then return;end if  not v16:InvokeServer("TushitaProgress").OpenedDoor then if v38.GetBoss({"rip_indra","rip_indra True Form"}) then if  not v44("Holy Torch") then v35.Tweento(CFrame.new(6002.06592 -(147 + 138) ,917.8161335 -(813 + 86) ,228.124573 + 24 ,0.926925123, -(3.2500004e-8 -0), -(492.375246346 -(18 + 474)),3.454661e-8 + 0 ,3 -2 , -1.2735254e-9,1086.375246346 -(860 + 226) , -(303.000000011783 -(121 + 182)),0.926925123));else local v1154=0;while true do if (v1154==(0 + 0)) then EquipTool("Holy Torch");for v1208=1,1245 -(988 + 252)  do v16:InvokeServer("TushitaProgress","Torch",v1208);end break;end end end else wait(1 + 1 );v134.StartHop("RipIndra");end else local v1039=0 + 0 ;local v1040;while true do if (v1039==0) then v1040=v38.GetBoss("Longma");if v1040 then v38.Kill(v1040,"Auto Tushita");else v134.HopServers();end break;end end end end end,["Auto Ghoul"]=function() if (v22=="Sea2") then local v884=0;while true do if (v884==0) then if (v6 and (v6.Data.Race.Value=="Ghoul")) then v40:Notify({Title="Kaitun Ghoul",Content="Your Race Already is Ghoul, Stop Script...",Duration=1975 -(49 + 1921) });wait(6);return;end if v44("Hellfire Torch") then if (v134.GetMaterial("Ectoplasm")<(990 -(223 + 667))) then local v1174=v38.GetBoss({"Ship Deckhand","Ship Engineer","Ship Steward"});if v1174 then v38.Kill(v1174,"Auto Ghoul");else v35.Tweento(CFrame.new(919,200,57583 -24127 ));end else local v1175=0;while true do if (0==v1175) then v38.EquipTool("Hellfire Torch");if ((Vector3.new(1967 -1048 ,125,34581 -(146 + 979) ) -v6.Character.HumanoidRootPart.Position).Magnitude<=(5 + 10)) then local v1210=605 -(311 + 294) ;while true do if (v1210==(0 -0)) then v8.Remotes.CommF_:InvokeServer("Ectoplasm","BuyCheck",2 + 2 );v8.Remotes.CommF_:InvokeServer("Ectoplasm","Buy",1447 -(496 + 947) );break;end end else v35.Tweento(CFrame.new(2277 -(1233 + 125) ,51 + 74 ,30016 + 3440 ));end break;end end end else local v1149=v38.GetBoss("Cursed Captain");if v1149 then v38.Kill(v1149,"Auto Ghoul");else wait(1.5 + 0 );if v44("Hellfire Torch") then wait();else v35.Tweento(CFrame.new(2564 -(963 + 682) ,8345 + 1654 ,34960 -(504 + 1000) ));v134.StartHop("CursedCaptain");wait(2 + 0 );end end end break;end end end end,["Auto Join Team"]=function() local v698=v3["Select Team"] or "Marines" ;if ((v6.Team==nil) or (v6.Team.Name~=v698)) then local v885=0 + 0 ;while true do if (v885==(0 + 0)) then v16:InvokeServer("SetTeam",v698);wait(1);break;end end end end,["Auto Hop Dough King"]=function() local v699=0;local v700;local v701;while true do if (v699==(0 -0)) then v700,v701=v134.StartHop("Dough King");if  not v700 then wait(2 + 0 );end break;end end end,["Auto Calice"]=function() local v702=0 + 0 ;local v703;local v704;while true do if (v702==(183 -(156 + 26))) then v704=v38.GetBoss({"Urban","Deandre","Diablo"});if v704 then local v1077=164 -(149 + 15) ;while true do if (v1077==0) then if  not v38.CheckQuest(v704.Name) then v16:InvokeServer("EliteHunter");end v38.Kill(v704,"Auto Calice");break;end end else wait(962 -(890 + 70) );v134.StartHop("Elite");end break;end if (v702==(117 -(39 + 78))) then v703="Calice";if v106() then local v1078=482 -(14 + 468) ;while true do if (1==v1078) then return;end if (v1078==(0 -0)) then v40:Notify({Title="Auto Calice",Content="Calice pego, desligando",Duration=6});v39.Features["Auto Calice"]:SetValue(false);v1078=2 -1 ;end end end v702=1 + 0 ;end end end,["Auto True Triple Katana"]=function() local v705=0 + 0 ;while true do if ((0 + 0)==v705) then v40:Notify({Title="Error!",Content="This feature is not update!",Duration=6});v39.Features["Auto True Triple Katana"]:SetValue(false);v705=1 + 0 ;end if (v705==(1 + 0)) then wait(0.1 -0 );break;end end end};end;v27.StartFuncs=function() local v477=0 + 0 ;local v478;while true do if (v477==(6 -4)) then spawn(function() while wait() do for v1079,v1080 in pairs(v27.Funcs) do v478(v1079,v1080);end end end);break;end if (v477==(0 + 0)) then v27.Thread={};v478=nil;v477=52 -(12 + 39) ;end if (v477==(1 + 0)) then function v478(v981,v982) if (v3[v981] and  not v27.Thread[v981]) then v27.Thread[v981]=true;spawn(function() local v1113=0 -0 ;while true do if (v1113==(3 -2)) then v27.Thread[v981]=nil;break;end if (v1113==0) then while v3[v981] and wait()  do local v1196=0 + 0 ;local v1197;local v1198;while true do if (v1196==(0 + 0)) then v1197,v1198=pcall(v982);if  not v1197 then print(v981,v1198);end break;end end end v35.StopTween();v1113=2 -1 ;end end end);end end spawn(function() while wait() do if ((v22=="Sea3") and v134.CheckInventory("Valkyrie Helm")) then v31=true;end end end);v477=2 + 0 ;end end end;function v41() if v90.Started then return;end v90.Started=true;v27.CheckAndJoinTeam();local v480,v481=pcall(function() local v706=loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"),"=Fluent");assert(type(v706)=="function" ,"Fluent compile failed");v40=v706();assert(type(v40)=="table" ,"Fluent load failed");v42.InitSettings();v39.StartingUI();v27.LoadFuncs();v27.StartFuncs();if (v3["ESP Fruit"] or v3["ESP Fruit Arrow"]) then v144();end if v3["Send Found Fruit"] then task.delay(14 -11 ,v102);end if v3["Remove Fog"] then v148(true);end end);if v480 then return;end v90.Started=false;warn("[Night Hub] "   .. tostring(v481) );end if (v90.Valid or v90.PendingStart) then task.spawn(v41);end
+repeat
+	wait()
+until game:IsLoaded()
+
+print("Game Loaded")
+
+local obj = setmetatable({}, { __index = function(arg, arg2)
+	return game:GetService(arg2)
+end })
+
+local genv = getgenv() or _G
+
+if genv.NightHubRunning then
+	return
+end
+genv.NightHubRunning = true
+
+if genv.Config and typeof(genv.Config) == "table" then
+end
+
+local tbl = {}
+local str = "http://163.223.9.144/boss"
+tick()
+print("[Time]", "Start Script")
+local players = obj.Players
+local localPlayer = players.LocalPlayer
+local workspace = obj.Workspace
+local replicatedStorage = obj.ReplicatedStorage
+local runService = obj.RunService
+local userInputService = obj.UserInputService
+local collectionService = obj.CollectionService
+local virtualInputManager = obj.VirtualInputManager
+local tweenService = obj.TweenService
+local enemies = workspace:WaitForChild("Enemies")
+localPlayer:WaitForChild("PlayerGui")
+local playerScripts = localPlayer:WaitForChild("PlayerScripts")
+local commF = replicatedStorage:WaitForChild("Remotes"):WaitForChild("CommF_")
+local modules = replicatedStorage:WaitForChild("Modules")
+local net = modules:WaitForChild("Net")
+local reRegisterAttack = net:WaitForChild("RE/RegisterAttack")
+local reRegisterHit = net:WaitForChild("RE/RegisterHit")
+local flags = modules:WaitForChild("Flags")
+local attribute = workspace:GetAttribute("MAP")
+require(replicatedStorage.Controllers.UI.Inventory)
+local ItemId = require(replicatedStorage.Economy.ItemId)
+local ItemReplicationService = require(replicatedStorage.ItemReplicationService)
+local KEYS = require(replicatedStorage.ItemReplicationService.KEYS)
+ItemReplicationService:GetItems(KEYS.QUANTITY)
+
+local tbl2 = {
+	Berries = {
+		"Blue Icicle Berry",
+		"Green Toad Berry",
+		"Orange Berry",
+		"Pink Pig Berry",
+		"Purple Jelly Berry",
+		"Red Cherry Berry",
+		"White Cloud Berry",
+		"Yellow Star Berry",
+	},
+}
+
+local tbl3 = {}
+local tbl4 = {}
+local str2 = ""
+local tbl5 = {}
+local flag = false
+local cframe = CFrame.new(-5541, 314, -2961)
+local flag2 = false
+local combatRemoteThread = require(flags).COMBAT_REMOTE_THREAD or false
+
+task.spawn(function()
+	while true do
+		wait()
+		if not (localPlayer.Team ~= nil and localPlayer.Character) then
+			continue
+		end
+		break
+	end
+
+	if not genv.HitFunc or typeof(genv.HitFunc) ~= "function" then
+		for _, child in pairs(playerScripts:GetChildren()) do
+			if child and child:IsA("LocalScript") then
+				local ok, result = pcall(getsenv, child)
+
+				if ok and result then
+					genv.HitFunc = result._G.SendHitsToServer
+				end
+			end
+		end
+	end
+end)
+
+print("[Game]", "Loaded Game Modules and Remotes")
+local tbl6 = {}
+local tbl7 = {}
+local tbl8 = { Whitelisted = false, IsPremiumUser = false }
+local tbl9 = {}
+local tbl10 = {}
+local v = nil
+local fn = nil
+
+local tbl11 = {
+	DefaultSettings = {
+		["Select Tool"] = "Melee",
+		["Tween Speed"] = 250,
+		["Auto Buso"] = true,
+		["Enable Fast Attack"] = true,
+		["Select Theme"] = "Dark",
+		["Select Team"] = "Marines",
+		["Finder Min Price"] = "1000000",
+	},
+}
+
+local fn2 = nil
+
+fn2 = function(arg)
+	if type(arg) == "table" then
+		local tbl12 = {}
+
+		for i, v2 in ipairs(arg) do
+			tbl12[i] = fn2(v2)
+		end
+
+		return tbl12
+	end
+
+	return (tostring(arg):gsub("%s+", ""))
+end
+
+local function fn3(arg)
+	local v2 = nil
+
+	for _, child in pairs(localPlayer.Backpack:GetChildren()) do
+		if child and child.Name == arg then
+			v2 = child
+			break
+		else
+			v2 = nil
+		end
+	end
+
+	for _, child in pairs(localPlayer.Character:GetChildren()) do
+		if child and child.Name == arg then
+			v2 = child
+			break
+		end
+	end
+
+	return v2
+end
+
+local tbl12 = {}
+local bxor = bit32.bxor
+local band = bit32.band
+local lshift = bit32.lshift
+local rshift = bit32.rshift
+local lrotate = bit32.lrotate
+local str3 = "NIGHTHUB|"
+local n = 8
+local n2 = 4
+local n3 = 4294967296
+local tbl13 = { 1634760805, 857760878, 2036477234, 1797285236 }
+
+local function fn4(arg)
+	local tbl14 = {}
+
+	for i = 1, #arg, 2 do
+		tbl14[#tbl14 + 1] = tonumber(arg:sub(i, i + 1), 16)
+	end
+
+	return tbl14
+end
+
+local function fn5(arg)
+	local tbl14 = {}
+
+	for i = 1, #arg do
+		tbl14[i] = arg:byte(i)
+	end
+
+	return tbl14
+end
+
+local function fn6(arg)
+	local tbl14 = {}
+
+	for i = 1, #arg do
+		tbl14[i] = string.char(arg[i])
+	end
+
+	return table.concat(tbl14)
+end
+
+local function fn7(arg, arg2)
+	return arg[arg2] + arg[arg2 + 1] * 256 + arg[arg2 + 2] * 65536 + arg[arg2 + 3] * 16777216
+end
+
+local function fn8(arg, arg2, arg3, arg4, arg5)
+	arg[arg2] = (arg[arg2] + arg[arg3]) % n3
+	arg[arg5] = lrotate(bxor(arg[arg5], arg[arg2]), 16)
+	arg[arg4] = (arg[arg4] + arg[arg5]) % n3
+	arg[arg3] = lrotate(bxor(arg[arg3], arg[arg4]), 12)
+	arg[arg2] = (arg[arg2] + arg[arg3]) % n3
+	arg[arg5] = lrotate(bxor(arg[arg5], arg[arg2]), 8)
+	arg[arg4] = (arg[arg4] + arg[arg5]) % n3
+	arg[arg3] = lrotate(bxor(arg[arg3], arg[arg4]), 7)
+end
+
+local function fn9(arg)
+	for i = 1, 10 do
+		fn8(arg, 1, 5, 9, 13)
+		fn8(arg, 2, 6, 10, 14)
+		fn8(arg, 3, 7, 11, 15)
+		fn8(arg, 4, 8, 12, 16)
+		fn8(arg, 1, 6, 11, 16)
+		fn8(arg, 2, 7, 12, 13)
+		fn8(arg, 3, 8, 9, 14)
+		fn8(arg, 4, 5, 10, 15)
+	end
+end
+
+local function fn10(arg, arg2, arg3)
+	local tbl14 = { tbl13[1], tbl13[2], tbl13[3], tbl13[4] }
+
+	for i = 0, 7 do
+		tbl14[5 + i] = fn7(arg, 1 + 4 * i)
+	end
+
+	tbl14[13] = arg2 % n3
+
+	for i = 0, 2 do
+		tbl14[14 + i] = fn7(arg3, 1 + 4 * i)
+	end
+
+	return tbl14
+end
+
+local function fn11(arg, arg2, arg3)
+	local v2 = fn10(arg, arg2, arg3)
+	local tbl14 = {}
+
+	for i = 1, 16 do
+		tbl14[i] = v2[i]
+	end
+
+	fn9(tbl14)
+	local tbl15 = {}
+
+	for i = 1, 16 do
+		local n4 = (tbl14[i] + v2[i]) % n3
+		local n5 = (i - 1) * 4
+		tbl15[n5 + 1] = band(n4, 255)
+		tbl15[n5 + 2] = band(rshift(n4, 8), 255)
+		tbl15[n5 + 3] = band(rshift(n4, 16), 255)
+		tbl15[n5 + 4] = band(rshift(n4, 24), 255)
+	end
+
+	return tbl15
+end
+
+local function fn12(arg, arg2, arg3, arg4)
+	local tbl14 = {}
+	local n4 = 0
+
+	while n4 < arg4 do
+		local v2 = fn11(arg, arg3, arg2)
+
+		for i = 1, 64 do
+			if not (n4 >= arg4) then
+				n4 += 1
+				tbl14[n4] = v2[i]
+				continue
+			end
+
+			break
+		end
+
+		arg3 += 1
+	end
+
+	return tbl14
+end
+
+local function fn13(arg, arg2, arg3)
+	local v2 = fn10(arg, 4294967295, arg2)
+	fn9(v2)
+	local n4 = #arg3
+
+	for i = 0, n4 + (16 - n4 % 16) % 16 - 1, 16 do
+		for i2 = 0, 3 do
+			local n5 = i + 4 * i2
+			v2[i2 + 1] = bxor(v2[i2 + 1], (arg3[n5 + 1] or 0) + (arg3[n5 + 2] or 0) * 256 + (arg3[n5 + 3] or 0) * 65536 + (arg3[n5 + 4] or 0) * 16777216)
+		end
+
+		fn9(v2)
+	end
+
+	v2[1] = bxor(v2[1], n4)
+	fn9(v2)
+	local v3 = v2[1]
+	local tbl14 = {}
+	local v4 = band(v3, 255)
+	local v5 = band(rshift(v3, 8), 255)
+	local v6 = band(rshift(v3, 16), 255)
+	local v7 = rshift(v3, 24)
+	tbl14[1] = v4
+	tbl14[2] = v5
+	tbl14[3] = v6
+
+	do
+		local values = table.pack(band(v7, 255))
+		table.move(values, 1, values.n, 4, tbl14)
+	end
+
+	return tbl14
+end
+
+local tbl14 = {}
+
+local function fn14(arg)
+	local str4 = table.concat(arg, ",")
+	if tbl14[str4] then
+		return tbl14[str4]
+	end
+	local v2 = fn12(arg, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, 11259375, 128)
+	local tbl15 = {}
+
+	for i = 1, 64 do
+		tbl15[i] = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"):sub(i, i)
+	end
+
+	for i = 64, 2, -1 do
+		local n4 = i - 1
+		local n5 = (v2[2 * n4 + 1] * 256 + v2[2 * n4 + 2]) % i + 1
+		local v3 = tbl15[i]
+		tbl15[i] = tbl15[n5]
+		tbl15[n5] = v3
+	end
+
+	local str5 = table.concat(tbl15)
+	tbl14[str4] = str5
+	return str5
+end
+
+local function fn15(arg, arg2)
+	local tbl15 = {}
+	local n4 = #arg
+	local n5 = 1
+
+	while n5 <= n4 do
+		local v2 = arg[n5]
+		local v3 = arg[n5 + 1]
+		local v4 = arg[n5 + 2]
+		local v5 = rshift(v2, 2)
+		tbl15[#tbl15 + 1] = arg2:sub(v5 + 1, v5 + 1)
+		local n6 = lshift(band(v2, 3), 4) + rshift(v3 or 0, 4)
+		tbl15[#tbl15 + 1] = arg2:sub(n6 + 1, n6 + 1)
+
+		if v3 ~= nil then
+			local n7 = lshift(band(v3, 15), 2) + rshift(v4 or 0, 6)
+			tbl15[#tbl15 + 1] = arg2:sub(n7 + 1, n7 + 1)
+
+			if v4 ~= nil then
+				local v6 = band(v4, 63)
+				tbl15[#tbl15 + 1] = arg2:sub(v6 + 1, v6 + 1)
+				n5 += 3
+				continue
+			end
+		end
+
+		break
+	end
+
+	return table.concat(tbl15)
+end
+
+local function fn16(arg, arg2)
+	local tbl15 = {}
+
+	for i = 1, 64 do
+		tbl15[arg2:sub(i, i)] = i - 1
+	end
+
+	local tbl16 = {}
+
+	for i = 1, #arg do
+		local v2 = tbl15[arg:sub(i, i)]
+		if v2 == nil then
+			return nil
+		end
+		tbl16[#tbl16 + 1] = v2
+	end
+
+	local tbl17 = {}
+
+	for i = 1, #tbl16, 4 do
+		local v2 = tbl16[i]
+		local v3 = tbl16[i + 1]
+		local v4 = tbl16[i + 2]
+		local v5 = tbl16[i + 3]
+		if v3 == nil then
+			return nil
+		end
+		tbl17[#tbl17 + 1] = band(lshift(v2, 2) + rshift(v3, 4), 255)
+
+		if v4 ~= nil then
+			tbl17[#tbl17 + 1] = band(lshift(band(v3, 15), 4) + rshift(v4, 2), 255)
+		end
+
+		if v5 ~= nil then
+			tbl17[#tbl17 + 1] = band(lshift(band(v4, 3), 6) + v5, 255)
+		end
+	end
+
+	return tbl17
+end
+
+local v2 = fn4("8992d555ed7846a562b058523100fbd0e59b5f6f28e98003230ffb4d9db60411")
+local new = Random and Random.new and Random.new() or nil
+
+local function fn17()
+	local tbl15 = {}
+
+	for i = 1, 8 do
+		tbl15[i] = new and new:NextInteger(0, 255) or math.random(0, 255)
+	end
+
+	return tbl15
+end
+
+tbl12.encode = function(arg, arg2, arg3)
+	arg2 = arg2 or v2
+	arg3 = arg3 or fn17()
+	local v3 = fn5(arg)
+	local tbl15 = {}
+
+	for i = 1, 8 do
+		tbl15[i] = arg3[i]
+	end
+
+	for i = n + 1, 12 do
+		tbl15[i] = 0
+	end
+
+	local v4 = fn12(arg2, tbl15, 1, #v3)
+	local tbl16 = {}
+
+	for i = 1, #v3 do
+		tbl16[i] = bxor(v3[i], v4[i])
+	end
+
+	local v5 = fn13(arg2, tbl15, tbl16)
+	local tbl17 = {}
+
+	for i = 1, 8 do
+		tbl17[#tbl17 + 1] = arg3[i]
+	end
+
+	for i = 1, 4 do
+		tbl17[#tbl17 + 1] = v5[i]
+	end
+
+	for i = 1, #tbl16 do
+		tbl17[#tbl17 + 1] = tbl16[i]
+	end
+
+	return str3 .. fn15(tbl17, fn14(arg2))
+end
+
+tbl12.decode = function(arg, arg2)
+	local v3 = arg2 or v2
+	if type(arg) ~= "string" or arg:sub(1, #str3) ~= str3 then
+		return nil, "bad prefix"
+	end
+	local v4 = fn16(arg:sub(#str3 + 1), fn14(v3))
+	if not v4 or #v4 < n + n2 then
+		return nil, "malformed"
+	end
+	local tbl15 = {}
+
+	for i = 1, 8 do
+		tbl15[i] = v4[i]
+	end
+
+	for i = n + 1, 12 do
+		tbl15[i] = 0
+	end
+
+	local tbl16 = {}
+
+	for i = n + n2 + 1, #v4 do
+		tbl16[i - n - n2] = v4[i]
+	end
+
+	local v5 = fn13(v3, tbl15, tbl16)
+	local n4 = 0
+
+	for i = 1, 4 do
+		n4 += v5[i] == v4[n + i] and 0 or 1
+	end
+
+	if n4 ~= 0 then
+		return nil, "bad tag"
+	end
+	local v6 = fn12(v3, tbl15, 1, #tbl16)
+	local tbl17 = {}
+
+	for i = 1, #tbl16 do
+		tbl17[i] = bxor(tbl16[i], v6[i])
+	end
+
+	return true, fn6(tbl17)
+end
+
+tbl3.CheckAndJoinTeam = function()
+	if localPlayer.Team == nil then
+		repeat
+			wait()
+			commF:InvokeServer("SetTeam", "Marines")
+		until localPlayer.Team ~= nil
+	end
+end
+
+local function fn18()
+	local TweenService = game:GetService("TweenService")
+	local n4 = 0
+	local str4 = "Noctelis/key.txt"
+
+	local tbl15 = {
+		interfaceName = "NeverFall Hub Find",
+		titleText = "NeverFall",
+		hintText = "Enter your key to continue",
+		keyInputLabelText = "License key",
+		submitButtonText = "Submit Key",
+		getKeyButtonText = "GET KEY",
+		getKeyUrl = "https://103.69.96.168/key?ver=NightHub",
+		loadingStageMessages = {
+			"Authorising session",
+			"Fetching components",
+			"Building interface",
+			"Restoring settings",
+			"Finishing up",
+		},
+		maximumKeyLength = 50,
+		savedKeyFilePath = "NightHub/key.txt",
+		savedKeyCheckMessage = "Checking saved key",
+		savedKeyCheckTimeoutSeconds = 15,
+		validateLicenseKey = nil,
+		onLicenseKeyAccepted = nil,
+	}
+
+	local function fn19(arg, arg2, arg3)
+		return Color3.fromRGB(arg, arg2, arg3)
+	end
+
+	local v3 = fn19(24, 24, 26)
+	local v4 = fn19(18, 18, 20)
+	local v5 = fn19(237, 237, 235)
+	local v6 = fn19(150, 150, 146)
+	local v7 = fn19(143, 143, 139)
+	local v8 = fn19(111, 140, 208)
+	local v9 = fn19(214, 90, 74)
+	local v10 = fn19(122, 190, 128)
+	local v11 = fn19(128, 156, 220)
+	local v12 = fn19(92, 117, 175)
+	local v13 = fn19(58, 122, 68)
+	local v14 = v8
+	local v15 = fn19(255, 255, 255)
+	local v16 = fn19(240, 246, 240)
+	local n5 = 444
+	local n6 = 354
+	local n7 = 320
+	local n8 = 88
+	local n9 = 4
+	local tweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+	local regular = Enum.FontWeight.Regular
+	local bold = Enum.FontWeight.Bold
+
+	local function fn20(arg)
+		return Font.new("rbxasset://fonts/families/RobotoMono.json", arg or regular)
+	end
+
+	local function fn21(arg, arg2, parent)
+		local instance = Instance.new(arg)
+
+		for k, v17 in pairs(arg2) do
+			instance[k] = v17
+		end
+
+		instance.Parent = parent
+		return instance
+	end
+
+	local function fn22(arg, arg2, arg3)
+		return fn21("UICorner", { Name = arg2, CornerRadius = UDim.new(0, arg) }, arg3)
+	end
+
+	local function fn23(arg, arg2)
+		return fn21("UIStroke", {
+			Name = arg,
+			Color = fn19(255, 255, 255),
+			Transparency = 0.65,
+			Thickness = 1,
+			ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+			LineJoinMode = Enum.LineJoinMode.Round,
+		}, arg2)
+	end
+
+	local function fn24(arg, arg2, arg3, arg4, arg5, arg6, arg7)
+		return fn21("TextLabel", {
+			Name = arg,
+			Size = UDim2.new(0, arg6, 0, math.floor(arg3 * 1.2 + 0.5)),
+			Position = arg5,
+			BackgroundTransparency = 1,
+			Text = arg2,
+			TextColor3 = arg4,
+			TextSize = arg3,
+			FontFace = fn20(),
+			TextXAlignment = Enum.TextXAlignment.Left,
+		}, arg7)
+	end
+
+	local function fn25()
+		local hui = gethui and gethui() or game:WaitForChild("CoreGui")
+		if syn and syn.protect_gui then
+			return hui, syn.protect_gui
+		end
+		return hui, protect_gui
+	end
+
+	local function fn26(arg)
+		return (arg:gsub("^%s+", ""):gsub("%s+$", ""))
+	end
+
+	local function fn27(arg)
+		local v17 = setclipboard or toclipboard
+		if type(v17) ~= "function" then
+			return false
+		end
+		return pcall(v17, arg)
+	end
+
+	local function fn28(arg)
+		local match = tbl15.savedKeyFilePath:match("^(.*)[/]")
+
+		if match and isfolder and makefolder and not isfolder(match) then
+			pcall(makefolder, match)
+		end
+
+		pcall(writefile, tbl15.savedKeyFilePath, arg)
+	end
+
+	tbl15.deleteSavedLicenseKey = function()
+		if isfile and isfile(tbl15.savedKeyFilePath) then
+			pcall(delfile, tbl15.savedKeyFilePath)
+		end
+
+		if isfile and isfile("Noctelis/key.txt") then
+			pcall(delfile, "Noctelis/key.txt")
+		end
+	end
+
+	local function fn29()
+		if not (isfile and readfile) then
+			return
+		end
+		local savedKeyFilePath = isfile(tbl15.savedKeyFilePath) and tbl15.savedKeyFilePath or isfile("Noctelis/key.txt") and "Noctelis/key.txt"
+		if not savedKeyFilePath then
+			return
+		end
+		local ok, result = pcall(readfile, savedKeyFilePath)
+		if not ok or type(result) ~= "string" then
+			return
+		end
+
+		if savedKeyFilePath == str4 then
+			fn28(result)
+		end
+
+		local v17 = fn26(result)
+		local flag3 = v17 ~= "" and utf8.len(v17)
+		if not flag3 or flag3 > tbl15.maximumKeyLength then
+			return
+		end
+		return v17
+	end
+
+	tbl15.destroyInterface = function()
+		n4 += 1
+		local v17 = fn25():FindFirstChild(tbl15.interfaceName)
+
+		if v17 then
+			v17:Destroy()
+		end
+	end
+
+	tbl15.showInterface = function(arg, arg2)
+		tbl15.destroyInterface()
+		local v17 = n4
+		local v18 = fn29()
+		local flag3 = arg ~= nil and type(arg) ~= "string"
+		local flag4 = type(arg) == "string" and fn26(arg) or nil
+
+		if flag4 == "" then
+			flag4 = nil
+		end
+
+		local flag5 = not flag3 and (flag4 or v18) or nil
+		local v19, v20 = fn25()
+
+		local ScreenGui = fn21("ScreenGui", {
+			Name = tbl15.interfaceName,
+			DisplayOrder = 10,
+			IgnoreGuiInset = true,
+			ResetOnSpawn = false,
+			ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+		}, v19)
+
+		if v20 then
+			pcall(v20, ScreenGui)
+		end
+
+		local Frame = fn21("Frame", {
+			Name = "Scrim",
+			Size = UDim2.fromScale(1, 1),
+			BackgroundColor3 = fn19(0, 0, 0),
+			BackgroundTransparency = 1,
+			BorderSizePixel = 0,
+			Active = true,
+			ZIndex = 1,
+		}, ScreenGui)
+
+		local CanvasGroup = fn21("CanvasGroup", {
+			Name = "Root",
+			Size = UDim2.fromOffset(n5 + n9 * 4, n6 + n9 * 4),
+			Position = UDim2.new(0.5, 0, 0.5, 0),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundTransparency = 1,
+			GroupTransparency = 1,
+			ZIndex = 2,
+		}, ScreenGui)
+
+		for i = 4, 1, -1 do
+			local n10 = i * 2
+
+			local Frame2 = fn21("Frame", {
+				Name = ("Aura%*"):format(i),
+				Size = UDim2.new(1, n10 * 2 - n9 * 4 - 4, 1, n10 * 2 - n9 * 4 - 4),
+				Position = UDim2.fromScale(0.5, 0.5),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundColor3 = v8,
+				BackgroundTransparency = 0.83,
+				BorderSizePixel = 0,
+			}, CanvasGroup)
+
+			fn22(12 + n10, "AuraCorner", Frame2)
+		end
+
+		local Frame2 = fn21("Frame", {
+			Name = "Panel",
+			Size = UDim2.new(1, -n9 * 4 - 4, 1, -n9 * 4 - 4),
+			Position = UDim2.fromScale(0.5, 0.5),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundColor3 = v3,
+			BorderSizePixel = 0,
+		}, CanvasGroup)
+
+		fn22(12, "PanelCorner", Frame2)
+		fn23("PanelStroke", Frame2)
+		local CanvasGroup2 = fn21("CanvasGroup", { Name = "Body", Size = UDim2.fromScale(1, 1), BackgroundTransparency = 1 }, Frame2)
+		fn24("Title", tbl15.titleText, 20, v5, UDim2.new(0, 22, 0, 22), 340, CanvasGroup2).FontFace = fn20(bold)
+		fn24("Hint", tbl15.hintText, 13, v6, UDim2.new(0, 22, 0, 52), 340, CanvasGroup2)
+
+		local TextButton = fn21("TextButton", {
+			Name = "Close",
+			Size = UDim2.new(0, 32, 0, 32),
+			Position = UDim2.new(1, -12, 0, 18),
+			AnchorPoint = Vector2.new(1, 0),
+			BackgroundTransparency = 1,
+			Text = "",
+			FontFace = fn20(),
+			AutoButtonColor = false,
+		}, CanvasGroup2)
+
+		local tbl16 = {}
+
+		for i, v21 in ipairs({ 45, -45 }) do
+			tbl16[i] = fn21("Frame", {
+				Name = ("Bar%*"):format(i),
+				Size = UDim2.new(0, 13, 0, 1),
+				Position = UDim2.fromScale(0.5, 0.5),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundColor3 = v7,
+				Rotation = v21,
+				BorderSizePixel = 0,
+			}, TextButton)
+		end
+
+		fn21("Frame", {
+			Name = "Divider",
+			Size = UDim2.new(1, -44, 0, 1),
+			Position = UDim2.new(0, 22, 0, 88),
+			BackgroundColor3 = fn19(255, 255, 255),
+			BackgroundTransparency = 0.86,
+			BorderSizePixel = 0,
+		}, CanvasGroup2)
+
+		fn24("Label", tbl15.keyInputLabelText, 13, v6, UDim2.new(0, 22, 0, 108), 220, CanvasGroup2)
+
+		local Frame3 = fn21("Frame", {
+			Name = "Field",
+			Size = UDim2.new(1, -44, 0, 50),
+			Position = UDim2.new(0, 22, 0, 130),
+			BackgroundColor3 = v4,
+			BorderSizePixel = 0,
+		}, CanvasGroup2)
+
+		fn22(8, "FieldCorner", Frame3)
+		local FieldStroke = fn23("FieldStroke", Frame3)
+
+		local TextBox = fn21("TextBox", {
+			Name = "Box",
+			Size = UDim2.new(1, -32, 1, 0),
+			Position = UDim2.new(0, 16, 0, 0),
+			BackgroundTransparency = 1,
+			Text = "",
+			PlaceholderText = "Paste your key here",
+			PlaceholderColor3 = v7,
+			TextColor3 = v5,
+			TextSize = 16,
+			FontFace = fn20(),
+			TextXAlignment = Enum.TextXAlignment.Left,
+			ClearTextOnFocus = false,
+			MultiLine = false,
+		}, Frame3)
+
+		local Err = fn24("Err", "", 13, v9, UDim2.new(0, 22, 0, 192), 400, CanvasGroup2)
+
+		local TextButton2 = fn21("TextButton", {
+			Name = "Submit",
+			Size = UDim2.new(1, -44, 0, 50),
+			Position = UDim2.new(0, 22, 0, 218),
+			BackgroundColor3 = v14,
+			Text = "",
+			FontFace = fn20(),
+			AutoButtonColor = false,
+			BorderSizePixel = 0,
+		}, CanvasGroup2)
+
+		fn22(8, "SubmitCorner", TextButton2)
+
+		local TextLabel = fn21("TextLabel", {
+			Name = "SubmitTitle",
+			Size = UDim2.fromScale(1, 1),
+			BackgroundTransparency = 1,
+			Text = tbl15.submitButtonText,
+			TextColor3 = v15,
+			TextSize = 18,
+			FontFace = fn20(),
+		}, TextButton2)
+
+		local TextButton3 = fn21("TextButton", {
+			Name = "GetKey",
+			Size = UDim2.new(1, -44, 0, 50),
+			Position = UDim2.new(0, 22, 0, 278),
+			BackgroundColor3 = v14,
+			Text = "",
+			FontFace = fn20(),
+			AutoButtonColor = false,
+			BorderSizePixel = 0,
+		}, CanvasGroup2)
+
+		fn22(8, "GetKeyCorner", TextButton3)
+
+		fn21("TextLabel", {
+			Name = "GetKeyTitle",
+			Size = UDim2.fromScale(1, 1),
+			BackgroundTransparency = 1,
+			Text = tbl15.getKeyButtonText,
+			TextColor3 = v15,
+			TextSize = 18,
+			FontFace = fn20(),
+		}, TextButton3)
+
+		local CanvasGroup3 = fn21("CanvasGroup", {
+			Name = "Load",
+			Size = UDim2.fromScale(1, 1),
+			BackgroundTransparency = 1,
+			GroupTransparency = 1,
+			Visible = false,
+		}, Frame2)
+
+		local Step = fn24("Step", "", 14, v5, UDim2.new(0, 22, 0, 28), 190, CanvasGroup3)
+		local Pct = fn24("Pct", "0%", 13, v6, UDim2.new(1, -22, 0, 29), 60, CanvasGroup3)
+		Pct.AnchorPoint = Vector2.new(1, 0)
+		Pct.TextXAlignment = Enum.TextXAlignment.Right
+
+		local Frame4 = fn21("Frame", {
+			Name = "Track",
+			Size = UDim2.new(1, -44, 0, 2),
+			Position = UDim2.new(0, 22, 0, 60),
+			BackgroundColor3 = fn19(255, 255, 255),
+			BackgroundTransparency = 0.88,
+			BorderSizePixel = 0,
+		}, CanvasGroup3)
+
+		local Frame5 = fn21("Frame", { Name = "Fill", Size = UDim2.fromScale(0, 1), BackgroundColor3 = v8, BorderSizePixel = 0 }, Frame4)
+		local tweenInfo2 = TweenInfo.new(0.18, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+		local tweenInfo3 = TweenInfo.new(0.12, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+		local tweenInfo4 = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out)
+
+		if flag5 then
+			CanvasGroup.Size = UDim2.fromOffset(n7 + n9 * 4, n8 + n9 * 4)
+			CanvasGroup2.Visible = false
+			CanvasGroup2.GroupTransparency = 1
+			CanvasGroup3.Visible = true
+			CanvasGroup3.GroupTransparency = 0
+		end
+
+		TweenService:Create(Frame, tweenInfo, { BackgroundTransparency = 0.45 }):Play()
+		TweenService:Create(CanvasGroup, tweenInfo2, { GroupTransparency = 0 }):Play()
+
+		local function fn30(arg3, arg4)
+			TweenService:Create(arg3, tweenInfo, arg4):Play()
+		end
+
+		local flag6 = nil
+		local flag7 = nil
+		local text = nil
+
+		local function fn31()
+			return not flag7 and v17 == n4 and ScreenGui.Parent ~= nil
+		end
+
+		local function fn32()
+			if not fn31() then
+				return
+			end
+			flag7 = true
+			n4 += 1
+			TweenService:Create(Frame, tweenInfo3, { BackgroundTransparency = 1 }):Play()
+			TweenService:Create(CanvasGroup, tweenInfo3, { GroupTransparency = 1 }):Play()
+			task.delay(0.12, ScreenGui.Destroy, ScreenGui)
+		end
+
+		local function fn33(arg3, arg4)
+			fn30(FieldStroke, { Color = arg3, Transparency = arg4, Thickness = arg4 < 0.3 and 2 or 1 })
+		end
+
+		local function fn34(text2)
+			if not fn31() then
+				return
+			end
+			local v21 = Err
+			local v22 = v9
+			local text3 = TextBox.Text
+			Err.Text = text2
+			v21.TextColor3 = v22
+			text = text3
+			fn33(v9, 0)
+		end
+
+		local function fn35()
+			if Err.Text == "" or TextBox.Text == text then
+				return
+			end
+			Err.Text = ""
+			if TextBox:IsFocused() then
+				return fn33(v8, 0)
+			end
+			fn33(fn19(255, 255, 255), 0.65)
+		end
+
+		local function fn36(text2)
+			Step.TextTransparency = 1
+			Step.Text = text2
+			TweenService:Create(Step, tweenInfo2, { TextTransparency = 0 }):Play()
+		end
+
+		local function fn37(arg3, arg4, arg5)
+			local now = os.clock()
+
+			while true do
+				if not fn31() then
+					return
+				else
+					local n10 = math.min((os.clock() - now) / arg5, 1)
+					local n11 = arg3 + (arg4 - arg3) * (1 - (1 - n10) ^ 2)
+					Frame5.Size = UDim2.fromScale(n11, 1)
+					Pct.Text = math.floor(n11 * 100) .. "%"
+					if n10 >= 1 then
+						break
+					end
+					task.wait()
+				end
+			end
+		end
+
+		local function fn38(arg3)
+			local n10 = #tbl15.loadingStageMessages
+			local n11 = 1 - arg3
+
+			for i, loadingStageMessage in ipairs(tbl15.loadingStageMessages) do
+				if not fn31() then
+					return
+				end
+				fn36(loadingStageMessage)
+				fn37(arg3 + n11 * (i - 1) / n10, arg3 + n11 * i / n10, 0.55)
+			end
+		end
+
+		local function fn39(arg3, arg4)
+			task.wait(0.4)
+			if not fn31() then
+				return
+			end
+			fn32()
+			local v21 = n4
+			task.wait(0.16)
+
+			if v21 == n4 and tbl15.onLicenseKeyAccepted then
+				task.spawn(tbl15.onLicenseKeyAccepted, arg3, arg4)
+			end
+		end
+
+		local function fn40()
+			CanvasGroup3.Visible = true
+			TweenService:Create(CanvasGroup2, tweenInfo3, { GroupTransparency = 1 }):Play()
+			TweenService:Create(CanvasGroup, tweenInfo4, { Size = UDim2.fromOffset(n7 + n9 * 4, n8 + n9 * 4) }):Play()
+			task.wait(0.13)
+			if not fn31() then
+				return
+			end
+			CanvasGroup2.Visible = false
+			task.wait(0.17)
+			if not fn31() then
+				return
+			end
+			TweenService:Create(CanvasGroup3, tweenInfo2, { GroupTransparency = 0 }):Play()
+		end
+
+		local function fn41(arg3, arg4, arg5)
+			if not fn31() then
+				return
+			end
+
+			if type(arg4) == "table" and arg4.shouldForgetSavedKey == true and fn29() == arg5 then
+				tbl15.deleteSavedLicenseKey()
+			end
+
+			CanvasGroup2.Visible = true
+			TweenService:Create(CanvasGroup3, tweenInfo3, { GroupTransparency = 1 }):Play()
+			TweenService:Create(CanvasGroup, tweenInfo4, { Size = UDim2.fromOffset(n5 + n9 * 4, n6 + n9 * 4) }):Play()
+			task.wait(0.14)
+			if not fn31() then
+				return
+			end
+			CanvasGroup3.Visible = false
+			TweenService:Create(CanvasGroup2, tweenInfo2, { GroupTransparency = 0 }):Play()
+			fn34(arg3)
+		end
+
+		local function fn42(arg3, arg4)
+			if type(arg3) == "table" and type(arg3.message) == "string" and arg3.message ~= "" then
+				return arg3.message
+			end
+			return arg4
+		end
+
+		local function fn43(arg3)
+			local flag8 = false
+			local v21 = nil
+			local v22 = nil
+			local v23 = nil
+
+			local thread = task.spawn(function()
+				local ok, result, result2 = pcall(tbl15.validateLicenseKey, arg3)
+				v21 = ok
+				v22 = result
+				v23 = result2
+				flag8 = true
+			end)
+
+			local now = os.clock()
+			local n10 = math.clamp(tonumber(tbl15.savedKeyCheckTimeoutSeconds) or 15, 1, 60)
+
+			while not flag8 and fn31() and os.clock() - now < n10 do
+				task.wait()
+			end
+
+			if not flag8 then
+				pcall(task.cancel, thread)
+				return false, false, { message = "Key check timed out, try again", shouldForgetSavedKey = false }
+			end
+			return v21, v22 == true, v23
+		end
+
+		local function fn44()
+			if flag6 or not fn31() then
+				return
+			end
+			local v21 = fn26(TextBox.Text)
+			if v21 == "" then
+				return fn34("Enter your key first")
+			end
+
+			if type(tbl15.validateLicenseKey) ~= "function" then
+				return fn34("No verifier attached")
+			end
+			local v22 = TextLabel
+			flag6 = true
+			v22.Text = "Checking..."
+			fn30(TextButton2, { BackgroundColor3 = v12 })
+			local v23, v24, v25 = fn43(v21)
+			if not fn31() then
+				return
+			end
+			flag6 = false
+
+			if not v23 then
+				TextLabel.Text = tbl15.submitButtonText
+				fn30(TextButton2, { BackgroundColor3 = v14 })
+				return fn34(fn42(v25, "Check failed, try again"))
+			end
+
+			if not v24 then
+				TextLabel.Text = tbl15.submitButtonText
+				fn30(TextButton2, { BackgroundColor3 = v14 })
+
+				if type(v25) == "table" and v25.shouldForgetSavedKey == true and fn29() == v21 then
+					tbl15.deleteSavedLicenseKey()
+				end
+
+				return fn34(fn42(v25, "Key not valid, check it and retry"))
+			end
+
+			local v26 = TextLabel
+			flag6 = true
+			v26.Text = "Verified"
+			TextBox:ReleaseFocus()
+			fn30(TextButton2, { BackgroundColor3 = v13 })
+			fn30(TextLabel, { TextColor3 = v16 })
+			fn33(v10, 0)
+			fn28(v21)
+			task.wait(0.35)
+			if not fn31() then
+				return
+			end
+			fn40()
+			fn38(0)
+			fn39(v21, v25)
+		end
+
+		local function fn45(arg3)
+			if type(tbl15.validateLicenseKey) ~= "function" then
+				return fn41("No verifier attached")
+			end
+			local n10 = #tbl15.loadingStageMessages + 1
+			fn36(flag4 and "Checking configured key" or tbl15.savedKeyCheckMessage)
+			fn37(0, 1 / n10, 0.5)
+			if not fn31() then
+				return
+			end
+			local v21, v22, v23 = fn43(arg3)
+			if not fn31() then
+				return
+			end
+
+			if not v21 then
+				return fn41(fn42(v23, flag4 and "Configured key check failed" or "Saved key check failed"))
+			end
+
+			if not v22 then
+				return fn41(fn42(v23, flag4 and "Configured key not valid" or "Saved key no longer valid"), v23, arg3)
+			end
+
+			if flag4 then
+				if type(v23) ~= "table" or v23.valid ~= true then
+					return fn41("Configured key is not valid")
+				end
+				fn28(arg3)
+			end
+
+			fn38(1 / n10)
+			fn39(arg3, v23)
+		end
+
+		TextBox:GetPropertyChangedSignal("Text"):Connect(function()
+			local v21 = utf8.len(TextBox.Text)
+			if v21 and v21 > tbl15.maximumKeyLength then
+				TextBox.Text = TextBox.Text:sub(1, utf8.offset(TextBox.Text, tbl15.maximumKeyLength + 1) - 1)
+				return
+			end
+			fn35()
+		end)
+
+		TextBox.Focused:Connect(function()
+			if Err.Text == "" then
+				fn33(v8, 0)
+			end
+		end)
+
+		TextBox.FocusLost:Connect(function(enterPressed)
+			if Err.Text == "" then
+				fn33(fn19(255, 255, 255), 0.65)
+			end
+
+			if enterPressed then
+				fn44()
+			end
+		end)
+
+		TextButton2.MouseEnter:Connect(function()
+			if not flag6 then
+				fn30(TextButton2, { BackgroundColor3 = v11 })
+			end
+		end)
+
+		TextButton2.MouseLeave:Connect(function()
+			if not flag6 then
+				fn30(TextButton2, { BackgroundColor3 = v14 })
+			end
+		end)
+
+		TextButton2.MouseButton1Down:Connect(function()
+			if not flag6 then
+				fn30(TextButton2, { BackgroundColor3 = v12 })
+			end
+		end)
+
+		TextButton2.MouseButton1Click:Connect(fn44)
+
+		TextButton3.MouseEnter:Connect(function()
+			fn30(TextButton3, { BackgroundColor3 = v11 })
+		end)
+
+		TextButton3.MouseLeave:Connect(function()
+			fn30(TextButton3, { BackgroundColor3 = v14 })
+		end)
+
+		TextButton3.MouseButton1Down:Connect(function()
+			fn30(TextButton3, { BackgroundColor3 = v12 })
+		end)
+
+		TextButton3.MouseButton1Click:Connect(function()
+			local v21 = fn27(tbl15.getKeyUrl)
+			Err.Text = v21 and "Get Key link copied" or tbl15.getKeyUrl
+			Err.TextColor3 = v21 and v10 or v6
+			text = TextBox.Text
+			fn30(TextButton3, { BackgroundColor3 = v11 })
+		end)
+
+		local text2 = "Click the cross again to close"
+		local flag8 = false
+		local flag9 = false
+
+		local function fn46()
+			local v21 = flag9 and v9 or flag8 and v5 or v7
+
+			for _, v22 in ipairs(tbl16) do
+				fn30(v22, { BackgroundColor3 = v21 })
+			end
+		end
+
+		TextButton.MouseEnter:Connect(function()
+			flag8 = true
+			fn46()
+		end)
+
+		TextButton.MouseLeave:Connect(function()
+			flag8 = false
+			fn46()
+		end)
+
+		TextButton.MouseButton1Click:Connect(function()
+			if flag9 then
+				return fn32()
+			end
+			flag9 = true
+			local v21 = Err
+			local v22 = v6
+			local text3 = TextBox.Text
+			Err.Text = text2
+			v21.TextColor3 = v22
+			text = text3
+			fn46()
+
+			task.delay(10, function()
+				if flag7 then
+					return
+				end
+				flag9 = false
+
+				if Err.Text == text2 then
+					Err.Text = ""
+				end
+
+				fn46()
+			end)
+		end)
+
+		if flag3 then
+			fn34("Configured key must be a string")
+		elseif flag5 then
+			task.spawn(fn45, flag5)
+		elseif type(arg2) == "string" and arg2 ~= "" then
+			fn34(arg2)
+		end
+
+		return ScreenGui, TextBox
+	end
+
+	return tbl15
+end
+
+local HttpService = game:GetService("HttpService")
+local genv2 = type(getgenv) == "function" and getgenv() or _G
+local request_ = request or http_request or syn and syn.request
+local hash = crypt and crypt.hash
+local hmac = crypt and crypt.hmac
+local str4 = "https://103.69.96.168"
+local v3 = fn18()
+
+local function fn19(arg, arg2, arg3)
+	return false, { valid = false, code = arg, message = arg2, shouldForgetSavedKey = arg3 == true }
+end
+
+local function fn20(arg, arg2)
+	return type(arg) == "string" and #arg == arg2 and not arg:find("[^a-f0-9]")
+end
+
+local function fn21(arg)
+	return type(arg) == "number" and arg == arg and arg > 0 and arg < math.huge and arg % 1 == 0
+end
+
+local function fn22(arg, arg2)
+	if type(arg) ~= "table" then
+		return nil
+	end
+	local str5 = arg2:lower()
+
+	for k, v4 in pairs(arg) do
+		if type(k) == "string" and k:lower() == str5 and type(v4) == "string" then
+			return v4
+		end
+	end
+end
+
+local function fn23(arg, arg2)
+	local ok, result = pcall(request_, {
+		Url = str4 .. "/auth",
+		Method = "POST",
+		Headers = { ["Content-Type"] = "application/json", Accept = "application/json, text/plain" },
+		Body = HttpService:JSONEncode(arg),
+		Timeout = 15,
+	})
+
+	if not ok or type(result) ~= "table" then
+		return nil, "Cannot reach the license server"
+	end
+	local flag3 = type(result.Body) ~= "string" or #result.Body < 1
+	local flag4
+
+	if flag3 then
+		flag4 = flag3
+	else
+		flag4 = #result.Body > (arg2 or 8192)
+	end
+
+	if flag4 then
+		return nil, "Invalid response from the license server"
+	end
+	return result
+end
+
+local function validateLicenseKey(arg)
+	-- Local/offline authorization: no license server, HWID, token, or crypto check.
+	return true, {
+		valid = true,
+		version = "NightHub",
+		subscriptionTier = "Pro",
+		expiresAt = nil,
+		serverTime = os.time(),
+	}
+end
+
+local nightHubAuthRewrite = {
+	Valid = false,
+	Details = nil,
+	Stop = function()
+		v3.destroyInterface()
+	end,
+}
+
+v3.validateLicenseKey = validateLicenseKey
+
+v3.onLicenseKeyAccepted = function(arg, details)
+	if nightHubAuthRewrite.Valid then
+		return
+	end
+	nightHubAuthRewrite.Valid = true
+	nightHubAuthRewrite.Details = details
+	tbl8.Whitelisted = true
+	tbl8.IsPremiumUser = details.subscriptionTier == "Pro"
+
+	if fn then
+		task.spawn(fn)
+	else
+		nightHubAuthRewrite.PendingStart = true
+	end
+end
+
+print("[Authenticate] System Loaded")
+genv2.NightHubAuthRewrite = nightHubAuthRewrite
+local value = rawget(genv2, "Key")
+-- Offline mode: accept without requiring a key or opening the license UI.
+task.defer(function()
+	if type(v3.onLicenseKeyAccepted) == "function" then
+		v3.onLicenseKeyAccepted("LOCAL", { valid = true, version = "NightHub", subscriptionTier = "Pro" })
+	end
+end)
+
+tbl8.decodeResponse = function(arg)
+	if type(arg) ~= "string" then
+		return false, "Response body is missing"
+	end
+	local ok, result = pcall(HttpService.JSONDecode, HttpService, arg)
+	if not ok or type(result) ~= "table" then
+		return false, "Response body is invalid"
+	end
+	return true, result
+end
+
+tbl11.InitSettings = function()
+	local v4 = isfolder
+	local v5 = makefolder
+
+	local function fn24()
+		if not v4("NeverFall Hub") then
+			v5("NeverFall Hub")
+		end
+
+		if not v4("NeverFall Hub/Hop Boss") then
+			v5("NeverFall Hub/Hop Boss")
+		end
+
+		writefile("NeverFall Hub/Hop Boss/Night-" .. localPlayer.Name .. "-Settings.json", HttpService:JSONEncode(tbl11.DefaultSettings))
+	end
+
+	local fn25 = nil
+
+	fn25 = function()
+		local ok, result = pcall(function()
+			if not v4("NeverFall Hub") or not v4("NeverFall Hub/Hop Boss") then
+				fn24()
+			end
+
+			return HttpService:JSONDecode(readfile("NeverFall Hub/Hop Boss/Night-" .. localPlayer.Name .. "-Settings.json"))
+		end)
+
+		if ok then
+			return result
+		end
+		fn24()
+		return fn25()
+	end
+
+	tbl11.DefaultSettings = fn25()
+
+	setmetatable(tbl, {
+		__index = tbl11.DefaultSettings,
+		__newindex = function(arg, arg2, arg3)
+			if not arg2 then
+				warn("Settings", "Missing index!")
+				return
+			end
+			rawset(tbl11.DefaultSettings, arg2, arg3)
+			fn24()
+		end,
+	})
+
+	print("[Settings]", "Initialize Settings Successful!")
+end
+
+local finderFound = {}
+local finderSent = {}
+local fruitImages = {
+	-- FILL: ["Nome da Fruta"] = "https://url-publica-da-imagem.png",
+}
+
+local function finderPost(fruitName, title, color)
+	local url = tbl["Finder Webhook Url"]
+	if not url or url == "" then
+		return
+	end
+
+	local embed = {
+		title = title,
+		color = color,
+		fields = {
+			{ name = "Fruit", value = "```" .. tostring(fruitName) .. "```" },
+			{ name = "Account", value = "```" .. localPlayer.Name .. "```" },
+			{ name = "Sea", value = "```" .. tostring(attribute) .. "```" },
+			{ name = "JobId", value = "||" .. tostring(game.JobId) .. "||" },
+		},
+	}
+
+	if fruitImages[fruitName] then
+		embed.thumbnail = { url = fruitImages[fruitName] }
+	end
+
+	pcall(request, {
+		Url = url,
+		Method = "POST",
+		Headers = { ["Content-Type"] = "application/json" },
+		Body = HttpService:JSONEncode({ embeds = { embed } }),
+	})
+end
+
+local function finderFlushFound()
+	if not tbl["Send Found Fruit"] then
+		return
+	end
+
+	for _, child in pairs(workspace:GetChildren()) do
+		if (child:IsA("Model") or child:IsA("Tool")) and string.find(child.Name, "Fruit") and child:FindFirstChild("Handle") then
+			local name = child:GetAttribute("OriginalName") or child.Name
+			local key = name .. "|" .. tostring(game.JobId)
+
+			if not finderSent[key] then
+				finderSent[key] = true
+				finderFound[#finderFound + 1] = name
+				finderPost(name, "Fruit Found (antes do hop)", 3447003)
+			end
+		end
+	end
+end
+
+local function finderShowServerFruits()
+	local list = {}
+
+	for _, child in pairs(workspace:GetChildren()) do
+			if (child:IsA("Model") or child:IsA("Tool")) and string.find(child.Name, "Fruit") and child:FindFirstChild("Handle") and finderPassesMin(child) then
+			list[#list + 1] = child:GetAttribute("OriginalName") or child.Name
+		end
+	end
+
+	local text = #list > 0 and table.concat(list, ", ") or "nenhuma"
+	finderPost(text, "Fruits In Server", 3447003)
+	return text
+end
+
+local fruitPrices = {
+	-- míticas
+	["West Dragon"] = 3700000000,
+	["East Dragon"] = 3200000000,
+	["Kitsune"] = 490000000,
+	["Yeti"] = 140000000,
+	["Control"] = 120000000,
+	["Gas"] = 75000000,
+	["Leopard"] = 65000000,
+	["Magnet"] = 50000000,
+	["Dough"] = 30000000,
+	["T-Rex"] = 20000000,
+	["Gravity"] = 10000000,
+	["Mammoth"] = 10000000,
+	["Spirit"] = 10000000,
+	["Venom"] = 10000000,
+	["Shadow"] = 6500000,
+
+	-- lendárias
+	["Portal"] = 15000000,
+	["Buddha"] = 10000000,
+	["Rumble"] = 7000000,
+	["Blizzard"] = 5000000,
+	["Sound"] = 3000000,
+	["Phoenix"] = 3000000,
+	["Pain"] = 2000000,
+	["Spider"] = 1500000,
+	["Love"] = 1200000,
+	["Quake"] = 1000000,
+
+	-- raras
+	["Magma"] = 1100000,
+	["Light"] = 900000,
+	["Ghost"] = 850000,
+	["Diamond"] = 800000,
+	["Rubber"] = 780000,
+	["Barrier"] = 700000,
+	["Creation"] = 700000,
+
+	-- comuns / incomuns
+	["Eagle"] = 600000,
+	["Ice"] = 500000,
+	["Sand"] = 500000,
+	["Dark"] = 500000,
+	["Flame"] = 280000,
+	["Spike"] = 180000,
+	["Smoke"] = 100000,
+	["Bomb"] = 80000,
+	["Spring"] = 60000,
+	["Chop"] = 30000,
+	["Blade"] = 30000,
+	["Spin"] = 7500,
+	["Rocket"] = 5000,
+}
+
+local function fruitPrice(child)
+	local attr = child:GetAttribute("Price") or child:GetAttribute("Value")
+	if type(attr) == "number" then
+		return attr
+	end
+	return fruitPrices[child:GetAttribute("OriginalName") or child.Name]
+end
+
+local function finderPassesMin(child)
+	local min = tonumber(tbl["Finder Min Price"]) or 0
+	if min <= 0 then
+		return true
+	end
+	local price = fruitPrice(child)
+	return price ~= nil and price >= min
+end
+
+local function hasCalice()
+	local function match(s)
+		s = string.lower(tostring(s))
+		local names = { "Calice", "Chalice", "God's Chalice", "God Chalice" }
+		for _, n in ipairs(names) do
+			if string.find(s, n, 1, true) then
+				return true
+			end
+		end
+		return false
+	end
+
+	if ItemReplicationService.IsInitialized then
+		for _, item in pairs(ItemReplicationService:GetItems(KEYS.QUANTITY)) do
+			local ok, data = pcall(function()
+				return ItemId.getDataFromId(item.ItemId):unwrap()
+			end)
+			if ok and data and match(data.StorageKey) and (item.Value or 0) >= 1 then
+				return true
+			end
+		end
+	end
+
+	for _, container in ipairs({ localPlayer.Backpack, localPlayer.Character }) do
+		if container then
+			for _, child in pairs(container:GetChildren()) do
+				if match(child.Name) then
+					return true
+				end
+			end
+		end
+	end
+
+	return false
+end
+
+tbl7.FuncManager = function()
+	local tbl15
+
+	tbl15 = {
+		JoinServer = function(arg, arg2)
+			v:Notify({ Title = "NeverFall Finder Hub", Content = arg2 or "Joining Server...", Duration = 5 })
+
+			finderFlushFound()
+
+			local queue = queue_on_teleport or (syn and syn.queue_on_teleport)
+			if queue then
+				queue('task.wait(5)\nloadstring(game:HttpGet("https://raw.githubusercontent.com/gusta7xss/Neverfall/refs/heads/main/neverfallhop.lua"))()')
+			end
+
+			wait(0.2)
+			return replicatedStorage.__ServerBrowser:InvokeServer("teleport", tostring(arg))
+		end,
+		HopServers = function()
+			local serverBrowser = game.ReplicatedStorage:WaitForChild("__ServerBrowser")
+
+			for i = 1, 100 do
+				local response = serverBrowser:InvokeServer(i)
+
+				for k, v4 in pairs(response) do
+					v4 = v4 and v4.Count < 12
+
+					if v4 then
+						tbl15.JoinServer(k)
+					end
+				end
+			end
+		end,
+		GetCountByApi = function(arg)
+			local ok, result = pcall(function()
+				return request({ Url = str .. "/" .. fn2(arg), Method = "GET" })
+			end)
+
+			if not ok then
+				return false, "Failed to check boss in api, error: " .. tostring(result)
+			end
+			local v4, v5 = tbl8.decodeResponse(result.Body)
+			if not v4 then
+				return false, v5
+			end
+			return true, "Check " .. tostring(arg) .. " successful, found " .. tostring(v5.count) .. " servers"
+		end,
+		SaveServerJoined = function()
+			table.insert(tbl4, game.JobId)
+			writefile("ServerJoined.json", HttpService:JSONEncode(tbl4))
+		end,
+	}
+
+	if not isfile("ServerJoined.json") then
+		tbl15.SaveServerJoined()
+	end
+
+	tbl4 = HttpService:JSONDecode(readfile("ServerJoined.json"))
+
+	tbl15.StartHop = function(arg)
+		local ok, result = pcall(function()
+			return request({ Url = str .. "/" .. fn2(arg), Method = "GET" })
+		end)
+
+		if not ok then
+			return false, "Failed to check boss in api, error: " .. tostring(result)
+		end
+		local v4, v5 = tbl8.decodeResponse(result.Body)
+		if not v4 then
+			return false, v5
+		end
+
+		if v5.count <= 0 then
+			return false, "No Boss Found!"
+		end
+
+		table.sort(v5.data, function(arg2, arg3)
+			return arg2.Age < arg3.Age
+		end)
+
+		if not table.find(tbl4, game.JobId) then
+			tbl15.SaveServerJoined()
+		end
+
+		for _, v6 in pairs(v5.data) do
+			if v6.PlaceId == game.PlaceId and v6.Players < 12 and v6.Sea == attribute then
+				local v7, v8 = tbl12.decode(v6.JobId)
+
+				if v7 and v8 and game.JobId ~= v8 and not table.find(tbl4, v8) then
+					tbl15.JoinServer(v8)
+					task.wait(0.3)
+				end
+			end
+		end
+
+		return true, nil
+	end
+
+	tbl15.CheckInventory = function(arg)
+		if ItemReplicationService.IsInitialized then
+			local items = ItemReplicationService:GetItems(KEYS.QUANTITY)
+
+			for _, item in pairs(items) do
+				local v4 = ItemId.getDataFromId(item.ItemId):unwrap()
+				if v4.StorageKey == arg and item.Value >= 1 then
+					return { Name = v4.StorageKey, Count = item.Value or 0, Type = v4.Type }
+				end
+			end
+		end
+
+		return false
+	end
+
+	tbl15.GetMaterial = function(arg)
+		local v4 = tbl15.CheckInventory(arg)
+		return arg and typeof(arg) ~= "boolean" and v4.Count or 0
+	end
+
+	tbl15.IsFullmoon = function()
+		return (game.Lighting.ClockTime >= 18 or game.Lighting.ClockTime < 5) and game:GetService("Lighting").Sky.MoonTextureId == "http://www.roblox.com/asset/?id=9709149431"
+	end
+
+	tbl15.FoundBerries = function()
+		local tagged = collectionService:GetTagged("BerryBush")
+		local huge = math.huge
+		local v4 = nil
+
+		for i = 1, #tagged do
+			local v5 = tagged[i]
+			local v6 = next
+			local attributes, v7 = v5:GetAttributes()
+
+			for _, v8 in v6, attributes, v7 do
+				if table.find(tbl2.Berries, v8) then
+					local position = localPlayer.Character.HumanoidRootPart.Position
+					local magnitude = (v5.Parent:GetPivot().Position - position).Magnitude
+
+					if magnitude <= huge then
+						huge = magnitude
+						v4 = v5
+					end
+				end
+			end
+		end
+
+		return v4
+	end
+
+	tbl15.CheckNotify = function(arg)
+		for _, child in pairs(localPlayer.PlayerGui.Notifications:GetChildren()) do
+			if child and child.Parent and child:IsA("TextLabel") and child.Text and string.find(string.lower(child.Text), arg) then
+				return true
+			end
+		end
+
+		return false
+	end
+
+	tbl15.CheckFruit = function()
+		local v4 = next
+		local children, v5 = workspace:GetChildren()
+
+		for _, v6 in v4, children, v5 do
+			if (v6:IsA("Model") or v6:IsA("Tool")) and string.find(v6.Name, "Fruit") and v6.Parent and v6:FindFirstChild("Handle") then
+				return v6
+			end
+		end
+	end
+
+		tbl15.StoreBF = function()
+		local function store(child)
+			if string.find(child.Name, "Fruit") and child:GetAttribute("OriginalName") then
+				local name = child:GetAttribute("OriginalName")
+				commF:InvokeServer("StoreFruit", name, child)
+
+				if tbl["Send Stored Fruit"] then
+					finderPost(name, "Fruit Stored", 5763719)
+				end
+			end
+		end
+
+		for _, child in pairs(localPlayer.Backpack:GetChildren()) do
+			store(child)
+		end
+
+		for _, child in pairs(localPlayer.Character:GetChildren()) do
+			store(child)
+		end
+	end
+
+	tbl15.SendWebhook = function(arg, arg2)
+		if not arg then
+			return false, "Missing Webhook Url!"
+		end
+
+		if not arg2 or typeof(arg2) ~= "table" then
+			return false, "Missing Body or Body type mismatch!"
+		end
+
+		local ok, result = pcall(function()
+			return request({
+				Url = arg,
+				Method = "POST",
+				Headers = { ["Content-Type"] = "application/json" },
+				Body = HttpService:JSONEncode(arg2),
+			})
+		end)
+
+		if not ok or result and result.StatusCode ~= 204 then
+			return false, "Send Failed, Error: " .. tostring(result)
+		end
+
+		if ok and result and result.StatusCode == 204 then
+			return true, "Send Webhook Success!"
+		end
+		return false, nil
+	end
+
+	tbl15.CheckRaidCastle = function()
+		return tbl9.GetMobInCFrame(cframe)
+	end
+
+	return tbl15
+end
+
+tbl6.Tween = nil
+tbl6.NoClipParts = {}
+
+tbl6.Portals = {
+	Sea1 = {
+		["Sky Arena 1"] = Vector3.new(-4654, 872, -1759),
+		["Sky Arena 2"] = Vector3.new(-7894, 5547, -380),
+		["UnderWater City 1"] = Vector3.new(3876, 35, -1939),
+		["UnderWater City 2"] = Vector3.new(61163, 11, 1819),
+	},
+	Sea2 = {
+		Mansion = Vector3.new(-288, 305, 613),
+		["Swan Room"] = Vector3.new(2284, 15, 897),
+		["Out Ship"] = Vector3.new(-6518, 83, -145),
+		["In Ship"] = Vector3.new(923, 125, 32883),
+	},
+	Sea3 = {
+		Mansion = Vector3.new(-12550, 337, -7476),
+		["Castle On The Sea"] = Vector3.new(-5073, 314, -3152),
+		["Hydra Island"] = Vector3.new(5681, 1013, -313),
+	},
+}
+
+local function fn24()
+	local character = localPlayer.Character
+	if not character then
+		return nil
+	end
+	local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if not humanoidRootPart or not humanoid or humanoid.Health <= 0 then
+		return nil
+	end
+	return character, humanoidRootPart, humanoid
+end
+
+local function fn25(arg)
+	if typeof(arg) == "CFrame" then
+		return arg
+	end
+
+	if typeof(arg) == "Vector3" then
+		return CFrame.new(arg)
+	end
+
+	if typeof(arg) == "Instance" then
+		if arg:IsA("Model") then
+			return arg:GetPivot()
+		end
+
+		if arg:IsA("BasePart") then
+			return arg.CFrame
+		end
+	end
+
+	return nil
+end
+
+tbl6.GetDistance = function(arg, arg2, arg3)
+	if not arg then
+		return
+	end
+	local position = typeof(arg) == "CFrame" and arg.Position or arg
+
+	if arg2 then
+		arg2 = typeof(arg2) == "CFrame" and arg2.Position or arg2
+	end
+
+	arg2 = arg2 or localPlayer.Character.HumanoidRootPart.Position
+	return (Vector3.new(position.X, arg3 and 0 or position.Y, position.Z) - Vector3.new(arg2.X, arg3 and 0 or arg2.Y, arg2.Z)).Magnitude
+end
+
+tbl6.GetArenaName = function(arg)
+	local huge = math.huge
+	local str5 = ""
+
+	for _, child in pairs(workspace._WorldOrigin.PlayerSpawns.Pirates:GetChildren()) do
+		if child and child:FindFirstChild("Part") then
+			local v4 = tbl6.GetDistance(child.Part.Position, arg.Position)
+
+			if v4 <= huge then
+				str5 = child.Name
+				huge = v4
+			end
+		end
+	end
+
+	return str5
+end
+
+tbl6.GetPortal = function(arg)
+	if attribute == "Sea3" and flag ~= true then
+		return false, nil
+	end
+	local huge = math.huge
+	local v4 = nil
+
+	for _, v5 in pairs(tbl6.Portals[attribute]) do
+		if v5 and (v5 - arg.Position).Magnitude <= huge then
+			huge = (v5 - arg.Position).Magnitude
+			v4 = v5
+		end
+	end
+
+	if v4 and (v4 - arg.Position).Magnitude + 250 <= tbl6.GetDistance(arg) then
+		return true, v4
+	end
+	return false, nil
+end
+
+tbl6.AddBodyVelocity = function(arg)
+	local v4, v5 = fn24()
+	if not v4 then
+		return false
+	end
+	local head = v4:FindFirstChild("Head") or v5
+	if not head then
+		return false
+	end
+
+	if arg then
+		if not head:FindFirstChild("BodyVelocity") then
+			local bodyVelocity = Instance.new("BodyVelocity")
+			bodyVelocity.Name = "BodyVelocity"
+			bodyVelocity.MaxForce = Vector3.new(40000, 40000, 40000)
+			bodyVelocity.Velocity = Vector3.zero
+			bodyVelocity.P = 1500
+			bodyVelocity.Parent = head
+		end
+	else
+		local bodyVelocity = head:FindFirstChild("BodyVelocity")
+
+		if bodyVelocity and bodyVelocity:IsA("BodyVelocity") then
+			bodyVelocity:Destroy()
+		end
+
+		for i = #tbl6.NoClipParts, 1, -1 do
+			local v6 = tbl6.NoClipParts[i]
+
+			if v6 and v6.Parent then
+				v6.CanCollide = true
+			end
+
+			table.remove(tbl6.NoClipParts, i)
+		end
+	end
+
+	return true
+end
+
+tbl6.UseNoClip = function()
+	local v4 = fn24()
+	if not v4 then
+		return false
+	end
+
+	for _, descendant in pairs(v4:GetDescendants()) do
+		if descendant:IsA("BasePart") and descendant.CanCollide then
+			descendant.CanCollide = false
+			table.insert(tbl6.NoClipParts, descendant)
+		end
+	end
+
+	return true
+end
+
+tbl6.StopTween = function()
+	if tbl6.Tween then
+		tbl6.Tween:Cancel()
+		tbl6.Tween = nil
+	end
+
+	tbl6.AddBodyVelocity(false)
+end
+
+tbl6.Tweento = function(arg, arg2)
+	local v4, v5, v6 = fn24()
+	if not v4 or not v5 or not v6 or v6.Health <= 0 then
+		return false, "Character is not loaded"
+	end
+	local v7 = fn25(arg)
+	if not v7 then
+		return false, "Invalid target"
+	end
+
+	if arg2 == nil or arg2 == true then
+		tbl6.AddBodyVelocity(true)
+		tbl6.UseNoClip()
+	end
+
+	if tbl6.GetDistance(v7.Position, nil, true) <= 25 then
+		tbl6.StopTween()
+		v5.CFrame = v7
+		return true, "Arrived"
+	end
+
+	local position = v7.Position
+	local v8, v9 = tbl6.GetPortal(arg)
+
+	if v8 and v9 then
+		if tbl6.GetDistance(v9, nil, true) <= 20 then
+			tbl6.StopTween()
+			commF:InvokeServer("requestEntrance", v9)
+			wait(0.2)
+			return false, "Entering Portal"
+		end
+
+		position = v9
+	end
+
+	if tbl6.Tween and tbl6.MoveTarget == position and not tbl6.Tween.Cancelled then
+		return false, "Tweening"
+	end
+
+	if tbl6.Tween then
+		tbl6.Tween:Cancel()
+	end
+
+	local v10 = v5
+
+	local tween = {
+		Cancelled = false,
+		Cancel = function(arg3)
+			arg3.Cancelled = true
+		end,
+	}
+
+	tbl6.Tween = tween
+	tbl6.MoveTarget = position
+
+	task.spawn(function()
+		local position2 = v10.Position
+		local magnitude = (position2 - position).Magnitude
+
+		while true do
+			if not tween.Cancelled and v5 == v10 and v10.Parent then
+				local result = runService.Heartbeat:Wait()
+
+				if not (not v6 or v6.Health <= 0) then
+					local position3 = v10.Position
+					local magnitude2 = (position3 - position).Magnitude
+
+					if magnitude2 < 8 then
+						local rotation = v10.CFrame.Rotation
+						v10.CFrame = CFrame.new(position) * rotation
+						break
+					else
+						local n4 = tick() < (tbl6.SlowUntil or 0) and 150 or tonumber(tbl["Tween Speed"]) or 250
+
+						if (position3 - position2).Magnitude > math.max(12, n4 * math.max(result, 0.004166666666666667) * 4) and magnitude2 > magnitude + 6 then
+							tbl6.SlowUntil = tick() + 7
+							n4 = 150
+						end
+
+						position2 = position3 + (position - position3).Unit * math.min(magnitude2, n4 * math.min(result, 0.1))
+						local rotation = v10.CFrame.Rotation
+						v10.CFrame = CFrame.new(position2) * rotation
+						v10.AssemblyLinearVelocity = Vector3.zero
+						magnitude = (position2 - position).Magnitude
+						continue
+					end
+				end
+			end
+
+			break
+		end
+
+		if tbl6.Tween == tween then
+			tbl6.Tween = nil
+		end
+	end)
+
+	return true, "Tweening"
+end
+
+tbl9.IsAlive = function(arg)
+	return arg and arg.Parent and arg:FindFirstChild("Humanoid") and not arg:FindFirstChild("VehicleSeat") and arg.Humanoid.Health > 0.5 and arg:FindFirstChild("HumanoidRootPart")
+end
+
+tbl9.GetBoss = function(arg)
+	local tbl15 = typeof(arg) == "string" and { arg } or arg
+	local v4 = nil
+
+	for _, child in pairs(replicatedStorage:GetChildren()) do
+		if child and tbl9.IsAlive(child) and table.find(tbl15, child.Name) then
+			v4 = child
+			break
+		else
+			v4 = nil
+		end
+	end
+
+	for _, child in pairs(enemies:GetChildren()) do
+		if child and tbl9.IsAlive(child) and table.find(tbl15, child.Name) then
+			v4 = child
+			break
+		end
+	end
+
+	return v4
+end
+
+tbl9.TurnBuso = function()
+	if not localPlayer.Character:FindFirstChild("HasBuso") then
+		commF:InvokeServer("Buso")
+		return
+	end
+end
+
+tbl9.EquipTool = function(arg)
+	local v4 = localPlayer.Backpack:FindFirstChild(arg)
+	if v4 and localPlayer.Character:FindFirstChild("Humanoid") then
+		localPlayer.Character.Humanoid:EquipTool(v4)
+		return
+	end
+end
+
+tbl9.EquipWeapon = function(arg)
+	local selectTool = arg or tbl["Select Tool"] or "Melee"
+
+	for _, child in pairs(localPlayer.Backpack:GetChildren()) do
+		if child and child:IsA("Tool") and child.ToolTip == selectTool then
+			tbl9.EquipTool(child.Name)
+			break
+		end
+	end
+end
+
+tbl9.GetMobInCFrame = function(arg)
+	local v4 = next
+	local children, v5 = enemies:GetChildren()
+	local v6 = nil
+
+	for _, v7 in v4, children, v5 do
+		local isModel = v7:IsA("Model") and tbl9.IsAlive(v7)
+
+		if isModel then
+			isModel = (v7.HumanoidRootPart.Position - arg.Position).Magnitude <= (Range or 1000)
+		end
+
+		if isModel then
+			v6 = v7
+		end
+	end
+
+	local v7 = next
+	local children2, v8 = replicatedStorage:GetChildren()
+
+	for _, v9 in v7, children2, v8 do
+		local isModel = v9:IsA("Model") and tbl9.IsAlive(v9)
+
+		if isModel then
+			isModel = (v9.HumanoidRootPart.Position - arg.Position).Magnitude <= (Range or 1000)
+		end
+
+		if isModel then
+			v6 = v9
+		end
+	end
+
+	return v6
+end
+
+tbl9.GetNearMob = function()
+	local tbl15 = {}
+
+	for _, child in pairs(enemies:GetChildren()) do
+		if child and tbl9.IsAlive(child) and (child.HumanoidRootPart.Position - localPlayer.Character.HumanoidRootPart.Position).Magnitude <= 80 then
+			tbl15[#tbl15 + 1] = child
+		end
+	end
+
+	return tbl15
+end
+
+tbl9.Kill = function(arg, arg2)
+	if arg and tbl9.IsAlive(arg) then
+		while tbl[arg2] and arg and tbl9.IsAlive(arg) do
+			task.wait()
+			tbl9.TurnBuso()
+			tbl9.EquipWeapon()
+			tbl6.Tweento(arg.HumanoidRootPart.CFrame * CFrame.new(0, 30, 5))
+		end
+	end
+end
+
+local function fn26()
+	local trackedQuestFrame = localPlayer.PlayerGui:FindFirstChild("TrackedQuestFrame")
+	local frame = trackedQuestFrame and trackedQuestFrame:FindFirstChild("Frame")
+	if not frame or trackedQuestFrame:IsA("ScreenGui") and not trackedQuestFrame.Enabled or not frame.Visible then
+		return nil
+	end
+	return frame
+end
+
+GetTextTrackedQuest = function()
+	local v4 = fn26()
+	if not v4 then
+		return ""
+	end
+	local tbl15 = {}
+
+	for _, descendant in pairs(v4:GetDescendants()) do
+		if descendant:IsA("TextLabel") and descendant.Visible and descendant.Text ~= "" then
+			local n4 = #tbl15 + 1
+			local lower = string.lower
+			local v5 = string.gsub(descendant.Text, "-", "")
+			tbl15[n4] = lower(v5)
+		end
+	end
+
+	return table.concat(tbl15, "\n")
+end
+
+tbl9.CheckQuest = function(arg)
+	local v4 = GetTextTrackedQuest()
+	local lower = string.lower
+	local v5 = string.gsub(arg, "-", "")
+	local v6 = lower(v5)
+	return v4 ~= "" and string.find(v4, v6, 1, true) ~= nil
+end
+
+local function fn27()
+	local v4 = tbl9.GetNearMob()
+	local tool = localPlayer.Character:FindFirstChildOfClass("Tool")
+	local flag3 = #v4 > 0 and tool
+	local flag4
+
+	if flag3 then
+		flag4 = tool.ToolTip == "Sword" or tool.ToolTip == "Melee"
+	else
+		flag4 = flag3
+	end
+
+	if flag4 then
+		local tbl15 = {}
+
+		for _, v5 in pairs(v4) do
+			if v5 and tbl9.IsAlive(v5) then
+				table.insert(tbl15, { v5, v5.HumanoidRootPart })
+			end
+		end
+
+		if #tbl15 > 0 then
+			local v5 = tbl15[1][2]
+			reRegisterAttack:FireServer(0)
+
+			if combatRemoteThread and genv.HitFunc then
+				genv.HitFunc(v5, tbl15)
+			else
+				reRegisterHit:FireServer(v5, tbl15)
+			end
+		end
+	elseif #v4 > 0 and tool and tool.ToolTip == "Blox Fruit" then
+		local leftClickRemote = tool:FindFirstChild("LeftClickRemote")
+
+		if leftClickRemote and leftClickRemote:IsA("RemoteEvent") then
+			leftClickRemote:FireServer(Vector3.new(0, -500, 0), 3, true)
+			task.wait(0.01)
+			leftClickRemote:FireServer(false)
+		end
+	end
+end
+
+tbl10.CreateWindow = function()
+	local ok, result = pcall(function()
+		return v:CreateWindow({
+			Title = "NeverFall Hub Finder " .. (tbl8.IsPremiumUser and "<font color='rgb(255,255,0)'>[PREMIUM]</font>" or "[FREEMIUM]"),
+			SubTitle = "by @gusta7x0_",
+			TabWidth = 145,
+			Size = userInputService.TouchEnabled and UDim2.fromOffset(450, 400) or UDim2.fromOffset(550, 450),
+			Acrylic = false,
+			Image = "rbxassetid://10511856020",
+			MinimizeKey = Enum.KeyCode.RightShift,
+			Theme = tbl["Select Theme"],
+		})
+	end)
+
+	local function fn28(arg, arg2)
+		local flag3 = nil
+		local v4 = nil
+		local position = nil
+		local position2 = nil
+
+		local function fn29(arg3)
+			local n4 = arg3.Position - position
+			local udim2 = UDim2.new(position2.X.Scale, position2.X.Offset + n4.X, position2.Y.Scale, position2.Y.Offset + n4.Y)
+			tweenService:Create(arg2, TweenInfo.new(0.2), { Position = udim2 }):Play()
+		end
+
+		arg.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				flag3 = true
+				position = input.Position
+				position2 = arg2.Position
+
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						flag3 = false
+					end
+				end)
+			end
+		end)
+
+		arg.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				v4 = input
+			end
+		end)
+
+		userInputService.InputChanged:Connect(function(input)
+			if input == v4 and flag3 then
+				fn29(input)
+			end
+		end)
+	end
+
+	if not ok then
+		return false, "Failed to create window, BUGS: " .. tostring(result)
+	end
+	local screenGui = Instance.new("ScreenGui")
+	local imageButton = Instance.new("ImageButton")
+	local uiCorner = Instance.new("UICorner")
+	local frame = Instance.new("Frame")
+	screenGui.Parent = game.CoreGui
+	frame.Parent = screenGui
+	frame.Size = UDim2.new(0, 60, 0, 60)
+	frame.BackgroundTransparency = 0
+	frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	frame.Position = UDim2.new(0.2, 0, 0.2, 0)
+	frame.BackgroundColor3 = Color3.new(0, 0, 0)
+	frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	frame.BorderSizePixel = 0
+	imageButton.Parent = frame
+	imageButton.Size = UDim2.new(0, 55, 0, 45)
+	imageButton.Image = "rbxassetid://10511855986"
+	imageButton.AnchorPoint = Vector2.new(0.5, 0.5)
+	imageButton.Position = UDim2.new(0.5, 0, 0.5, 0)
+	imageButton.BackgroundColor3 = Color3.new(0, 0, 0)
+	imageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	imageButton.BackgroundTransparency = 1
+	imageButton.BorderSizePixel = 0
+	imageButton.AutoButtonColor = false
+	uiCorner.Parent = frame
+	uiCorner.CornerRadius = UDim.new(0, 100)
+
+	imageButton.MouseButton1Click:Connect(function()
+		imageButton.Size = UDim2.new(0, 55, 0, 45)
+		local tween = tweenService:Create(imageButton, TweenInfo.new(0.85, Enum.EasingStyle.Quad), { Rotation = 360, Size = UDim2.new(0, 55, 0, 45) })
+		tween:Play()
+
+		tween.Completed:Connect(function()
+			imageButton.Rotation = 0
+		end)
+
+		virtualInputManager:SendKeyEvent(true, "RightShift", false, game)
+		virtualInputManager:SendKeyEvent(false, "RightShift", false, game)
+	end)
+
+	fn28(frame, imageButton)
+	print("[UI]", "Create Window")
+	return true, result
+end
+
+tbl10.CreateTabs = function(arg)
+	tbl10.Tabs = {}
+	tbl10.Features = {}
+	tbl10.TotalTabs = 0
+
+	for _, v4 in pairs({
+		{ "Server", "server" },
+		{ "Hop Auto", "home" },
+		{ "Farm", "layers" },
+		{ "ESP", "eye" },
+		{ "Webhook", "rbxassetid://136418130625199" },
+		{ "Settings", "settings" },
+	}) do
+		tbl10.TotalTabs = tbl10.TotalTabs + 1
+		tbl10.Tabs[v4[1]] = arg:AddTab({ Title = v4[1], Icon = v4[2] })
+		tbl10.Features[v4[1]] = {}
+	end
+
+	print("[UI]", "Created Total", tostring(tbl10.TotalTabs), "Tabs!")
+end
+
+tbl10.BuildUI = function(arg, arg2, arg3)
+	if not arg then
+		return false, "Missing Tab"
+	end
+
+	if not arg2 then
+		return false, "Missing Type of Feature"
+	end
+
+	if not arg3 then
+		return false, "Missing the feauture configs"
+	end
+
+	if arg2 == "Button" then
+		tbl10.Features[arg3.Title] = arg:AddButton(arg3)
+	elseif arg2 == "Textbox" then
+		arg3.Numberic = arg3.Numberic or false
+		arg3.Default = arg3.Default or tbl[arg3.Title] or ""
+
+		arg3.Callback = arg3.Callback or function()
+		end
+
+		tbl10.Features[arg3.Title] = arg:AddInput("IDK", arg3)
+	elseif arg2 == "Paragraph" then
+		tbl10.Features[arg3.Title] = arg:AddParagraph(arg3)
+	elseif arg2 == "Toggle" then
+		arg3.Default = arg3.Default or tbl[arg3.Title] or false
+
+		arg3.Callback = arg3.Callback or function(arg4)
+			tbl[arg3.Title] = arg4
+		end
+
+		tbl10.Features[arg3.Title] = arg:AddToggle("Toggle", arg3)
+	elseif arg2 == "Dropdown" then
+		arg3.Multi = arg3.Multi or false
+		arg3.Default = arg3.Default or tbl[arg3.Title] or arg3.Multi and {} or ""
+
+		arg3.Callback = arg3.Callback or function(arg4)
+			tbl[arg3.Title] = arg4
+		end
+
+		tbl10.Features[arg3.Title] = arg:AddDropdown("Dropdown", arg3)
+	elseif arg2 == "Slider" then
+		arg3.Rounding = arg3.Rounding or 1
+		arg3.Default = arg3.Default or tbl[arg3.Title] or arg3.Min
+
+		arg3.Callback = arg3.Callback or function(arg4)
+			tbl[arg3.Title] = arg4
+		end
+
+		tbl10.Features[arg3.Title] = arg:AddSlider("Slider", arg3)
+	elseif arg2 == "Seperator" then
+		arg:AddSection(arg3.Title)
+	end
+
+	return true, nil
+end
+
+local v4 = tbl7.FuncManager()
+
+local espRarityList = {
+	Mythical = { "Dragon", "Kitsune", "Leopard", "Dough", "Buddha", "Control", "Venom", "Spirit" },
+	Legendary = { "Phoenix", "Shadow", "Portal", "Rumble", "Sound", "Dark" },
+}
+
+local espColors = {
+	Mythical = Color3.fromRGB(255, 70, 90),
+	Legendary = Color3.fromRGB(255, 170, 60),
+	Common = Color3.fromRGB(255, 255, 255),
+}
+
+local espCache = {}
+local espRunning = false
+local espArrowGui = nil
+
+local function espGetArrowGui()
+	if espArrowGui and espArrowGui.Parent then
+		return espArrowGui
+	end
+	espArrowGui = Instance.new("ScreenGui")
+	espArrowGui.Name = "NightHubFruitArrows"
+	espArrowGui.IgnoreGuiInset = true
+	espArrowGui.ResetOnSpawn = false
+	espArrowGui.Parent = localPlayer:WaitForChild("PlayerGui")
+	return espArrowGui
+end
+
+local function espDestroyEntry(inst, data)
+	if data.gui then
+		data.gui:Destroy()
+	end
+	if data.arrow then
+		data.arrow:Destroy()
+	end
+	espCache[inst] = nil
+end
+
+local function espClear()
+	for inst, data in pairs(espCache) do
+		espDestroyEntry(inst, data)
+	end
+end
+
+local function espUpdate()
+	local camera = workspace.CurrentCamera
+	local character = localPlayer.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	local showLabel = tbl["ESP Fruit"] == true
+	local showArrow = tbl["ESP Fruit Arrow"] == true
+	local found = {}
+
+	for _, child in pairs(workspace:GetChildren()) do
+		if (child:IsA("Model") or child:IsA("Tool")) and string.find(child.Name, "Fruit") and child:FindFirstChild("Handle") then
+			found[child] = true
+		end
+	end
+
+	for inst, data in pairs(espCache) do
+		if not found[inst] or not inst.Parent then
+			espDestroyEntry(inst, data)
+		end
+	end
+
+	local viewport = camera.ViewportSize
+	local center = Vector2.new(viewport.X / 2, viewport.Y / 2)
+	local radius = math.min(viewport.X, viewport.Y) / 2 - 40
+
+	for inst in pairs(found) do
+		local handle = inst:FindFirstChild("Handle")
+		local data = espCache[inst]
+
+		if not data then
+			data = {}
+			espCache[inst] = data
+		end
+
+		if not data.gui then
+			local gui = Instance.new("BillboardGui")
+			gui.Name = "NightHubFruitESP"
+			gui.Adornee = handle
+			gui.AlwaysOnTop = true
+			gui.Size = UDim2.fromOffset(220, 40)
+			gui.StudsOffset = Vector3.new(0, 3, 0)
+			gui.Parent = handle
+
+			local label = Instance.new("TextLabel")
+			label.Size = UDim2.fromScale(1, 1)
+			label.BackgroundTransparency = 1
+			label.TextStrokeTransparency = 0
+			label.TextColor3 = Color3.fromRGB(255, 255, 255)
+			label.TextSize = 14
+			label.Font = Enum.Font.GothamBold
+			label.Parent = gui
+
+			data.gui = gui
+			data.label = label
+		end
+
+		local name = inst:GetAttribute("OriginalName") or inst.Name
+		local parts = { name }
+
+		if tbl["ESP Fruit Distance"] and root then
+			table.insert(parts, math.floor((handle.Position - root.Position).Magnitude) .. "m")
+		end
+
+		data.label.Text = table.concat(parts, " | ")
+		data.gui.Enabled = showLabel
+
+		if showArrow and root and camera then
+			if not data.arrow then
+				local arrow = Instance.new("TextLabel")
+				arrow.Size = UDim2.fromOffset(28, 28)
+				arrow.AnchorPoint = Vector2.new(0.5, 0.5)
+				arrow.BackgroundTransparency = 1
+				arrow.Text = "➤"
+				arrow.TextSize = 22
+				arrow.TextColor3 = Color3.fromRGB(255, 255, 255)
+				arrow.TextStrokeTransparency = 0
+				arrow.Font = Enum.Font.GothamBold
+				arrow.Parent = espGetArrowGui()
+				data.arrow = arrow
+			end
+
+			local pos, onScreen = camera:WorldToViewportPoint(handle.Position)
+			local inView = onScreen and pos.Z > 0
+
+			if inView then
+				data.arrow.Visible = false
+			else
+				local dir = Vector2.new(pos.X, pos.Y) - center
+				if pos.Z < 0 then
+					dir = -dir
+				end
+				if dir.Magnitude < 0.001 then
+					dir = Vector2.new(0, -1)
+				end
+				dir = dir.Unit
+
+				local edge = center + dir * radius
+				data.arrow.Position = UDim2.fromOffset(edge.X, edge.Y)
+				data.arrow.Rotation = math.deg(math.atan2(dir.Y, dir.X))
+				data.arrow.Visible = true
+			end
+		elseif data.arrow then
+			data.arrow.Visible = false
+		end
+	end
+end
+
+local function espStart()
+	if espRunning then
+		return
+	end
+	espRunning = true
+
+	task.spawn(function()
+		while tbl["ESP Fruit"] or tbl["ESP Fruit Arrow"] do
+			local ok, err = pcall(espUpdate)
+			if not ok then
+				warn("[ESP]", err)
+			end
+			task.wait(0.2)
+		end
+		espClear()
+		espRunning = false
+	end)
+end
+
+local lightingConns = {}
+local fogBackup = nil
+
+local function applyFog()
+	local L = game:GetService("Lighting")
+	L.FogColor = Color3.fromRGB(255, 255, 255)
+	L.FogEnd = 999999999
+end
+
+local function setFog(on)
+	local L = game:GetService("Lighting")
+
+	for _, c in ipairs(lightingConns) do
+		c:Disconnect()
+	end
+	lightingConns = {}
+
+	if on then
+		if not fogBackup then
+			fogBackup = { start = L.FogStart, en = L.FogEnd, color = L.FogColor }
+		end
+
+		applyFog()
+
+		lightingConns[1] = L.Changed:Connect(function(prop)
+			if prop == "FogEnd" or prop == "FogColor" then
+				applyFog()
+			end
+		end)
+	elseif fogBackup then
+		L.FogStart = fogBackup.start
+		L.FogEnd = fogBackup.en
+		L.FogColor = fogBackup.color
+		fogBackup = nil
+	end
+end
+
+tbl10.StartingUI = function()
+	local v5, v6 = tbl10.CreateWindow()
+	if not v5 then
+		warn("Library", "Cannot Create Window!, BUGS:", v6)
+		return
+	end
+	tbl10.CreateTabs(v6)
+	v6:SelectTab(1)
+
+	for k, v7 in pairs({
+		Server = {
+			{ "Paragraph", { Title = "Boss Spawns In Server", Content = "Checking..." } },
+			{ "Paragraph", { Title = "Status Script", Content = "No action" } },
+			{ "Paragraph", { Title = "Server Data", Content = "Click button show server data to see" } },
+			{ "Seperator", { Title = "Teleport" } },
+			{
+				"Textbox",
+				{
+					Title = "Enter Night Hub JobId",
+					Desc = "enter night hub job id, you can get it in my discord server.",
+					PlaceHolder = "Enter Job Id",
+					Callback = function(arg)
+						local v7, v8 = tbl12.decode(arg, v2)
+
+						if v7 and v8 then
+							v4.JoinServer(v8)
+						else
+							print(v8)
+						end
+					end,
+				},
+			},
+			{
+				"Textbox",
+				{
+					Title = "Enter Job Id",
+					Desc = "enter any server job id",
+					PlaceHolder = "Enter Job Id",
+					Callback = function(arg)
+						v4.JoinServer(tostring(arg))
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Show Server Data",
+					Callback = function()
+						v:Notify({ Title = "Show Server Data", Content = "Update Successful!", Duration = 6 })
+						tbl10.Features["Server Data"]:SetDesc("JobId: " .. tostring(game.JobId) .. "\nPlayers: " .. tostring(#players:GetPlayers()) .. "\nPlaceId: " .. tostring(game.PlaceId))
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Rejoin Server",
+					Callback = function()
+						v4.JoinServer(game.JobId)
+					end,
+				},
+			},
+		},
+		["Hop Auto"] = {
+			{
+				"Dropdown",
+				{
+					Title = "Teleport World",
+					Desc = "Click any option to teleport, ex: Sea1, Sea2, ...",
+					Values = { "Sea 1", "Sea 2", "Sea 3" },
+					Callback = function(arg)
+						v:Notify({ Title = "Start Teleporting...", Content = "Processing...", Duration = 10 })
+
+						if arg == "Sea 1" then
+							commF:InvokeServer("TravelMain")
+						elseif arg == "Sea 2" then
+							commF:InvokeServer("TravelDressrosa")
+						elseif arg == "Sea 3" then
+							commF:InvokeServer("TravelZou")
+						end
+					end,
+				},
+			},
+			{ "Seperator", { Title = "Configuration" } },
+			{
+				"Dropdown",
+				{
+					Title = "Select Tool",
+					Desc = "select tool to attack boss",
+					Values = { "Melee", "Sword", "Blox Fruit" },
+				},
+			},
+			{ "Toggle", { Title = "Auto Buso" } },
+			{ "Seperator", { Title = "Farm" } },
+			{
+				"Dropdown",
+				{
+					Title = "Select Boss",
+					Desc = "no desc",
+					Values = {
+						"Soul Reaper",
+						"Cake Prince",
+						"Elite",
+						"Rip Indra",
+						"Dough King",
+						"Tyrant Of The Skies",
+						"Darkbeard",
+						"Cursed Captain",
+						"Cake Queen",
+					},
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Check Boss In API",
+					Callback = function()
+						local v7, v8 = v4.GetCountByApi(tbl["Select Boss"])
+						v:Notify({ Title = "Check Boss In API", Content = tostring(v8), Duration = 8 })
+					end,
+				},
+			},
+			{ "Toggle", { Title = "Start Farm Boss" } },
+			{ "Toggle", { Title = "Auto Hop Find Boss" } },
+			{ "Seperator", { Title = "Others" } },
+			{ "Toggle", { Title = "Auto Hop Fullmoon" } },
+			{ "Toggle", { Title = "Auto Hop Castle Raid" } },
+			{ "Toggle", { Title = "Auto Hop Legendary Sword", Desc = "Auto buy in Farm Tab" } },
+			{ "Toggle", { Title = "Auto Hop Berry" } },
+			{ "Toggle", { Title = "Auto Hop Dough King" } },
+			{ "Toggle", { Title = "Auto Hop Near Moon" } },
+			{ "Toggle", { Title = "Auto Hop Mirage Island" } },
+			{ "Toggle", { Title = "Auto Hop Prehistoric Island" } },
+			{ "Toggle", { Title = "Auto Hop Kitsune Island" } },
+			{ "Toggle", { Title = "Auto Hop Find Fruits" } },
+			{ "Seperator", { Title = "Hop Click" } },
+			{
+				"Button",
+				{
+					Title = "Hop Sword Legendary",
+					Callback = function()
+						v4.StartHop("SwordLegendary")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Fullmoon",
+					Callback = function()
+						v4.StartHop("Fullmoon")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Castle Raid",
+					Callback = function()
+						v4.StartHop("CastleRaid")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Near Moon",
+					Callback = function()
+						v4.StartHop("NearMoon")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Berry",
+					Callback = function()
+						v4.StartHop("Berry")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Mirage Island",
+					Callback = function()
+						v4.StartHop("Mirage")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Prehistoric Island",
+					Callback = function()
+						v4.StartHop("PrehistoricIsland")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Kitsune Island",
+					Callback = function()
+						v4.StartHop("KitsuneIsland")
+					end,
+				},
+			},
+			{
+				"Button",
+				{
+					Title = "Hop Fruits",
+					Callback = function()
+						v4.StartHop("Fruits")
+					end,
+				},
+			},
+		},
+		Farm = {
+			{
+				"Paragraph",
+				{
+					Title = "Trick",
+					Content = "You find Auto Hop Boss or Auto Farm Boss?\nAuto Hop and Auto Farm Boss in Hop Auto Tab",
+				},
+			},
+			{ "Toggle", { Title = "Teleport to Fruits" } },
+			{ "Toggle", { Title = "Teleport to Berry" } },
+			{
+				"Toggle",
+				{
+					Title = "Auto Buy Legendary Sword",
+					Desc = "make sure you have more than 2,000,000$ beli",
+				},
+			},
+			{ "Toggle", { Title = "Auto Castle Raid", Desc = "Auto hop castle raid in Hop Auto Tab" } },
+			{ "Seperator", { Title = "Items" } },
+			{ "Toggle", { Title = "Auto Yama" } },
+			{ "Toggle", { Title = "Auto Tushita" } },
+			{ "Toggle", { Title = "Auto True Triple Katana" } },
+			{ "Seperator", { Title = "Race" } },
+			{ "Toggle", { Title = "Auto Ghoul" } },
+			{ "Seperator", { Title = "Auto Calice" } },
+			{ "Toggle", { Title = "Auto Calice", Desc = "farma elite até pegar o calice, depois para de hopar" } },
+		},
+		Webhook = {
+			{
+				"Textbox",
+				{
+					Title = "Enter Webhook Url",
+					Desc = "Put your discord webhook url here!",
+					PlaceHolder = "Put webhook here!",
+					Callback = function(arg)
+						tbl["Enter Webhook Url"] = arg
+					end,
+				},
+			},
+			{ "Toggle", { Title = "Send Webhook Killed Boss" } },
+			{ "Toggle", { Title = "@everyone" } },
+			{
+				"Button",
+				{
+					Title = "Send Test",
+					Callback = function()
+						local v7, v8 = v4.SendWebhook(tbl["Enter Webhook Url"], { content = "@everyone Hello, This is test message in Hop Boss V2" })
+						v:Notify({ Title = "Webhook Test", Content = tostring(v8), Duration = 5 })
+					end,
+				},
+			},
+						{ "Seperator", { Title = "Finder Fruit" } },
+			{
+				"Textbox",
+				{
+					Title = "Finder Webhook Url",
+					Desc = "webhook separado pras frutas",
+					PlaceHolder = "Put webhook here!",
+					Callback = function(arg)
+						tbl["Finder Webhook Url"] = arg
+					end,
+				},
+			},
+			{ "Toggle", { Title = "Send Found Fruit", Desc = "manda as frutas achadas antes de trocar de server" } },
+			{ "Toggle", { Title = "Send Stored Fruit", Desc = "manda quando guarda uma fruta" } },
+			{
+				"Button",
+				{
+					Title = "Test Finder Webhook",
+					Callback = function()
+						finderPost("Test", "Finder Webhook Test", 3447003)
+						v:Notify({ Title = "Finder Webhook", Content = "Teste enviado, confere no Discord", Duration = 5 })
+					end,
+				},
+			},
+						{
+				"Button",
+				{
+					Title = "Test Show Fruits",
+					Callback = function()
+						local text = finderShowServerFruits()
+						v:Notify({ Title = "Test Show Fruits", Content = text, Duration = 6 })
+					end,
+				},
+			},
+						{
+				"Toggle",
+				{
+					Title = "Show Fruits In Server",
+					Desc = "manda as frutas do server no webhook ao ligar",
+					Callback = function(arg)
+						tbl["Show Fruits In Server"] = arg
+						if arg then
+							local text = finderShowServerFruits()
+							v:Notify({ Title = "Fruits In Server", Content = text, Duration = 6 })
+						end
+					end,
+				},
+			},
+						{
+				"Dropdown",
+				{
+					Title = "Finder Min Price",
+					Desc = "só acha fruta a partir desse valor",
+					Values = { "0", "500000", "1000000", "5000000", "10000000" },
+					Default = "1000000",
+					Callback = function(arg)
+						tbl["Finder Min Price"] = arg
+					end,
+				},
+			},
+		},
+		ESP = {
+			{
+				"Toggle",
+				{
+					Title = "ESP Fruit",
+					Callback = function(arg)
+						tbl["ESP Fruit"] = arg
+						if arg then
+							espStart()
+						end
+					end,
+				},
+			},
+			{
+				"Toggle",
+				{
+					Title = "ESP Fruit Arrow",
+					Callback = function(arg)
+						tbl["ESP Fruit Arrow"] = arg
+						if arg then
+							espStart()
+						end
+					end,
+				},
+			},
+			{ "Seperator", { Title = "Settings" } },
+			{ "Toggle", { Title = "ESP Fruit Name" } },
+			{ "Toggle", { Title = "ESP Fruit Distance" } },
+		},
+		Settings = {
+			{ "Seperator", { Title = "Team" } },
+			{ "Toggle", { Title = "Auto Join Team" } },
+			{
+				"Dropdown",
+				{
+					Title = "Select Team",
+					Desc = "time que o script força ao entrar",
+					Values = { "Marines", "Pirates" },
+				},
+			},
+			{ "Toggle", { Title = "Enable Fast Attack" } },
+			{ "Slider", { Title = "Tween Speed", Max = 300, Min = 180 } },
+			{
+				"Dropdown",
+				{
+					Title = "Select Theme",
+					Values = { "Dark", "Darker", "Light", "Aqua", "Amethyst", "Rose" },
+					Callback = function(arg)
+						v:SetTheme(arg)
+						tbl["Select Theme"] = arg
+					end,
+				},
+			},
+						{
+				"Toggle",
+				{
+					Title = "Remove Fog",
+					Callback = function(arg)
+						tbl["Remove Fog"] = arg
+						setFog(arg)
+					end,
+				},
+			},
+		},
+	}) do
+		local v8 = tbl10.Tabs[k]
+
+		if v8 then
+			for _, v9 in pairs(v7) do
+				tbl10.BuildUI(v8, v9[1], v9[2])
+			end
+		end
+	end
+
+	print("[UI]", "Started UI!")
+end
+
+tbl3.LoadFuncs = function()
+	tbl3.Funcs = {
+		["Auto Buso"] = function()
+			if not localPlayer.Character:FindFirstChild("HasBuso") then
+				commF:InvokeServer("Buso")
+				wait(1)
+			end
+		end,
+		["Enable Fast Attack"] = fn27,
+		["Start Farm Boss"] = function()
+			if tbl["Select Boss"] == nil or tbl["Select Boss"] == "" then
+				return
+			end
+			local tbl15 = tbl["Select Boss"] == "Rip Indra" and { "rip_indra", "rip_indra True Form" }
+			local tbl16
+
+			if tbl15 then
+				tbl16 = tbl15
+			else
+				tbl16 = tbl["Select Boss"] == "Elite" and { "Urban", "Deandre", "Diablo" }
+			end
+
+			local v5 = tbl9.GetBoss(tbl16 or tbl["Select Boss"] == "Tyrant Of The Skies" and "Tyrant of the Skies" or tbl["Select Boss"])
+
+			if v5 then
+				str2 = v5.Name
+
+				if tbl["Select Boss"] == "Elite" and not tbl9.CheckQuest(v5.Name) then
+					commF:InvokeServer("EliteHunter")
+				elseif (tbl["Select Boss"] == "Cake Prince" or tbl["Select Boss"] == "Dough King") and tbl6.GetDistance(v5.HumanoidRootPart.Position) >= 1500 then
+					local cakeLoaf = workspace.Map:FindFirstChild("CakeLoaf")
+					local bigMirror = cakeLoaf and cakeLoaf:FindFirstChild("BigMirror")
+					local main = bigMirror and bigMirror:FindFirstChild("Main")
+
+					if cakeLoaf and bigMirror and main and main:FindFirstChild("TouchInterest") then
+						firetouchinterest(main, localPlayer.Character.HumanoidRootPart, 0)
+						firetouchinterest(main, localPlayer.Character.HumanoidRootPart, 1)
+						wait(0.1)
+					else
+						tbl6.Tweento(CFrame.new(-2124, 69, -12401))
+					end
+				else
+					tbl9.Kill(v5, "Start Farm Boss")
+				end
+			else
+				local earned = v4.CheckNotify("earned")
+				local fragments = v4.CheckNotify("fragments")
+
+				if (earned or fragments) and str2 ~= "" and tbl["Send Webhook Killed Boss"] and not tbl5[earned] then
+					tbl5[earned] = true
+					local sendWebhook = v4.SendWebhook
+					local enterWebhookUrl = tbl["Enter Webhook Url"]
+					local tbl17 = { content = (tbl["@everyone"] and "@everyone " or "") .. "Killed " .. tostring(str2) }
+					local embeds = {}
+					local tbl18 = { author = { name = "Night Hub Hop Boss V2" } }
+					local fields = {}
+					local tbl19 = { name = "Boss Name", value = "```" .. tostring(str2) .. "```" }
+					local tbl20 = { name = "Account Name", value = "```" .. tostring(localPlayer.Name) .. "```" }
+					local tbl21 = { name = "Sea", value = "```" .. tostring(attribute) .. "```" }
+					local tbl22 = { name = "JobId", value = "||" .. tostring(game.JobId) .. "||" }
+					fields[1] = tbl19
+					fields[2] = tbl20
+					fields[3] = tbl21
+					fields[4] = tbl22
+					tbl18.fields = fields
+
+					tbl18.thumbnail = {
+						url = "https://cdn.discordapp.com/attachments/1481159425652822117/1492901169696215111/Sparxie_Laugh.gif?ex=69e63e8f&is=69e4ed0f&hm=8713614b8ddc0704b2b23baf87fc4ebe7ae3a4089aa5546dde443010f44c609e&",
+					}
+
+					embeds[1] = tbl18
+					tbl17.embeds = embeds
+					local v6, v7 = sendWebhook(enterWebhookUrl, tbl17)
+					print(v6, v7)
+					wait(0.2)
+				end
+
+				if tbl["Auto Hop Find Boss"] then
+					wait(2)
+					v4.StartHop(tbl["Select Boss"])
+				end
+			end
+		end,
+		["Auto Hop Fullmoon"] = function()
+			if attribute == "Sea3" then
+				if v4.IsFullmoon() then
+					v:Notify({
+						Title = "Auto Hop Fullmoon",
+						Content = "Current Server is Fullmoon, Please turn off auto hop fullmoon!!",
+						Duration = 5,
+					})
+
+					wait(6)
+				else
+					v4.StartHop("Fullmoon")
+					wait(2)
+				end
+			end
+		end,
+		["Auto Hop Berry"] = function()
+			if not v4.FoundBerries() then
+				v4.StartHop("Berry")
+				wait(2)
+			else
+				v:Notify({
+					Title = "Auto Hop Berry",
+					Content = "Current Server have Berry, Please turn off auto hop berry!!",
+					Duration = 5,
+				})
+
+				wait(6)
+			end
+		end,
+		["Auto Hop Near Moon"] = function()
+			if attribute == "Sea3" and game:GetService("Lighting").Sky.MoonTextureId == "http://www.roblox.com/asset/?id=9709149052" then
+				v:Notify({
+					Title = "Auto Hop Near Moon",
+					Content = "Current Moon in Server is Near Moon, Please turn off auto hop near moon!!",
+					Duration = 5,
+				})
+
+				wait(6)
+			elseif attribute == "Sea3" then
+				v4.StartHop("NearMoon")
+				wait(2)
+			end
+		end,
+		["Auto Hop Mirage Island"] = function()
+			if attribute == "Sea3" and workspace.Map:FindFirstChild("MysticIsland") then
+				v:Notify({
+					Title = "Auto Hop Mirage Island",
+					Content = "Current Server Found Mirage Island, Please turn off auto hop mirage island!!",
+					Duration = 5,
+				})
+
+				wait(6)
+			elseif attribute == "Sea3" then
+				v4.StartHop("Mirage")
+				wait(2)
+			end
+		end,
+		["Auto Hop Prehistoric Island"] = function()
+			if attribute == "Sea3" and workspace.Map:FindFirstChild("PrehistoricIsland") then
+				v:Notify({
+					Title = "Auto Hop Prehistoric Island",
+					Content = "Current Server Found Prehistoric Island, Please turn off auto hop Prehistoric Island!!",
+					Duration = 5,
+				})
+
+				wait(6)
+			elseif attribute == "Sea3" then
+				v4.StartHop("PrehistoricIsland")
+				wait(2)
+			end
+		end,
+		["Auto Hop Kitsune Island"] = function()
+			if attribute == "Sea3" and workspace.Map:FindFirstChild("KitsuneIsland") then
+				v:Notify({
+					Title = "Auto Hop Kitsune Island",
+					Content = "Current Server Found Kitsune Island, Please turn off auto hop Kitsune Island!!",
+					Duration = 5,
+				})
+
+				wait(6)
+			elseif attribute == "Sea3" then
+				v4.StartHop("KitsuneIsland")
+				wait(2)
+			end
+		end,
+		["Auto Hop Find Fruits"] = function()
+			if v4.CheckFruit() then
+				if not tbl["Teleport to Fruits"] then
+					v:Notify({
+						Title = "Auto Hop Find Fruits",
+						Content = "Current Server Found Fruit Spawn, Please turn on auto Teleport to Fruits!!",
+						Duration = 5,
+					})
+
+					wait(6)
+				end
+			else
+				wait(2)
+				v4.StartHop("Fruits")
+			end
+		end,
+		["Teleport to Fruits"] = function()
+			v4.StoreBF()
+
+			if v4.CheckFruit() then
+				local v5 = v4.CheckFruit()
+
+				if v5.Name == "Fruit " then
+					tbl6.Tweento(v5.Handle.CFrame, true)
+				else
+					firetouchinterest(v5.Handle, localPlayer.Character.PrimaryPart, 0)
+					firetouchinterest(v5.Handle, localPlayer.Character.PrimaryPart, 1)
+				end
+			end
+		end,
+		["Teleport to Berry"] = function()
+			local v5 = v4.FoundBerries()
+
+			if v5 then
+				local model = v5:FindFirstChildOfClass("Model")
+
+				if model then
+					local position = localPlayer.Character.HumanoidRootPart.Position
+
+					if (model:GetPivot().Position - position).Magnitude <= 15 then
+						fireproximityprompt(model.ProximityPrompt)
+					end
+
+					tbl6.Tweento(model:GetPivot(), true)
+				else
+					tbl6.Tweento(v5.Parent:GetPivot(), true)
+				end
+			end
+		end,
+		["Auto Buy Legendary Sword"] = function()
+			if commF:InvokeServer("LegendarySwordDealer", "1") then
+				local response = commF:InvokeServer("LegendarySwordDealer", "2")
+
+				if response == 0 then
+					v:Notify({
+						Title = "Buy Legendary Sword",
+						Content = "Bro it's fucking poor 😭🙏🙏, you don't enough money!",
+						Duration = 7,
+					})
+
+					wait(8)
+				elseif response == 2 then
+					v:Notify({ Title = "Buy Legendary Sword", Content = "You already have this sword", Duration = 7 })
+					wait(8)
+				else
+					v:Notify({
+						Title = "Buy Legendary Sword",
+						Content = "Buyed " .. tostring(commF:InvokeServer("LegendarySwordDealer", "1")),
+						Duration = 7,
+					})
+				end
+			end
+		end,
+		["Auto Hop Legendary Sword"] = function()
+			if not commF:InvokeServer("LegendarySwordDealer", "1") and attribute == "Sea2" then
+				wait(2)
+				v4.StartHop("SwordLegendary")
+			end
+		end,
+		["Auto Castle Raid"] = function()
+			if attribute == "Sea3" then
+				local flag3 = not raidcastletime
+
+				if not flag3 then
+					local v5 = raidcastletime
+					flag3 = tick() - v5 >= 35
+				end
+
+				if flag3 then
+					raidcastletime = tick()
+				end
+
+				local flag4 = not v4.CheckRaidCastle()
+
+				if flag4 then
+					local v5 = raidcastletime
+					flag4 = tick() - v5 >= 30
+				end
+
+				if flag4 and not flag2 then
+					wait(2)
+					v4.StartHop("CastleRaid")
+				else
+					local v5 = tbl9.GetMobInCFrame(cframe)
+
+					if v5 then
+						flag2 = true
+						tbl9.Kill(v5, "Auto Castle Raid")
+					end
+
+					if v4.CheckNotify("fragment") or v4.CheckNotify("good job!") or v4.CheckNotify("100f") then
+						flag2 = false
+					end
+				end
+			end
+		end,
+		["Auto Yama"] = function()
+			if attribute == "Sea3" then
+				if commF:InvokeServer("EliteHunter", "Progress") >= 30 then
+					if not workspace.Map:FindFirstChild("Waterfall") or not workspace.Map.Waterfall:FindFirstChild("SealedKatana") then
+						tbl6.Tweento(CFrame.new(5250.71924, 19.842907, 453.177002))
+					elseif tbl6.GetDistance(workspace.Map.Waterfall.SealedKatana.Hitbox.Position) <= 15 then
+						fireclickdetector(workspace.Map.Waterfall.SealedKatana.Hitbox.ClickDetector)
+					else
+						tbl6.Tweento(workspace.Map.Waterfall.SealedKatana.Hitbox.CFrame)
+					end
+				else
+					local v5 = tbl9.GetBoss({ "Urban", "Deandre", "Diablo" })
+
+					if v5 then
+						tbl9.Kill(v5, "Auto Yama")
+					else
+						wait(1)
+						v4.StartHop("Elite")
+					end
+				end
+			end
+		end,
+		["Auto Tushita"] = function()
+			if attribute == "Sea3" then
+				if v4.CheckInventory("Tushita") or localPlayer.Data.Level.Value < 2000 then
+					return
+				end
+
+				if not commF:InvokeServer("TushitaProgress").OpenedDoor then
+					if tbl9.GetBoss({ "rip_indra", "rip_indra True Form" }) then
+						if not fn3("Holy Torch") then
+							tbl6.Tweento(CFrame.new(5717.06592, 18.8161335, 252.124573, 0.926925123, -3.2500004e-8, -0.375246346, 3.454661e-8, 1, -1.2735254e-9, 0.375246346, -1.1783026e-8, 0.926925123))
+						else
+							EquipTool("Holy Torch")
+
+							for i = 1, 5 do
+								commF:InvokeServer("TushitaProgress", "Torch", i)
+							end
+						end
+					else
+						wait(2)
+						v4.StartHop("RipIndra")
+					end
+				else
+					local Longma = tbl9.GetBoss("Longma")
+
+					if Longma then
+						tbl9.Kill(Longma, "Auto Tushita")
+					else
+						v4.HopServers()
+					end
+				end
+			end
+		end,
+		["Auto Ghoul"] = function()
+			if attribute == "Sea2" then
+				if localPlayer and localPlayer.Data.Race.Value == "Ghoul" then
+					v:Notify({
+						Title = "Kaitun Ghoul",
+						Content = "Your Race Already is Ghoul, Stop Script...",
+						Duration = 5,
+					})
+
+					wait(6)
+					return
+				end
+
+				if fn3("Hellfire Torch") then
+					if v4.GetMaterial("Ectoplasm") < 100 then
+						local v5 = tbl9.GetBoss({ "Ship Deckhand", "Ship Engineer", "Ship Steward" })
+
+						if v5 then
+							tbl9.Kill(v5, "Auto Ghoul")
+						else
+							tbl6.Tweento(CFrame.new(919, 200, 33456))
+						end
+					else
+						tbl9.EquipTool("Hellfire Torch")
+
+						if (Vector3.new(919, 125, 33456) - localPlayer.Character.HumanoidRootPart.Position).Magnitude <= 15 then
+							replicatedStorage.Remotes.CommF_:InvokeServer("Ectoplasm", "BuyCheck", 4)
+							replicatedStorage.Remotes.CommF_:InvokeServer("Ectoplasm", "Buy", 4)
+						else
+							tbl6.Tweento(CFrame.new(919, 125, 33456))
+						end
+					end
+				else
+					local v5 = tbl9.GetBoss("Cursed Captain")
+
+					if v5 then
+						tbl9.Kill(v5, "Auto Ghoul")
+					else
+						wait(1.5)
+
+						if fn3("Hellfire Torch") then
+							wait()
+						else
+							tbl6.Tweento(CFrame.new(919, 9999, 33456))
+							v4.StartHop("CursedCaptain")
+							wait(2)
+						end
+					end
+				end
+			end
+		end,
+		["Auto Join Team"] = function()
+			local want = tbl["Select Team"] or "Marines"
+			if localPlayer.Team == nil or localPlayer.Team.Name ~= want then
+				commF:InvokeServer("SetTeam", want)
+				wait(1)
+			end
+		end,
+		["Auto Hop Dough King"] = function()
+			local ok, msg = v4.StartHop("Dough King")
+			if not ok then
+				wait(2)
+			end
+		end,
+				["Auto Calice"] = function()
+			local CALICE = "Calice"
+
+			if hasCalice() then
+				v:Notify({ Title = "Auto Calice", Content = "Calice pego, desligando", Duration = 6 })
+				tbl10.Features["Auto Calice"]:SetValue(false)
+				return
+			end
+
+			local boss = tbl9.GetBoss({ "Urban", "Deandre", "Diablo" })
+
+			if boss then
+				if not tbl9.CheckQuest(boss.Name) then
+					commF:InvokeServer("EliteHunter")
+				end
+				tbl9.Kill(boss, "Auto Calice")
+			else
+				wait(2)
+				v4.StartHop("Elite")
+			end
+		end,
+		["Auto True Triple Katana"] = function()
+			v:Notify({ Title = "Error!", Content = "This feature is not update!", Duration = 6 })
+			tbl10.Features["Auto True Triple Katana"]:SetValue(false)
+			wait(0.1)
+		end,
+	}
+end
+
+tbl3.StartFuncs = function()
+	tbl3.Thread = {}
+
+	local function fn28(arg, arg2)
+		if tbl[arg] and not tbl3.Thread[arg] then
+			tbl3.Thread[arg] = true
+
+			spawn(function()
+				while tbl[arg] and wait() do
+					local ok, result = pcall(arg2)
+
+					if not ok then
+						print(arg, result)
+					end
+				end
+
+				tbl6.StopTween()
+				tbl3.Thread[arg] = nil
+			end)
+		end
+	end
+
+	spawn(function()
+		while wait() do
+			if attribute == "Sea3" and v4.CheckInventory("Valkyrie Helm") then
+				flag = true
+			end
+		end
+	end)
+
+	spawn(function()
+		while wait() do
+			for k, func in pairs(tbl3.Funcs) do
+				fn28(k, func)
+			end
+		end
+	end)
+end
+
+fn = function()
+	if nightHubAuthRewrite.Started then
+		return
+	end
+	nightHubAuthRewrite.Started = true
+	tbl3.CheckAndJoinTeam()
+
+	local ok, result = pcall(function()
+		local chunk = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"), "=Fluent")
+		assert(type(chunk) == "function", "Fluent compile failed")
+		v = chunk()
+		assert(type(v) == "table", "Fluent load failed")
+		tbl11.InitSettings()
+		tbl10.StartingUI()
+		tbl3.LoadFuncs()
+		tbl3.StartFuncs()
+		if tbl["ESP Fruit"] or tbl["ESP Fruit Arrow"] then
+			espStart()
+		end
+		if tbl["Send Found Fruit"] then
+			task.delay(3, finderShowServerFruits)
+		end
+		if tbl["Remove Fog"] then
+			setFog(true)
+		end
+	end)
+
+	if ok then
+		return
+	end
+	nightHubAuthRewrite.Started = false
+	warn("[Night Hub] " .. tostring(result))
+end
+
+if nightHubAuthRewrite.Valid or nightHubAuthRewrite.PendingStart then
+	task.spawn(fn)
+end
