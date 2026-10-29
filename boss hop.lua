@@ -1627,6 +1627,42 @@ local function finderPassesMin(child)
 	return price ~= nil and price >= min
 end
 
+local function hasCalice()
+	local function match(s)
+		s = string.lower(tostring(s))
+		local names = { "Calice", "Chalice", "God's Chalice", "God Chalice" }
+		for _, n in ipairs(names) do
+			if string.find(s, n, 1, true) then
+				return true
+			end
+		end
+		return false
+	end
+
+	if ItemReplicationService.IsInitialized then
+		for _, item in pairs(ItemReplicationService:GetItems(KEYS.QUANTITY)) do
+			local ok, data = pcall(function()
+				return ItemId.getDataFromId(item.ItemId):unwrap()
+			end)
+			if ok and data and match(data.StorageKey) and (item.Value or 0) >= 1 then
+				return true
+			end
+		end
+	end
+
+	for _, container in ipairs({ localPlayer.Backpack, localPlayer.Character }) do
+		if container then
+			for _, child in pairs(container:GetChildren()) do
+				if match(child.Name) then
+					return true
+				end
+			end
+		end
+	end
+
+	return false
+end
+
 tbl7.FuncManager = function()
 	local tbl15
 
@@ -3514,7 +3550,7 @@ tbl3.LoadFuncs = function()
 				["Auto Calice"] = function()
 			local CALICE = "Calice"
 
-			if v4.CheckInventory(CALICE) then
+			if hasCalice() then
 				v:Notify({ Title = "Auto Calice", Content = "Calice pego, desligando", Duration = 6 })
 				tbl10.Features["Auto Calice"]:SetValue(false)
 				return
