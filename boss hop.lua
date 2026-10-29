@@ -14,6 +14,11 @@ end })
 
 local genv = getgenv() or _G
 
+if genv.NightHubRunning then
+	return
+end
+genv.NightHubRunning = true
+
 if genv.Config and typeof(genv.Config) == "table" then
 end
 
@@ -2251,8 +2256,8 @@ tbl10.CreateWindow = function()
 			imageButton.Rotation = 0
 		end)
 
-		virtualInputManager:SendKeyEvent(true, "RightControl", false, game)
-		virtualInputManager:SendKeyEvent(false, "RightControl", false, game)
+		virtualInputManager:SendKeyEvent(true, "RightShift", false, game)
+		virtualInputManager:SendKeyEvent(false, "RightShift", false, game)
 	end)
 
 	fn28(frame, imageButton)
