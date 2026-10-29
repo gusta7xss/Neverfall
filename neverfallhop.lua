@@ -2881,6 +2881,40 @@ local function mirageEspStart()
 	end)
 end
 
+local mirageTweenRunning = false
+
+local function mirageTweenStart()
+	if mirageTweenRunning then
+		return
+	end
+	mirageTweenRunning = true
+
+	task.spawn(function()
+		while tbl["Tween Mirage"] do
+			local island = workspace.Map:FindFirstChild("MysticIsland")
+
+			if not (island and island.PrimaryPart) then
+				wait(1)
+			else
+				local ok, msg = tbl6.Tweento(island.PrimaryPart.CFrame * CFrame.new(0, 250, 0))
+
+				if msg == "Arrived" then
+					tbl["Tween Mirage"] = false
+					pcall(function()
+						tbl10.Features["Tween Mirage"]:SetValue(false)
+					end)
+					break
+				end
+
+				task.wait(0.2)
+			end
+		end
+
+		tbl6.StopTween()
+		mirageTweenRunning = false
+	end)
+end
+
 local lightingConns = {}
 local fogBackup = nil
 
@@ -3281,6 +3315,21 @@ tbl10.StartingUI = function()
 				},
 			},
 			{ "Seperator", { Title = "Tween" } },
+			{
+				"Toggle",
+				{
+					Title = "Tween Mirage",
+					Desc = "vai até 250 studs acima da mirage e desliga ao chegar",
+					Callback = function(arg)
+						tbl["Tween Mirage"] = arg
+						if arg then
+							mirageTweenStart()
+						else
+							tbl6.StopTween()
+						end
+					end,
+				},
+			},
 			{
 				"Button",
 				{
@@ -3869,6 +3918,9 @@ fn = function()
 		end
 		if tbl["ESP Mirage"] then
 			mirageEspStart()
+		end
+		if tbl["Tween Mirage"] then
+			mirageTweenStart()
 		end
 		if tbl["Send Found Fruit"] then
 			task.delay(3, finderShowServerFruits)
