@@ -106,6 +106,7 @@ local tbl11 = {
 		["Auto Buso"] = true,
 		["Enable Fast Attack"] = true,
 		["Select Theme"] = "Dark",
+		["Select Team"] = "Marines",
 	},
 }
 
@@ -1489,7 +1490,7 @@ tbl7.FuncManager = function()
 
 			local queue = queue_on_teleport or (syn and syn.queue_on_teleport)
 			if queue then
-				queue([[loadstring(game:HttpGet("https://SEU_HOST/nighthub.lua"))()]])
+				queue([[loadstring(game:HttpGet("https://raw.githubusercontent.com/gusta7xss/Neverfall/refs/heads/main/boss%20hop.lua"))()]])
 			end
 
 			wait(0.2)
@@ -2268,6 +2269,7 @@ tbl10.CreateTabs = function(arg)
 		{ "Server", "server" },
 		{ "Hop Auto", "home" },
 		{ "Farm", "layers" },
+		{ "ESP", "eye" },
 		{ "Webhook", "rbxassetid://136418130625199" },
 		{ "Settings", "settings" },
 	}) do
@@ -2338,6 +2340,120 @@ tbl10.BuildUI = function(arg, arg2, arg3)
 end
 
 local v4 = tbl7.FuncManager()
+
+local espRarityList = {
+	Mythical = { "Dragon", "Kitsune", "Leopard", "Dough", "Buddha", "Control", "Venom", "Spirit" },
+	Legendary = { "Phoenix", "Shadow", "Portal", "Rumble", "Sound", "Dark" },
+}
+
+local espColors = {
+	Mythical = Color3.fromRGB(255, 70, 90),
+	Legendary = Color3.fromRGB(255, 170, 60),
+	Common = Color3.fromRGB(255, 255, 255),
+}
+
+local espCache = {}
+local espRunning = false
+
+local function espRarityOf(name)
+	local lower = string.lower(name)
+	for tier, list in pairs(espRarityList) do
+		for _, n in ipairs(list) do
+			if string.find(lower, string.lower(n), 1, true) then
+				return tier
+			end
+		end
+	end
+	return "Common"
+end
+
+local function espClear()
+	for inst, data in pairs(espCache) do
+		if data.gui then
+			data.gui:Destroy()
+		end
+		espCache[inst] = nil
+	end
+end
+
+local function espUpdate()
+	local character = localPlayer.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	local found = {}
+
+	for _, child in pairs(workspace:GetChildren()) do
+		if (child:IsA("Model") or child:IsA("Tool")) and string.find(child.Name, "Fruit") and child:FindFirstChild("Handle") then
+			found[child] = true
+		end
+	end
+
+	for inst, data in pairs(espCache) do
+		if not found[inst] or not inst.Parent then
+			data.gui:Destroy()
+			espCache[inst] = nil
+		end
+	end
+
+	for inst in pairs(found) do
+		local handle = inst:FindFirstChild("Handle")
+		local data = espCache[inst]
+
+		if not data then
+			local gui = Instance.new("BillboardGui")
+			gui.Name = "NightHubFruitESP"
+			gui.Adornee = handle
+			gui.AlwaysOnTop = true
+			gui.Size = UDim2.fromOffset(220, 40)
+			gui.StudsOffset = Vector3.new(0, 3, 0)
+			gui.Parent = handle
+
+			local label = Instance.new("TextLabel")
+			label.Size = UDim2.fromScale(1, 1)
+			label.BackgroundTransparency = 1
+			label.TextStrokeTransparency = 0
+			label.TextSize = 14
+			label.Font = Enum.Font.GothamBold
+			label.Parent = gui
+
+			data = { gui = gui, label = label }
+			espCache[inst] = data
+		end
+
+		local name = inst:GetAttribute("OriginalName") or inst.Name
+		local parts = {}
+
+		if tbl["ESP Fruit Name"] then
+			table.insert(parts, name)
+		end
+		if tbl["ESP Fruit Distance"] and root then
+			table.insert(parts, math.floor((handle.Position - root.Position).Magnitude) .. "m")
+		end
+
+		local tier = espRarityOf(name)
+		data.label.Text = table.concat(parts, " | ")
+		data.label.TextColor3 = tbl["ESP Fruit Color"] and espColors[tier] or espColors.Common
+		data.gui.Enabled = #parts > 0
+	end
+end
+
+local function espStart()
+	if espRunning then
+		return
+	end
+	espRunning = true
+
+	task.spawn(function()
+		while tbl["ESP Fruit"] do
+			local ok, err = pcall(espUpdate)
+			if not ok then
+				warn("[ESP]", err)
+			end
+			task.wait(0.2)
+		end
+		espClear()
+		espRunning = false
+	end)
+end
 
 tbl10.StartingUI = function()
 	local v5, v6 = tbl10.CreateWindow()
@@ -2616,7 +2732,37 @@ tbl10.StartingUI = function()
 				},
 			},
 		},
+		 ESP = {
+			{
+				"Toggle",
+				{
+					Title = "ESP Fruit",
+					Callback = function(arg)
+						tbl["ESP Fruit"] = arg
+						if arg then
+							espStart()
+						else
+							espClear()
+						end
+					end,
+				},
+			},
+			{ "Seperator", { Title = "Settings" } },
+			{ "Toggle", { Title = "ESP Fruit Name" } },
+			{ "Toggle", { Title = "ESP Fruit Color" } },
+			{ "Toggle", { Title = "ESP Fruit Distance" } },
+		},
 		Settings = {
+			{ "Seperator", { Title = "Team" } },
+			{ "Toggle", { Title = "Auto Join Team" } },
+			{
+				"Dropdown",
+				{
+					Title = "Select Team",
+					Desc = "time que o script força ao entrar",
+					Values = { "Marines", "Pirates" },
+				},
+			},
 			{ "Toggle", { Title = "Enable Fast Attack" } },
 			{ "Slider", { Title = "Tween Speed", Max = 300, Min = 180 } },
 			{
@@ -3034,6 +3180,13 @@ tbl3.LoadFuncs = function()
 				end
 			end
 		end,
+		["Auto Join Team"] = function()
+			local want = tbl["Select Team"] or "Marines"
+			if localPlayer.Team == nil or localPlayer.Team.Name ~= want then
+				commF:InvokeServer("SetTeam", want)
+				wait(1)
+			end
+		end,
 		["Auto True Triple Katana"] = function()
 			v:Notify({ Title = "Error!", Content = "This feature is not update!", Duration = 6 })
 			tbl10.Features["Auto True Triple Katana"]:SetValue(false)
@@ -3097,6 +3250,9 @@ fn = function()
 		tbl10.StartingUI()
 		tbl3.LoadFuncs()
 		tbl3.StartFuncs()
+		if tbl["ESP Fruit"] then
+			espStart()
+		end
 	end)
 
 	if ok then
