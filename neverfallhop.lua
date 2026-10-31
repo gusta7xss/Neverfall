@@ -3091,6 +3091,20 @@ tbl10.StartingUI = function()
 				},
 			},
 			{ "Toggle", { Title = "Auto Hop Find Boss" } },
+			{
+				"Button",
+				{
+					Title = "Hop Boss",
+					Callback = function()
+						local boss = tbl["Select Boss"]
+						if not boss or boss == "" then
+							v:Notify({ Title = "Hop Boss", Content = "Selecione um boss primeiro na aba Hop Auto", Duration = 5 })
+							return
+						end
+						v4.StartHop(boss)
+					end,
+				},
+			},
 			{ "Seperator", { Title = "Others" } },
 			{ "Toggle", { Title = "Auto Hop Fullmoon" } },
 			{ "Toggle", { Title = "Auto Hop Castle Raid" } },
@@ -3604,7 +3618,7 @@ tbl3.LoadFuncs = function()
 					wait(6)
 				end
 			else
-				wait(2)
+				wait(1)
 				v4.StartHop("Fruits")
 			end
 		end,
