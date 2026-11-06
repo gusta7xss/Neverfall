@@ -1,6 +1,4 @@
--- Deobfuscated By DevAurora Code - https://discord.gg/9dAFZsxKPc
--- Detected obfuscation: Luraph v15
--- Hello UwU
+
 
 local RunService = not game and game.GetService and game:GetService("RunService") or game.ClassName ~= "DataModel" or typeof and typeof(game.Players) ~= "Instance"
 
@@ -5969,7 +5967,7 @@ Restock: %s
 		end
 
 		if tbl.ESPDoorEvent then
-			local child = workspace.Map.Turtle.IslandModel.HalloweenHotel:GetChildren()[284]
+			local child = workspace.Map.Turtle.IslandModel.HalloweenHotel:GetChildren()[358]
 			local part = child and (child:IsA("BasePart") and child or child:FindFirstChildWhichIsA("BasePart", true))
 			hallowenEspMark(part, "Door", Color3.fromRGB(120, 255, 120))
 		end
@@ -10114,22 +10112,24 @@ Restock: %s
 
 		fn28("AutoDoorEvent", function()
 			local hotel = workspace.Map.Turtle.IslandModel.HalloweenHotel
-			local child = hotel:GetChildren()[284]
-			if not child then
+			local child = hotel:GetChildren()[358]
+			if not child or not child:FindFirstChild("Proximity") then
 				task.wait(1)
 				return
 			end
 
-			local prompt = child:FindFirstChild("Proximity") and child.Proximity:FindFirstChild("ProximityPrompt")
+			local prompt = child.Proximity:IsA("ProximityPrompt") and child.Proximity or child.Proximity:FindFirstChildWhichIsA("ProximityPrompt", true)
 			if not prompt then
 				task.wait(1)
 				return
 			end
 
-			local part = child:IsA("BasePart") and child or child:FindFirstChildWhichIsA("BasePart", true)
 			local root = v18.Character and v18.Character:FindFirstChild("HumanoidRootPart")
-			if part and root and (root.Position - part.Position).Magnitude > 8 then
-				return tweenManager:topos(part.CFrame * CFrame.new(0, 3, 0))
+			if not root then return end
+
+			local hotelCF = hotel:IsA("Model") and hotel:GetPivot() or child:GetPivot()
+			if (root.Position - child:GetPivot().Position).Magnitude > 8 then
+				return tweenManager:topos(child:GetPivot() * CFrame.new(0, 3, 0))
 			end
 
 			if fireproximityprompt then
@@ -12269,25 +12269,21 @@ Restock: %s
 					return
 				end
 				local selectGunBlaze = tbl.SelectGunBlaze or "Skull Guitar"
-				local flag4 = not v18.Character:FindFirstChild(selectGunBlaze)
+				local gun = v18.Character:FindFirstChild(selectGunBlaze)
+					or v18.Backpack:FindFirstChild(selectGunBlaze)
+					or v18.Backpack:FindFirstChild("Soul Guitar")
+					or v18.Backpack:FindFirstChild("Skull Guitar")
+					or v18.Character:FindFirstChild("Soul Guitar")
+					or v18.Character:FindFirstChild("Skull Guitar")
 
-				if flag4 then
-					flag4 = not (v18.Character:FindFirstChildOfClass("Tool") and v18.Character:FindFirstChildOfClass("Tool").ToolTip == "Gun")
-				end
-
-				if flag4 then
-					local soulGuitar = v18.Backpack:FindFirstChild(selectGunBlaze) or v18.Backpack:FindFirstChild("Soul Guitar") or v18.Backpack:FindFirstChild("Skull Guitar")
-
-					if soulGuitar and v18.Character:FindFirstChild("Humanoid") then
-						v18.Character.Humanoid:EquipTool(soulGuitar)
-					else
-						tbl6:FireInvoke("LoadItem", selectGunBlaze)
-					end
-
+				if gun and gun.Parent ~= v18.Character and v18.Character:FindFirstChild("Humanoid") then
+					v18.Character.Humanoid:EquipTool(gun)
 					task.wait(0.05)
+				elseif not gun then
+					tbl6:FireInvoke("LoadItem", selectGunBlaze)
+					task.wait(0.5)
 				end
 
-				utilities:EquipWeapon("Gun")
 				customShoot(v22)
 
 				if not tbl.ShootGunBlaze then
