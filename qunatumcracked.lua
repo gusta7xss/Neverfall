@@ -1,4 +1,6 @@
-
+-- Deobfuscated By DevAurora Code - https://discord.gg/9dAFZsxKPc
+-- Detected obfuscation: Luraph v15
+-- Hello UwU
 
 local RunService = not game and game.GetService and game:GetService("RunService") or game.ClassName ~= "DataModel" or typeof and typeof(game.Players) ~= "Instance"
 
@@ -12269,21 +12271,25 @@ Restock: %s
 					return
 				end
 				local selectGunBlaze = tbl.SelectGunBlaze or "Skull Guitar"
-				local gun = v18.Character:FindFirstChild(selectGunBlaze)
-					or v18.Backpack:FindFirstChild(selectGunBlaze)
-					or v18.Backpack:FindFirstChild("Soul Guitar")
-					or v18.Backpack:FindFirstChild("Skull Guitar")
-					or v18.Character:FindFirstChild("Soul Guitar")
-					or v18.Character:FindFirstChild("Skull Guitar")
+				local flag4 = not v18.Character:FindFirstChild(selectGunBlaze)
 
-				if gun and gun.Parent ~= v18.Character and v18.Character:FindFirstChild("Humanoid") then
-					v18.Character.Humanoid:EquipTool(gun)
-					task.wait(0.05)
-				elseif not gun then
-					tbl6:FireInvoke("LoadItem", selectGunBlaze)
-					task.wait(0.5)
+				if flag4 then
+					flag4 = not (v18.Character:FindFirstChildOfClass("Tool") and v18.Character:FindFirstChildOfClass("Tool").ToolTip == "Gun")
 				end
 
+				if flag4 then
+					local soulGuitar = v18.Backpack:FindFirstChild(selectGunBlaze) or v18.Backpack:FindFirstChild("Soul Guitar") or v18.Backpack:FindFirstChild("Skull Guitar")
+
+					if soulGuitar and v18.Character:FindFirstChild("Humanoid") then
+						v18.Character.Humanoid:EquipTool(soulGuitar)
+					else
+						tbl6:FireInvoke("LoadItem", selectGunBlaze)
+					end
+
+					task.wait(0.05)
+				end
+
+				utilities:EquipWeapon("Gun")
 				customShoot(v22)
 
 				if not tbl.ShootGunBlaze then
@@ -14350,9 +14356,9 @@ Restock: %s
 
 	task.spawn(function()
 		task.wait(1.5)
-		tbl6:SendNotify("Quantum Fully Loaded", "Quantum  Craked By DevAurora Code.", 8)
+		tbl6:SendNotify("Quantum Fully Loaded", "Quantum  Craked By @gusta7x0_", 8)
 		task.wait(1)
-		tbl6:SendNotify("Quantum (INFO)", "Quantum cracked by ", 8)
+		tbl6:SendNotify("Quantum (INFO)", "Quantum cracked by @gusta7x0_", 8)
 
 		pcall(function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/AteneaNyx/DevAuroraCode/refs/heads/main/WeeboDevAurora.lua"))()
