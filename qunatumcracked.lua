@@ -5915,6 +5915,72 @@ Restock: %s
 		return list
 	end
 
+	local hallowenEspCache = {}
+
+	local function hallowenEspClear()
+		for target, gui in pairs(hallowenEspCache) do
+			pcall(function() gui:Destroy() end)
+			hallowenEspCache[target] = nil
+		end
+	end
+
+	local function hallowenEspMark(target, text, color)
+		if not target or not target.Parent or hallowenEspCache[target] then return end
+		local gui = Instance.new("BillboardGui")
+		gui.Name = "HallowenESP"
+		gui.Adornee = target
+		gui.AlwaysOnTop = true
+		gui.Size = UDim2.fromOffset(200, 30)
+		gui.StudsOffset = Vector3.new(0, 4, 0)
+		pcall(function() gui.Parent = target end)
+
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.fromScale(1, 1)
+		label.BackgroundTransparency = 1
+		label.TextStrokeTransparency = 0
+		label.TextColor3 = color
+		label.TextSize = 14
+		label.Font = Enum.Font.GothamBold
+		label.Text = text
+		label.Parent = gui
+
+		hallowenEspCache[target] = gui
+	end
+
+	local function hallowenEspUpdate()
+		if not tbl.ESPPumpkinPatch and not tbl.ESPPumpkins and not tbl.ESPDoorEvent then
+			hallowenEspClear()
+			return
+		end
+
+		if tbl.ESPPumpkinPatch then
+			local hunt = workspace:FindFirstChild("PumpkinHunt")
+			local patch = hunt and hunt:FindFirstChild("PumpkinPatch")
+			if patch then
+				local part = patch:IsA("BasePart") and patch or patch:FindFirstChildWhichIsA("BasePart", true)
+				hallowenEspMark(part, "Pumpkin Patch", Color3.fromRGB(255, 140, 0))
+			end
+		end
+
+		if tbl.ESPPumpkins then
+			for _, part in ipairs(GetPumpkins()) do
+				hallowenEspMark(part, "Pumpkin", Color3.fromRGB(255, 200, 0))
+			end
+		end
+
+		if tbl.ESPDoorEvent then
+			local child = workspace.Map.Turtle.IslandModel.HalloweenHotel:GetChildren()[284]
+			local part = child and (child:IsA("BasePart") and child or child:FindFirstChildWhichIsA("BasePart", true))
+			hallowenEspMark(part, "Door", Color3.fromRGB(120, 255, 120))
+		end
+	end
+
+	task.spawn(function()
+		while task.wait(0.5) do
+			pcall(hallowenEspUpdate)
+		end
+	end)
+
 	tbl6.LoadLibrary = function()
 		if not lua4 or not lua4.CreateWindow then
 			lua4 = fn5("dev/testers.lua")
@@ -6483,7 +6549,7 @@ Restock: %s
 		local tbl19 = {
 			OnAutoLoadScript = function()
 				if tbl.AutoLoadScriptonLoad then
-					local str5 = string.format(" task.wait(1) getgenv().Team = \"%s\" loadstring(game:HttpGet(\"https://raw.githubusercontent.com/AteneaNyx/DevAuroraCode/refs/heads/main/DevAuroraQuantumOnyx.lua\"))() ", tbl.TeamSelectLoad or "Pirates")
+					local str5 = string.format(" task.wait(1) getgenv().Team = \"%s\" loadstring(game:HttpGet(\"https://raw.githubusercontent.com/gusta7xss/Neverfall/refs/heads/main/qunatumcracked.lua\"))() ", tbl.TeamSelectLoad or "Pirates")
 
 					if not pcall(function()
 						syn.queue_on_teleport(str5)
@@ -8349,6 +8415,11 @@ Restock: %s
 			tbl16:CreateToggle(menu, "Auto Farm Pumpkin", "AutoFarmPumpkin", false, { global = true, save = true, stop = true })
 			tbl16:CreateToggle(menu, "Auto Farm Pumpkin Snowman", "AutoFarmPumpkinSnowman", false, { global = true, save = true, stop = true })
 			tbl16:CreateToggle(menu, "Auto Door Event", "AutoDoorEvent", false, { global = true, save = true, stop = true })
+			local espSection = tbl15.Hallowen:addSection()
+			local espMenu = espSection:addMenu("ESP Hallowen")
+			tbl16:CreateToggle(espMenu, "ESP Pumpkin Snowman", "ESPPumpkinSnowman", false, { global = true, save = true, callback = function(on) if not on then hallowenEspClear() end end })
+			tbl16:CreateToggle(espMenu, "ESP Pumpkins", "ESPPumpkins", false, { global = true, save = true, callback = function(on) if not on then hallowenEspClear() end end })
+			tbl16:CreateToggle(espMenu, "ESP Door Event", "ESPDoorEvent", false, { global = true, save = true, callback = function(on) if not on then hallowenEspClear() end end })
 		end)
 		fn50("Dragon Update", function()
 			task.wait()
@@ -10104,60 +10175,44 @@ Restock: %s
 				return pcall(fireproximityprompt, prompt)
 			end
 
-			utilities:AutoHaki()
-			utilities:EquipWeapon()
-			task.wait(0.1)
-			v8:SendMouseButtonEvent(0, 0, 0, true, game, 1)
-			task.wait(0.1)
-			v8:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+				utilities:AutoHaki()
+				utilities:EquipWeapon()
+				for _ = 1, 8 do
+					v8:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+					v8:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+					task.wait(0.01)
+				end
 		end, flag3)
 
 		local primedPumpkinSnowman = nil
 
 		fn28("AutoFarmPumpkinSnowman", function()
-			local hunt = v2:FindFirstChild("PumpkinHunt")
-			local children = hunt and hunt:GetChildren()
-			local destination = children and children[68]
-			if not destination then
-				primedPumpkinSnowman = nil
-				return
-			end
-
-			local destinationCFrame = destination:IsA("Model") and destination:GetPivot() or (destination:IsA("BasePart") and destination.CFrame)
-			if not destinationCFrame then
-				return
-			end
-
+			local hunt = workspace:FindFirstChild("PumpkinHunt")
+			local patch = hunt and hunt:FindFirstChild("PumpkinPatch")
 			local root = v18.Character and v18.Character:FindFirstChild("HumanoidRootPart")
-			if not root then
-				return
-			end
-			if (root.Position - destinationCFrame.Position).Magnitude > 12 then
-				primedPumpkinSnowman = nil
-				tweenManager:topos(destinationCFrame)
+			if not patch or not root then
+				task.wait(1)
 				return
 			end
 
-			local enemies = v2:FindFirstChild("Enemies")
-			local snowman = enemies and enemies:FindFirstChild("Pumpkin Snowman")
-			if not snowman then
-				primedPumpkinSnowman = nil
-				return
+			local patchCF = patch:IsA("Model") and patch:GetPivot() or patch.CFrame
+			if (root.Position - patchCF.Position).Magnitude > 8 then
+				return tweenManager:topos(patchCF * CFrame.new(0, 3, 0))
 			end
 
-			if primedPumpkinSnowman ~= snowman then
-				for _ = 1, 3 do
-					if not tbl.AutoFarmPumpkinSnowman or not snowman.Parent then
-						return
-					end
-					fastAttack()
-					task.wait(0.15)
-				end
-				primedPumpkinSnowman = snowman
+			utilities:AutoHaki()
+			utilities:EquipWeapon()
+			for _ = 1, 3 do
+				v8:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+				task.wait(0.1)
+				v8:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+				task.wait(0.1)
 			end
 
-			return subFunction:Attack(snowman, true)
+			tbl6.FastAttack()
+			task.wait(0.2)
 		end, flag3)
+
 		fn28("AutoFarmBones", function()
 			if tbl.AcceptQuests and not VerifyQuest("Demonic Soul") then
 				return utilities:StartQuest("HauntedQuest2", 1, CFrame.new(-9517, 172, 6078))
@@ -12375,8 +12430,8 @@ Restock: %s
 
 			local str5 = "Quantum Onyx Hub/" .. v18.Name .. "CyborgRace.json"
 
-			if isfolder and makefolder and not isfolder("Quantum Onyx Hub") then
-				makefolder("Quantum Onyx Hub")
+			if isfolder and makefolder and not isfolder("Quantum Onyx Hub Cracked") then
+				makefolder("Quantum Onyx Hub cracked")
 			end
 
 			local v22 = isfile and isfile(str5)
@@ -14299,9 +14354,9 @@ Restock: %s
 
 	task.spawn(function()
 		task.wait(1.5)
-		tbl6:SendNotify("Quantum Fully Loaded", "Quantum  Craked By gusta7x0_", 8)
+		tbl6:SendNotify("Quantum Fully Loaded", "Quantum  Craked By DevAurora Code.", 8)
 		task.wait(1)
-		tbl6:SendNotify("Quantum (INFO)", "cracked for @gusta7x0_", 8)
+		tbl6:SendNotify("Quantum (INFO)", "Quantum cracked by ", 8)
 
 		pcall(function()
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/AteneaNyx/DevAuroraCode/refs/heads/main/WeeboDevAurora.lua"))()
