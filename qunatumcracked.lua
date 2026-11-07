@@ -5997,7 +5997,7 @@ Restock: %s
 			return
 		end
 
-		local loc = worldOrigin.Locations:FindFirstChild("Prehistoric Island")
+		local loc = workspace.Map:FindFirstChild("PrehistoricIsland")
 		local part = loc and (loc:IsA("BasePart") and loc or loc:FindFirstChildWhichIsA("BasePart", true))
 		if not part then
 			prehistoricEspClear()
