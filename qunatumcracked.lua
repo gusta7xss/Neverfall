@@ -589,6 +589,7 @@ if not RunService then
 				"AutoAfkJoinFactoryRaid",
 				"AutoAfkJoinBossRaid",
 				"AutoAfkJoinEliteHunter",
+				"AutoAfkJoinPrehistoric",
 				"AutoAfkJoinFruit",
 			}) do
 				if tbl then
@@ -5981,6 +5982,64 @@ Restock: %s
 		end
 	end)
 
+	local prehistoricEspGui = nil
+
+	local function prehistoricEspClear()
+		if prehistoricEspGui then
+			pcall(function() prehistoricEspGui:Destroy() end)
+			prehistoricEspGui = nil
+		end
+	end
+
+	local function prehistoricEspUpdate()
+		if not tbl.ESPPrehistoric then
+			prehistoricEspClear()
+			return
+		end
+
+		local loc = worldOrigin.Locations:FindFirstChild("Prehistoric Island")
+		local part = loc and (loc:IsA("BasePart") and loc or loc:FindFirstChildWhichIsA("BasePart", true))
+		if not part then
+			prehistoricEspClear()
+			return
+		end
+
+		if not prehistoricEspGui or prehistoricEspGui.Adornee ~= part then
+			prehistoricEspClear()
+			local gui = Instance.new("BillboardGui")
+			gui.Name = "PrehistoricESP"
+			gui.Adornee = part
+			gui.AlwaysOnTop = true
+			gui.Size = UDim2.fromOffset(240, 40)
+			gui.StudsOffset = Vector3.new(0, 30, 0)
+			pcall(function() gui.Parent = part end)
+
+			local label = Instance.new("TextLabel")
+			label.Name = "Info"
+			label.Size = UDim2.fromScale(1, 1)
+			label.BackgroundTransparency = 1
+			label.TextStrokeTransparency = 0
+			label.TextColor3 = Color3.fromRGB(120, 255, 160)
+			label.TextSize = 14
+			label.Font = Enum.Font.GothamBold
+			label.Parent = gui
+
+			prehistoricEspGui = gui
+		end
+
+		local label = prehistoricEspGui:FindFirstChild("Info")
+		local root = v18.Character and v18.Character:FindFirstChild("HumanoidRootPart")
+		if label then
+			label.Text = root and ("Prehistoric Island | " .. math.floor((root.Position - part.Position).Magnitude) .. "m") or "Prehistoric Island"
+		end
+	end
+
+	task.spawn(function()
+		while task.wait(0.5) do
+			pcall(prehistoricEspUpdate)
+		end
+	end)
+
 	tbl6.LoadLibrary = function()
 		if not lua4 or not lua4.CreateWindow then
 			lua4 = fn5("dev/testers.lua")
@@ -8417,7 +8476,7 @@ Restock: %s
 			tbl16:CreateToggle(menu, "Auto Door Event", "AutoDoorEvent", false, { global = true, save = true, stop = true })
 			local espSection = tbl15.Hallowen:addSection()
 			local espMenu = espSection:addMenu("ESP Hallowen")
-			tbl16:CreateToggle(espMenu, "ESP Pumpkin Snowman", "ESPPumpkinSnowman", false, { global = true, save = true, callback = function(on) if not on then hallowenEspClear() end end })
+			tbl16:CreateToggle(espMenu, "ESP Pumpkin Patch", "ESPPumpkinPatch", false, { global = true, save = true, callback = function(on) if not on then hallowenEspClear() end end })
 			tbl16:CreateToggle(espMenu, "ESP Pumpkins", "ESPPumpkins", false, { global = true, save = true, callback = function(on) if not on then hallowenEspClear() end end })
 			tbl16:CreateToggle(espMenu, "ESP Door Event", "ESPDoorEvent", false, { global = true, save = true, callback = function(on) if not on then hallowenEspClear() end end })
 		end)
@@ -8438,6 +8497,7 @@ Restock: %s
 			local v29 = v28:addMenu("Prehistoric Event")
 			tbl6._FindPrehistoricIsland = tbl16:CreateToggle(v29, "Auto Find Prehistoric Island", "AutoFindPrehistoricIsland", false, { global = true, save = true, stop = true })
 			tbl16:CreateToggle(v29, "Teleport to Prehistoric Island", "AutoTeleportPrehistoric", false, { global = true, save = true, stop = true })
+			tbl16:CreateToggle(v29, "ESP Prehistoric Island", "ESPPrehistoric", false, { global = true, save = true })
 			tbl16:CreateToggle(v29, "Auto Complete Volcanic Event", "AutoVolcanicEvent", false, { global = true, stop = true })
 			tbl16:CreateToggle(v29, "Use Skull Guitar for Volcano", "ShootGunVolcano", true, { global = true, save = true, description = "Uses Skull Guitar custom shoot to patch the volcano" })
 			tbl16:CreateToggle(v29, "Auto Collect Bones", "AutoCollectBones", false, { global = true, save = true, stop = true })
@@ -8762,6 +8822,7 @@ Restock: %s
 			local v33 = v29:addMenu("AFK Quantum Joiner")
 			tbl16:CreateSlider(v33, "Hop Delay (s)", "HopDelay", 1, 60, 10, { global = true, save = true })
 			tbl16:CreateToggle(v33, "Auto Afk Join Castle Raid", "AutoAfkJoinCastleRaid", false, { locked = false, save = true, global = true })
+			tbl16:CreateToggle(v33, "Auto Afk Join Prehistoric Island", "AutoAfkJoinPrehistoric", false, { locked = false, global = true, save = true })
 			tbl16:CreateToggle(v33, "Auto Afk Join Factory Raid", "AutoAfkJoinFactoryRaid", false, { locked = false, global = true, save = true })
 			tbl16:CreateToggle(v33, "Auto Afk Join Boss Raid", "AutoAfkJoinBossRaid", false, { locked = false, global = true, save = true })
 			tbl16:CreateToggle(v33, "Auto Afk Join Elite Hunter", "AutoAfkJoinEliteHunter", false, { locked = false, global = true, save = true })
@@ -9254,6 +9315,21 @@ Restock: %s
 			elseif tick() - now6 >= 3 then
 				now6 = tick()
 				joinAPI("fruit", 0)
+			end
+		end)
+
+		local nowPrehistoric = tick()
+
+		fn27("AutoAfkJoinPrehistoric", 0.4, function()
+			if not flag3 then
+				return
+			end
+
+			if worldOrigin.Locations:FindFirstChild("Prehistoric Island") then
+				nowPrehistoric = tick()
+			elseif tick() - nowPrehistoric >= 10 then
+				joinAPI("prehistoric", 0)
+				nowPrehistoric = tick()
 			end
 		end)
 
@@ -12810,89 +12886,23 @@ Restock: %s
 		end, true)
 
 		fn28("AutoMasterySwords", function()
-			local ok, result = pcall(function()
-				return Net:RemoteFunction("GetAllItemValues"):InvokeServer()
-			end)
-
-			if not ok or not result then
+			local target = pickMasterySword()
+			if not target then
+				task.wait(1)
 				return
 			end
-			local tbl17 = {}
 
-			for _, v22 in next, result, nil do
-				local str5 = tostring(v22.ItemId) .. "_" .. tostring(v22.NetworkedUID)
-				tbl17[str5] = tbl17[str5] or { ItemId = v22.ItemId, Attributes = {} }
+			equipMasterySword(target)
 
-				if v22.Value ~= nil then
-					tbl17[str5].Attributes[v22.Key] = v22.Value
-				end
+			local q = CheckQuest()
+			local e = q and utilities:GetEnemies(q[1])
+			if e then
+				return subFunction:Attack(e, true)
 			end
-
-			local tbl18 = {}
-
-			for _, v22 in next, tbl17, nil do
-				local attributes = v22.Attributes
-
-				if attributes.IsOwned == true and attributes.Mastery ~= nil then
-					local ok2, result2 = pcall(function()
-						return ItemConfig.match(v22.ItemId)
-					end)
-
-					if ok2 and result2 and result2:isOk() then
-						local str5 = tostring(result2:unwrap().Index.DebugLabel)
-						local match = str5:match("^(.-)%s*%[") or str5
-						local v23 = swordData[match]
-
-						if v23 then
-							table.insert(tbl18, { Name = match, Mastery = attributes.Mastery, Order = v23.Order })
-						end
-					end
-				end
+			if q and q[1] ~= "" then
+				utilities:MobsNextSpawn(q[1])
 			end
-
-			table.sort(tbl18, function(arg, arg2)
-				if arg.Order == arg2.Order then
-					return arg.Mastery < arg2.Mastery
-				end
-				return arg.Order < arg2.Order
-			end)
-
-			for _, v22 in next, tbl18, nil do
-				if utilities:CheckToolName(v22.Name) then
-					if v22.Mastery < tbl.SelectSwordMastery then
-						return
-					end
-				end
-			end
-
-			for _, v22 in next, tbl18, nil do
-				if v22.Mastery < tbl.SelectSwordMastery then
-					if not utilities:CheckToolName(v22.Name) then
-						tbl6:FireInvoke("LoadItem", v22.Name)
-						task.wait(0.5)
-					end
-
-					return
-				end
-			end
-		end, true, true)
-
-		local n7 = 0
-		local n8 = 1
-		local n9 = 0
-		local tbl17 = {}
-		local cframe = CFrame.new(-4602, 16, -2881)
-		local cframe2 = CFrame.new(-6126, 16, -2250)
-		local cframe3 = CFrame.new(3911, 7, -2582)
-		local cframe4 = CFrame.new
-		tbl17[1] = cframe
-		tbl17[2] = cframe2
-		tbl17[3] = cframe3
-
-		do
-			local values = table.pack(cframe4(-426, 11, 5301))
-			table.move(values, 1, values.n, 4, tbl17)
-		end
+		end, flag3)
 
 		fn28("AutoCDKQuest", function()
 			local v22 = tbl6:CDKProgress()
