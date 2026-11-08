@@ -1,6 +1,3 @@
--- Deobfuscated By DevAurora Code - https://discord.gg/9dAFZsxKPc
--- Detected obfuscation: Luraph v15
--- Hello UwU
 
 local RunService = not game and game.GetService and game:GetService("RunService") or game.ClassName ~= "DataModel" or typeof and typeof(game.Players) ~= "Instance"
 
@@ -8291,7 +8288,7 @@ Restock: %s
 			tbl16:CreateDropdown(v30, "Select Boat", "BoatSelected", "PirateBrigade", tbl17.BoatsList or {}, { global = true, save = true })
 			tbl16:CreateDropdown(v30, "Select Zone", "SeaLevelSelected", 6, tbl17.ZoneList or {}, { global = true })
 			tbl16:CreateSlider(v30, "Boat Height", "BoatPosY", 0, 150, 31, { locked = false, global = true })
-			tbl16:CreateSlider(v30, "Boat Speed", "SpeedBoat", 10, 250, 230, { global = true })
+			tbl16:CreateSlider(v30, "Boat Speed", "SpeedBoat", 10, 350, 230, { global = true })
 			tbl16:CreateDropdown(v30, "Sea Event Targets", "SeaEventTargets", 1, tbl17.SeaEventTargets or {}, { global = true }, true)
 			local getAllBoats = tbl19.GetAllBoats and tbl19.GetAllBoats() or { "My Boat" }
 			local v31 = tbl16:CreateDropdown(v30, "Select Owned Boat", "SailTargetBoat", "My Boat", getAllBoats, { global = true })
@@ -10531,13 +10528,22 @@ Restock: %s
 		end, flag3)
 
 		fn28("AutoTeleportPrehistoric", function()
-			if tbl.AutoTeleportPrehistoric then
-				for _, child in pairs(v2._WorldOrigin.Locations:GetChildren()) do
-					if child.Name == "Prehistoric Island" then
-						tweenManager:topos(child.CFrame * CFrame.new(0, 333, 0), true)
-					end
-				end
+			if not tbl.AutoTeleportPrehistoric then return end
+
+			local loc = v2._WorldOrigin.Locations:FindFirstChild("Prehistoric Island")
+			local root = v18.Character and v18.Character:FindFirstChild("HumanoidRootPart")
+
+			if not loc or not root then
+				return subFunction:AutoBoatSail(CFrame.new(-10000000, 31, 37016.25))
 			end
+
+			local target = loc.CFrame * CFrame.new(0, 333, 0)
+			if (root.Position - target.Position).Magnitude > 400 then
+				return subFunction:AutoBoatSail(target)
+			end
+
+			tweenManager:StopBoatTween()
+			tweenManager:topos(target, true)
 		end, flag3)
 
 		fn28("AutoTeleportKitsune", function()
