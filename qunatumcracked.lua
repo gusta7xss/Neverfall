@@ -8028,30 +8028,6 @@ Restock: %s
 		end
 
 		fn50("Home", function()
-			local updateSection = tbl15.Home:addSection()
-			local updateMenu = updateSection:addMenu("Updates")
-
-			local logs = {
-				"+ Hallowen tab created",
-				"+ Auto Farm Pumpkin: tween + M1 burst click",
-				"+ Auto Farm Pumpkin Snowman: goes to PumpkinPatch, 3 M1 clicks and fastAttack",
-				"+ Auto Door Event: tween to hotel and fireproximityprompt",
-				"+ ESP Hallowen: Pumpkin Patch, Pumpkins and Door Event",
-				"+ ESP Prehistoric Island in Prehistoric Event",
-				"+ Teleport Prehistoric: buys boat, sits and aims at island center ignoring DracoTrial",
-				"+ Auto Afk Join Prehistoric Island",
-				"+ Volcanic: Skull Guitar shot by name and M1, golem check per rock, Lava Golem teleport",
-				"+ Blaze Ember: equip from backpack slot 4 and M1 shooting",
-				"+ Mastery Swords: mob farm with sword switching by target mastery",
-				"+ Auto Buy New Boat When dies: checks current character health",
-				"+ Terror Shark: up and attack cycle",
-				"+ Auto Dojo Trainer: replaces White and Purple, with Red Belt Teitoku",
-				"+ Tweening Speed max 350",
-			}
-
-			updateMenu:addLabel("Changelog", table.concat(logs, "\n"))
-
-
 			local v25 = tbl15.Home:addSection()
 			local v26 = v25:addMenu("Main Farm")
 			local v27 = v26:addLabel("Debug Functions", "None")
