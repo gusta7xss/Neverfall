@@ -6053,15 +6053,11 @@ Restock: %s
 		local v22 = lua4:CreateWindow({
 			Title = "Quantum Onyx",
 			Subtitle = "Blox Fruit",
-			Version = "v.Premium",
+			Version = "v.Cracked",
 			Key = false,
 			Theme = "Purple",
 			Credits = {
-				{ Name = "Vin ", Role = "ServerOwner" },
-				{ Name = "Flazhy ", Role = "MainDeveloper" },
-				{ Name = "Kiel ", Role = "WebDesigner" },
-				{ Name = "CudalPH ", Role = "Tester" },
-				{ Name = "Pierce ", Role = "Support" },
+				{ Name = "@gusta7x0_", Role = "Crack Update" },
 			},
 			SaveFile = "BloxFruits",
 		})
@@ -6072,11 +6068,11 @@ Restock: %s
 			Sevent = v22:AddTab("Sea Event", "ship-quantum"),
 			Player = v22:AddTab("Player", "user-quantum"),
             Hallowen = v22:AddTab("Hallowen", "misc-quantum"),
-			Dragon = v22:AddTab("Dragon Update", "visual-quantum"),
+			Dragon = v22:AddTab("Dragon", "visual-quantum"),
 			Raid = v22:AddTab("Dungeon", "raid-quantum"),
 			Trial = v22:AddTab("Trials", "rabbit-quantum"),
 			Travel = v22:AddTab("Travel", "map-quantum"),
-			Shop = v22:AddTab("Tiktok Shop", "cart-quantum"),
+			Shop = v22:AddTab("Shopping", "cart-quantum"),
 			Misc = v22:AddTab("Misc", "misc-quantum"),
 			Web = v22:AddTab("Webhook", "cat-quantum"),
 		}
@@ -8032,6 +8028,30 @@ Restock: %s
 		end
 
 		fn50("Home", function()
+			local updateSection = tbl15.Home:addSection()
+			local updateMenu = updateSection:addMenu("Updates")
+
+			local logs = {
+				"+ Hallowen tab created",
+				"+ Auto Farm Pumpkin: tween + M1 burst click",
+				"+ Auto Farm Pumpkin Snowman: goes to PumpkinPatch, 3 M1 clicks and fastAttack",
+				"+ Auto Door Event: tween to hotel and fireproximityprompt",
+				"+ ESP Hallowen: Pumpkin Patch, Pumpkins and Door Event",
+				"+ ESP Prehistoric Island in Prehistoric Event",
+				"+ Teleport Prehistoric: buys boat, sits and aims at island center ignoring DracoTrial",
+				"+ Auto Afk Join Prehistoric Island",
+				"+ Volcanic: Skull Guitar shot by name and M1, golem check per rock, Lava Golem teleport",
+				"+ Blaze Ember: equip from backpack slot 4 and M1 shooting",
+				"+ Mastery Swords: mob farm with sword switching by target mastery",
+				"+ Auto Buy New Boat When dies: checks current character health",
+				"+ Terror Shark: up and attack cycle",
+				"+ Auto Dojo Trainer: replaces White and Purple, with Red Belt Teitoku",
+				"+ Tweening Speed max 350",
+			}
+
+			updateMenu:addLabel("Changelog", table.concat(logs, "\n"))
+
+
 			local v25 = tbl15.Home:addSection()
 			local v26 = v25:addMenu("Main Farm")
 			local v27 = v26:addLabel("Debug Functions", "None")
@@ -8541,6 +8561,7 @@ Restock: %s
 			end)
 
 			tbl16:CreateToggle(v30, "Auto Draco Race V2 ", "AutoCollectFireFlowers", false, { global = true, stop = true })
+			tbl16:CreateToggle(v30, "Auto Hop If No Fire Flowers", "AutoHopFireFlowers", false, { global = true, save = true })
 			tbl16:CreateToggle(v30, "Auto Complete Draco Trial", "AutoCompleteDracoTrial", false, { locked = false, global = true, stop = true })
 		end)
 
@@ -12161,6 +12182,7 @@ Restock: %s
 
 			if volcanoRocks then
 				for _, child in pairs(volcanoRocks:GetChildren()) do
+					if utilities:CheckMon("Lava Golem") then return end
 					if child:FindFirstChild("VFXLayer") and child.VFXLayer.At0.Glow.Enabled == true then
 						local position2 = child.VFXLayer.CFrame.Position
 						local meshesVolcanoislandPlane005 = prehistoricIsland:FindFirstChild("Meshes/volcanoisland_Plane.005", true)
@@ -12177,37 +12199,39 @@ Restock: %s
 						if v18:DistanceFromCharacter(position2) <= 150 then
 							if tbl.ShootGunVolcano then
 								local selectGunVolcano = tbl.SelectGunVolcano or "Skull Guitar"
+								local gun = v18.Character:FindFirstChild(selectGunVolcano)
+									or v18.Backpack:FindFirstChild(selectGunVolcano)
+									or v18.Backpack:FindFirstChild("Skull Guitar")
 
-								if not v18.Character:FindFirstChild(selectGunVolcano) then
-									local skullGuitar = v18.Backpack:FindFirstChild(selectGunVolcano) or v18.Backpack:FindFirstChild("Skull Guitar")
-
-									if skullGuitar and v18.Character:FindFirstChild("Humanoid") then
-										v18.Character.Humanoid:EquipTool(skullGuitar)
-									else
-										tbl6:FireInvoke("LoadItem", selectGunVolcano)
-									end
-
+								if gun and gun.Parent ~= v18.Character and v18.Character:FindFirstChild("Humanoid") then
+									v18.Character.Humanoid:EquipTool(gun)
 									task.wait(0.2)
+								elseif not gun then
+									tbl6:FireInvoke("LoadItem", selectGunVolcano)
+									task.wait(0.5)
 								end
 
-								utilities:EquipWeapon("Gun")
-								task.wait(0.15)
-								customShoot(position2)
-								local tool = v18.Character:FindFirstChildOfClass("Tool")
-
-								if tool and tool:FindFirstChild("RemoteEvent") then
-									pcall(function()
-										tool.RemoteEvent:FireServer("TAP", position2)
-									end)
+								local held = v18.Character:FindFirstChildOfClass("Tool")
+								if held then
+									held.Enabled = true
 								end
+
+								utilities:AutoHaki()
+								position = position2
+								for _ = 1, 3 do
+									v8:SendMouseButtonEvent(0, 0, 0, true, game, 1)
+									v8:SendMouseButtonEvent(0, 0, 0, false, game, 1)
+									task.wait(0.05)
+								end
+								position = nil
 							else
 								position = position2
 								fn14()
 								position = nil
 							end
-						end
 
-						return
+							return
+						end
 					end
 				end
 			end
@@ -12217,7 +12241,7 @@ Restock: %s
 				tweenManager:topos(prehistoricRelic.Shield.CFrame + Vector3.new(0, 3, 0), true)
 				return
 			end
-		end, flag3)
+			end, flag3)
 
 		fn28("AutoWhiteBelt", function()
 			if v18:DistanceFromCharacter(Vector3.new(5867, 1208, 870)) <= 5 then
@@ -12392,6 +12416,24 @@ Restock: %s
 			end
 		end, flag3)
 
+		local noFlowersSince = nil
+
+		local function fireFlowerHop()
+			local browser = game:GetService("ReplicatedStorage"):FindFirstChild("__ServerBrowser")
+			if not browser then return end
+			for i = 1, 100 do
+				local ok, list = pcall(function() return browser:InvokeServer(i) end)
+				if ok and type(list) == "table" then
+					for jobId, info in pairs(list) do
+						if jobId ~= game.JobId and info and info.Count and info.Count < 12 then
+							pcall(function() browser:InvokeServer("teleport", jobId) end)
+							task.wait(3)
+						end
+					end
+				end
+			end
+		end
+
 		fn28("AutoCollectFireFlowers", function()
 			local fireFlowers = v2:FindFirstChild("FireFlowers")
 
@@ -12403,6 +12445,8 @@ Restock: %s
 					local primaryPart = v22:IsA("Model") and (v22.PrimaryPart or v22:FindFirstChildOfClass("MeshPart"))
 
 					if primaryPart then
+						noFlowersSince = nil
+
 						if v18:DistanceFromCharacter(primaryPart.Position) > 3 then
 							tweenManager:topos(primaryPart.CFrame)
 						else
@@ -12412,6 +12456,14 @@ Restock: %s
 
 						return
 					end
+				end
+			end
+
+			if tbl.AutoHopFireFlowers then
+				noFlowersSince = noFlowersSince or tick()
+				if tick() - noFlowersSince >= 20 then
+					noFlowersSince = nil
+					return fireFlowerHop()
 				end
 			end
 
