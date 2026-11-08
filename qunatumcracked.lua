@@ -5734,8 +5734,11 @@ Restock: %s
 		tbl13.AutoBoatSail = function(arg, arg2)
 			local v22 = GetSelectedBoat()
 
-			if not v22 or tbl.AutoBuyNewBoatWhendies and humanoid.Health <= 0 then
-				if fn6() > 1 and tbl.AutoBuyNewBoatWhendies and humanoid.Health <= 0 then
+			local hum = v18.Character and v18.Character:FindFirstChildOfClass("Humanoid")
+			local dead = not hum or hum.Health <= 0
+
+			if not v22 or (tbl.AutoBuyNewBoatWhendies and dead) then
+				if tbl.AutoBuyNewBoatWhendies and dead then
 					if utilities:GetDistance(CFrame.new(-16927.451, 9.086, 433.864)) <= 12 then
 						tbl6:FireInvoke("BuyBoat", tbl.BoatSelected)
 					else
