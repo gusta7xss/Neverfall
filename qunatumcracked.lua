@@ -5767,11 +5767,10 @@ Restock: %s
 			if not humanoid.Sit then
 				tweenManager:StopBoatTween()
 				local vehicleSeat = v22:FindFirstChild("VehicleSeat")
-				local root = v18.Character and v18.Character:FindFirstChild("HumanoidRootPart")
 
-				if vehicleSeat and root then
-					root.CFrame = vehicleSeat.CFrame * CFrame.new(0, 1, 0)
-					task.wait(0.2)
+				if vehicleSeat and v22.Humanoid.Value ~= 0 then
+					tweenManager:topos(vehicleSeat.CFrame * CFrame.new(0, 3, 0))
+					task.wait(0.5)
 				end
 
 				return
@@ -10531,9 +10530,16 @@ Restock: %s
 		fn28("AutoTeleportPrehistoric", function()
 			if not tbl.AutoTeleportPrehistoric then return end
 
-			local loc = v2._WorldOrigin.Locations:FindFirstChild("Prehistoric Island")
-			local root = v18.Character and v18.Character:FindFirstChild("HumanoidRootPart")
+			local draco = workspace.Map:FindFirstChild("DracoTrial")
+			local loc = nil
+			for _, child in ipairs(v2._WorldOrigin.Locations:GetChildren()) do
+				if child.Name == "Prehistoric Island" and not (draco and child:IsDescendantOf(draco)) then
+					loc = child
+					break
+				end
+			end
 
+			local root = v18.Character and v18.Character:FindFirstChild("HumanoidRootPart")
 			if not loc or not root then
 				return subFunction:AutoBoatSail(CFrame.new(-10000000, 31, 37016.25))
 			end
